@@ -12,7 +12,7 @@ export default function DashboardLayout({
       <AppSidebar />
       <SidebarInset>
         <Header />
-        <div className="px-6">{children}</div>
+        <div className="grow px-6">{children}</div>
       </SidebarInset>
     </SidebarProvider>
   );
