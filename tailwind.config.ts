@@ -70,6 +70,9 @@ const config = {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        gray: {
+          bg: "#f9fafb",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",

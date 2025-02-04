@@ -10,7 +10,7 @@ export default async function RepsPage() {
 
   return (
     <>
-      <div className="flex items-center justify-between">
+      <div className="bg-gray-bg sticky top-16 z-10 flex items-center justify-between">
         <H1>Reps</H1>
         <Link href="/dashboard/reps/new">
           <Button>New Rep</Button>
