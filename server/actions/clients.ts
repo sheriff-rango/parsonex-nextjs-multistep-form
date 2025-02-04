@@ -10,7 +10,8 @@ import {
   psiAccounts,
   clientFinprofile,
 } from "@/server/db/schema";
-import { ClientWithPhoneAndEmail } from "@/types";
+import { ClientWithPhoneAndEmail, ClientData, ContactField } from "@/types";
+import { revalidatePath } from "next/cache";
 
 export async function getClients(): Promise<ClientWithPhoneAndEmail[]> {
   const result = await db
@@ -138,5 +139,263 @@ export async function getClientProfile(clientId: string) {
   } catch (error) {
     console.error("Error fetching client profile:", error);
     throw error;
+  }
+}
+
+export async function createClient(data: ClientData) {
+  try {
+    // Insert client
+    const [client] = await db
+      .insert(clients)
+      .values({
+        nameFull: data.nameFull,
+        nameFirst: data.nameFirst ?? null,
+        nameMiddle: data.nameMiddle ?? null,
+        nameLast: data.nameLast ?? null,
+        nameSuffix: data.nameSuffix ?? null,
+        nameSalutation: data.nameSalutation ?? null,
+        dob: data.dob ? sql`${data.dob}` : null,
+        gender: data.gender ?? null,
+        maritalstatus: data.maritalstatus ?? null,
+        ssnTaxid: data.ssnTaxid ?? null,
+        employmentStatus: data.employmentStatus ?? null,
+        employmentOccupation: data.employmentOccupation ?? null,
+        employer: data.employer ?? null,
+        employerBusinessType: data.employerBusinessType ?? null,
+        isUscitizen: data.isUscitizen ?? null,
+        riaClient: data.riaClient ?? null,
+        bdClient: data.bdClient ?? null,
+        isActive: data.isActive ?? true,
+      })
+      .returning();
+
+    // Insert financial profile if provided
+    if (data.finProfile) {
+      await db.insert(clientFinprofile).values({
+        clientId: client.clientId,
+        profileType: data.finProfile.profileType ?? null,
+        networth: data.finProfile.networth?.toString() ?? null,
+        networthLiquid: data.finProfile.networthLiquid?.toString() ?? null,
+        incomeAnnual: data.finProfile.incomeAnnual?.toString() ?? null,
+        taxbracket: data.finProfile.taxbracket ?? null,
+        incomeSource: data.finProfile.incomeSource ?? null,
+        investExperience: data.finProfile.investExperience ?? null,
+        investExperienceYears:
+          data.finProfile.investExperienceYears?.toString() ?? null,
+        totalHeldawayAssets:
+          data.finProfile.totalHeldawayAssets?.toString() ?? null,
+        incomeSourceType: data.finProfile.incomeSourceType ?? null,
+        incomeDescription: data.finProfile.incomeDescription ?? null,
+        incomeSourceAdditional: data.finProfile.incomeSourceAdditional ?? null,
+        jointClientId: data.finProfile.jointClientId ?? null,
+      });
+    }
+
+    // Insert phones
+    if (data.phones.length > 0) {
+      await db.insert(phones).values(
+        data.phones.map((phone: ContactField) => ({
+          refTable: "clients",
+          refId: client.clientId,
+          phoneType: phone.type,
+          phoneNumber: phone.value,
+          isPrimary: phone.isPrimary,
+        })),
+      );
+    }
+
+    // Insert emails
+    if (data.emails.length > 0) {
+      await db.insert(emails).values(
+        data.emails.map((email: ContactField) => ({
+          refTable: "clients",
+          refId: client.clientId,
+          emailType: email.type,
+          emailAddress: email.value,
+          isPrimary: email.isPrimary,
+        })),
+      );
+    }
+
+    // Insert addresses
+    if (data.addresses.length > 0) {
+      await db.insert(addresses).values(
+        data.addresses.map((address: ContactField) => {
+          const [address1, address2, city, state, zip] =
+            address.value.split(",");
+          return {
+            refTable: "clients",
+            refId: client.clientId,
+            addressType: address.type,
+            address1: address1?.trim() ?? null,
+            address2: address2?.trim() ?? null,
+            city: city?.trim() ?? null,
+            state: state?.trim() ?? null,
+            zip: zip?.trim() ?? null,
+            isPrimary: address.isPrimary,
+          };
+        }),
+      );
+    }
+
+    revalidatePath("/dashboard/clients");
+    return client;
+  } catch (error) {
+    console.error("Error creating client:", error);
+    throw new Error("Failed to create client.");
+  }
+}
+
+export async function updateClient(clientId: string, data: ClientData) {
+  try {
+    // Update client
+    await db
+      .update(clients)
+      .set({
+        nameFull: data.nameFull,
+        nameFirst: data.nameFirst ?? null,
+        nameMiddle: data.nameMiddle ?? null,
+        nameLast: data.nameLast ?? null,
+        nameSuffix: data.nameSuffix ?? null,
+        nameSalutation: data.nameSalutation ?? null,
+        dob: data.dob ? sql`${data.dob}` : null,
+        gender: data.gender ?? null,
+        maritalstatus: data.maritalstatus ?? null,
+        ssnTaxid: data.ssnTaxid ?? null,
+        employmentStatus: data.employmentStatus ?? null,
+        employmentOccupation: data.employmentOccupation ?? null,
+        employer: data.employer ?? null,
+        employerBusinessType: data.employerBusinessType ?? null,
+        isUscitizen: data.isUscitizen ?? null,
+        riaClient: data.riaClient ?? null,
+        bdClient: data.bdClient ?? null,
+        isActive: data.isActive ?? true,
+        lastupdated: sql`CURRENT_TIMESTAMP`,
+      })
+      .where(eq(clients.clientId, clientId));
+
+    // Update or create financial profile
+    if (data.finProfile) {
+      await db
+        .delete(clientFinprofile)
+        .where(eq(clientFinprofile.clientId, clientId));
+
+      await db.insert(clientFinprofile).values({
+        clientId: clientId,
+        profileType: data.finProfile.profileType ?? null,
+        networth: data.finProfile.networth?.toString() ?? null,
+        networthLiquid: data.finProfile.networthLiquid?.toString() ?? null,
+        incomeAnnual: data.finProfile.incomeAnnual?.toString() ?? null,
+        taxbracket: data.finProfile.taxbracket ?? null,
+        incomeSource: data.finProfile.incomeSource ?? null,
+        investExperience: data.finProfile.investExperience ?? null,
+        investExperienceYears:
+          data.finProfile.investExperienceYears?.toString() ?? null,
+        totalHeldawayAssets:
+          data.finProfile.totalHeldawayAssets?.toString() ?? null,
+        incomeSourceType: data.finProfile.incomeSourceType ?? null,
+        incomeDescription: data.finProfile.incomeDescription ?? null,
+        incomeSourceAdditional: data.finProfile.incomeSourceAdditional ?? null,
+        jointClientId: data.finProfile.jointClientId ?? null,
+      });
+    }
+
+    // Delete existing contact info
+    await Promise.all([
+      db
+        .delete(phones)
+        .where(and(eq(phones.refId, clientId), eq(phones.refTable, "clients"))),
+      db
+        .delete(emails)
+        .where(and(eq(emails.refId, clientId), eq(emails.refTable, "clients"))),
+      db
+        .delete(addresses)
+        .where(
+          and(eq(addresses.refId, clientId), eq(addresses.refTable, "clients")),
+        ),
+    ]);
+
+    // Insert new phones
+    if (data.phones.length > 0) {
+      await db.insert(phones).values(
+        data.phones.map((phone: ContactField) => ({
+          refTable: "clients",
+          refId: clientId,
+          phoneType: phone.type,
+          phoneNumber: phone.value,
+          isPrimary: phone.isPrimary,
+        })),
+      );
+    }
+
+    // Insert new emails
+    if (data.emails.length > 0) {
+      await db.insert(emails).values(
+        data.emails.map((email: ContactField) => ({
+          refTable: "clients",
+          refId: clientId,
+          emailType: email.type,
+          emailAddress: email.value,
+          isPrimary: email.isPrimary,
+        })),
+      );
+    }
+
+    // Insert new addresses
+    if (data.addresses.length > 0) {
+      await db.insert(addresses).values(
+        data.addresses.map((address: ContactField) => {
+          const [address1, address2, city, state, zip] =
+            address.value.split(",");
+          return {
+            refTable: "clients",
+            refId: clientId,
+            addressType: address.type,
+            address1: address1?.trim() ?? null,
+            address2: address2?.trim() ?? null,
+            city: city?.trim() ?? null,
+            state: state?.trim() ?? null,
+            zip: zip?.trim() ?? null,
+            isPrimary: address.isPrimary,
+          };
+        }),
+      );
+    }
+
+    revalidatePath("/dashboard/clients");
+    revalidatePath(`/dashboard/clients/${clientId}`);
+  } catch (error) {
+    console.error("Error updating client:", error);
+    throw new Error("Failed to update client.");
+  }
+}
+
+export async function deleteClient(clientId: string) {
+  try {
+    // Delete associated records first
+    await Promise.all([
+      db
+        .delete(clientFinprofile)
+        .where(eq(clientFinprofile.clientId, clientId)),
+      db
+        .delete(phones)
+        .where(and(eq(phones.refId, clientId), eq(phones.refTable, "clients"))),
+      db
+        .delete(emails)
+        .where(and(eq(emails.refId, clientId), eq(emails.refTable, "clients"))),
+      db
+        .delete(addresses)
+        .where(
+          and(eq(addresses.refId, clientId), eq(addresses.refTable, "clients")),
+        ),
+    ]);
+
+    // Delete the client record
+    await db.delete(clients).where(eq(clients.clientId, clientId));
+
+    revalidatePath("/dashboard/clients");
+  } catch (error) {
+    console.error("Error deleting client:", error);
+    throw new Error("Failed to delete client");
   }
 }

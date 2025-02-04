@@ -40,7 +40,7 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   basePath: string;
-  idField?: string;
+  idField: keyof TData;
   searchField?: string;
 }
 
@@ -48,7 +48,7 @@ export function DataTable<TData, TValue>({
   columns,
   data,
   basePath,
-  idField = "id",
+  idField,
   searchField,
 }: DataTableProps<TData, TValue>) {
   const router = useRouter();
@@ -127,7 +127,6 @@ export function DataTable<TData, TValue>({
                 ))}
               </SelectContent>
             </Select>
-
             <div className="flex items-center justify-end gap-2 py-4 pl-4">
               <div className="mr-2 text-sm text-muted-foreground">
                 {table.getState().pagination.pageIndex + 1} /{" "}
@@ -184,7 +183,7 @@ export function DataTable<TData, TValue>({
                       data-state={row.getIsSelected() && "selected"}
                       className="cursor-pointer hover:bg-muted/50"
                       onClick={() => {
-                        const id = (row.original as any)[idField];
+                        const id = row.original[idField];
                         if (id) {
                           router.push(`${basePath}/${id}`);
                         }

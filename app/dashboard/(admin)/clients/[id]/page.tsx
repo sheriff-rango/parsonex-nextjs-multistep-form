@@ -5,6 +5,7 @@ import { columns } from "@/app/dashboard/(admin)/accounts/columns";
 import { getClientProfile } from "@/server/actions/clients";
 import { emails, phones, addresses } from "@/server/db/schema";
 import { InferSelectModel } from "drizzle-orm";
+import { ClientMenu } from "@/components/client-menu";
 
 interface ClientProfilePageProps {
   params: {
@@ -21,8 +22,6 @@ export default async function ClientProfilePage({
 }: ClientProfilePageProps) {
   const { id } = params;
   const decodedId = decodeURIComponent(id);
-  console.log("Page received client ID:", id);
-  console.log("Decoded client ID:", decodedId);
 
   const result = await getClientProfile(decodedId);
 
@@ -80,127 +79,124 @@ export default async function ClientProfilePage({
     : [];
 
   return (
-    <div className="max-h-screen overflow-y-auto overflow-x-hidden outline-none">
+    <div className="flex h-full grow flex-col overflow-hidden p-4">
       <div className="flex items-center justify-between">
-        <div>
-          <H1>{client.nameFull}</H1>
-          <H3>
-            {client.riaClient ? "RIA" : ""} {client.bdClient ? "BD" : ""} Client
-            | Rep: {client.repFullname}
-          </H3>
+        <H1>{client.nameFull}</H1>
+        <ClientMenu client={client} />
+      </div>
+
+      <div className="overflow-y-auto overflow-x-hidden outline-none">
+        <div className="mt-4 grid grid-cols-2 gap-4">
+          <Card>
+            <CardHeader>
+              <H2>General Information</H2>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                {clientFields.map((field) => (
+                  <div key={field.label} className="flex items-center gap-2">
+                    <div className="w-40 font-semibold">{field.label}:</div>
+                    <div>{field.value}</div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <H2>Financial Profile</H2>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                {finProfileFields.map((field) => (
+                  <div key={field.label} className="flex items-center gap-2">
+                    <div className="w-40 font-semibold">{field.label}:</div>
+                    <div>{field.value}</div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="col-span-2">
+            <CardHeader>
+              <H2>Contact Information</H2>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <H3>Email</H3>
+                  {emails.map((email: Email) => (
+                    <div key={email.emailId} className="mb-2">
+                      <div className="font-medium capitalize">
+                        {email.emailType}
+                      </div>
+                      <div>{email.emailAddress}</div>
+                    </div>
+                  ))}
+                  {emails.length === 0 && (
+                    <div className="text-gray-500">No associated emails</div>
+                  )}
+                </div>
+
+                <div>
+                  <H3>Phone</H3>
+                  {phones.map((phone: Phone) => (
+                    <div key={phone.phoneId} className="mb-2">
+                      <div className="font-medium capitalize">
+                        {phone.phoneType}
+                      </div>
+                      <div>{phone.phoneNumber}</div>
+                    </div>
+                  ))}
+                  {phones.length === 0 && (
+                    <div className="text-gray-500">
+                      No associated phone numbers
+                    </div>
+                  )}
+                </div>
+
+                <div>
+                  <H3>Address</H3>
+                  {addresses.map((address: Address) => (
+                    <div key={address.addressId} className="mb-2">
+                      <div className="font-medium capitalize">
+                        {address.addressType}
+                      </div>
+                      <div>
+                        {address.address1} {address.address2 || ""}
+                      </div>
+                      <div>
+                        {address.city}, {address.state} {address.zip}
+                      </div>
+                    </div>
+                  ))}
+                  {addresses.length === 0 && (
+                    <div className="text-gray-500">No associated addresses</div>
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
-      </div>
 
-      <div className="mt-4 grid grid-cols-2 gap-4">
-        <Card>
-          <CardHeader>
-            <H2>General Information</H2>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              {clientFields.map((field) => (
-                <div key={field.label} className="flex items-center gap-2">
-                  <div className="w-40 font-semibold">{field.label}:</div>
-                  <div>{field.value}</div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <H2>Financial Profile</H2>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              {finProfileFields.map((field) => (
-                <div key={field.label} className="flex items-center gap-2">
-                  <div className="w-40 font-semibold">{field.label}:</div>
-                  <div>{field.value}</div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="col-span-2">
-          <CardHeader>
-            <H2>Contact Information</H2>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-3 gap-4">
-              <div>
-                <H3>Email</H3>
-                {emails.map((email: Email) => (
-                  <div key={email.emailId} className="mb-2">
-                    <div className="font-medium capitalize">
-                      {email.emailType}
-                    </div>
-                    <div>{email.emailAddress}</div>
-                  </div>
-                ))}
-                {emails.length === 0 && (
-                  <div className="text-gray-500">No associated emails</div>
-                )}
-              </div>
-
-              <div>
-                <H3>Phone</H3>
-                {phones.map((phone: Phone) => (
-                  <div key={phone.phoneId} className="mb-2">
-                    <div className="font-medium capitalize">
-                      {phone.phoneType}
-                    </div>
-                    <div>{phone.phoneNumber}</div>
-                  </div>
-                ))}
-                {phones.length === 0 && (
-                  <div className="text-gray-500">
-                    No associated phone numbers
-                  </div>
-                )}
-              </div>
-
-              <div>
-                <H3>Address</H3>
-                {addresses.map((address: Address) => (
-                  <div key={address.addressId} className="mb-2">
-                    <div className="font-medium capitalize">
-                      {address.addressType}
-                    </div>
-                    <div>
-                      {address.address1} {address.address2 || ""}
-                    </div>
-                    <div>
-                      {address.city}, {address.state} {address.zip}
-                    </div>
-                  </div>
-                ))}
-                {addresses.length === 0 && (
-                  <div className="text-gray-500">No associated addresses</div>
-                )}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      <div className="mt-4">
-        <Card>
-          <CardHeader>
-            <H2>Accounts</H2>
-          </CardHeader>
-          <CardContent>
-            <DataTable
-              columns={columns}
-              data={accounts}
-              basePath="/dashboard/accounts"
-              idField="accountId"
-              searchField="searchid"
-            />
-          </CardContent>
-        </Card>
+        <div className="mt-4">
+          <Card>
+            <CardHeader>
+              <H2>Accounts</H2>
+            </CardHeader>
+            <CardContent>
+              <DataTable
+                columns={columns}
+                data={accounts}
+                basePath="/dashboard/accounts"
+                idField="accountId"
+                searchField="searchid"
+              />
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );

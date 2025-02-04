@@ -13,7 +13,7 @@ export default async function RepsPage() {
       <div className="flex items-center justify-between">
         <H1>Reps</H1>
         <Link href="/dashboard/reps/new">
-          <Button>Create Rep</Button>
+          <Button>New Rep</Button>
         </Link>
       </div>
       <DataTable

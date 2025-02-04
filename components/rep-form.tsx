@@ -124,7 +124,6 @@ export function RepForm({ data, repId }: RepFormProps) {
     setRepData((prev) => {
       const { field: arrayField } = contactFieldMap[type];
 
-      // If we're setting a new primary, unset all other primaries of this type
       if (field === "isPrimary" && value === true) {
         const newArray = prev[arrayField].map(
           (item: ContactField, i: number) => ({
@@ -138,7 +137,6 @@ export function RepForm({ data, repId }: RepFormProps) {
         };
       }
 
-      // For non-primary field updates, just update the specific field
       const newArray = prev[arrayField].map((item: ContactField, i: number) =>
         i === index ? { ...item, [field]: value } : item,
       );
@@ -176,9 +174,6 @@ export function RepForm({ data, repId }: RepFormProps) {
           onSubmit={handleSubmit}
           className="relative flex h-full flex-col space-y-4"
         >
-          <H2 className="text-2xl font-semibold">
-            {step === 1 ? "General Information" : "Contact Information"}
-          </H2>
           <div className="-mr-2 grow overflow-y-auto overflow-x-hidden pl-1 pr-3">
             {step === 1 && (
               <StepOne
@@ -270,6 +265,7 @@ function StepOne({
 
   return (
     <div key="step1" className="space-y-4">
+      <H2>General Information</H2>
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="firstName">First Name*</Label>
@@ -381,6 +377,7 @@ function StepTwo({
 
   return (
     <div key="step2" className="space-y-8">
+      <H2>Contact Information</H2>
       {/* Phone Numbers */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">

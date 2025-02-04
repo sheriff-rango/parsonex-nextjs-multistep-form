@@ -87,8 +87,47 @@ export type RepData = {
   }[];
 };
 
-export type ContactField = {
+export interface ContactField {
   type: string;
   value: string;
   isPrimary: boolean;
-};
+}
+
+export interface ClientData {
+  nameFirst: string;
+  nameMiddle: string;
+  nameLast: string;
+  nameSuffix: string;
+  nameSalutation: string;
+  nameFull: string;
+  dob: string | null;
+  gender: string | null;
+  maritalstatus: string | null;
+  ssnTaxid: string;
+  employmentStatus: string;
+  employmentOccupation: string;
+  employer: string;
+  employerBusinessType: string;
+  isUscitizen: boolean;
+  riaClient: boolean;
+  bdClient: boolean;
+  isActive: boolean;
+  phones: ContactField[];
+  emails: ContactField[];
+  addresses: ContactField[];
+  finProfile?: {
+    profileType?: string | null;
+    networth?: number | null;
+    networthLiquid?: number | null;
+    incomeAnnual?: number | null;
+    taxbracket?: string | null;
+    incomeSource?: string | null;
+    investExperience?: string | null;
+    investExperienceYears?: number | null;
+    totalHeldawayAssets?: number | null;
+    incomeSourceType?: string | null;
+    incomeDescription?: string | null;
+    incomeSourceAdditional?: string | null;
+    jointClientId?: string | null;
+  };
+}

@@ -5,19 +5,15 @@ import { Account } from "@/server/actions/accounts";
 
 export const columns: ColumnDef<Account>[] = [
   {
-    accessorKey: "accountId",
-    header: "Account ID",
-    size: 150,
-  },
-  {
     accessorKey: "searchid",
     header: "Name",
-    size: 150,
+    size: 600,
+    enableResizing: true,
   },
   {
     accessorKey: "accountType",
     header: "Type",
-    size: 150,
+    size: 100,
   },
   {
     accessorKey: "status",
@@ -27,6 +23,6 @@ export const columns: ColumnDef<Account>[] = [
   {
     accessorKey: "branch",
     header: "Branch",
-    size: 100,
+    size: 200,
   },
 ];
