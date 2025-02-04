@@ -13,7 +13,7 @@ export default function DashboardLayout({
       <SidebarInset>
         <div className="flex size-full flex-col bg-[#f9fafb]">
           <Header />
-          <div className="container flex grow flex-col overflow-hidden pb-6">
+          <div className="container flex grow flex-col overflow-hidden">
             {children}
           </div>
         </div>

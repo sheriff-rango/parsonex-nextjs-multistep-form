@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Landmark, Briefcase, Home, User, Users } from "lucide-react";
+import { Landmark, Briefcase, Home, User, Users, BarChart } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
 import { NavUser } from "@/components/nav-user";
@@ -43,6 +43,11 @@ const data = {
       title: "Holdings",
       url: "/dashboard/holdings",
       icon: Briefcase,
+    },
+    {
+      title: "Reports",
+      url: "/dashboard/reports",
+      icon: BarChart,
     },
   ],
 };

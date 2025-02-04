@@ -5,6 +5,10 @@ import { ClientWithPhoneAndEmail } from "@/types";
 
 export const columns: ColumnDef<ClientWithPhoneAndEmail>[] = [
   {
+    accessorKey: "clientId",
+    header: "Client ID",
+  },
+  {
     accessorKey: "fullName",
     header: "Name",
     size: 300,
@@ -12,11 +16,9 @@ export const columns: ColumnDef<ClientWithPhoneAndEmail>[] = [
   {
     accessorKey: "emailAddress",
     header: "Email",
-    size: 250,
   },
   {
     accessorKey: "isActive",
-    size: 100,
     header: "Status",
     cell: ({ row }) => {
       const isActive = row.getValue("isActive") as boolean;

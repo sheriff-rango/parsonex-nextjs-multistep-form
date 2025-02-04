@@ -12,7 +12,8 @@ import {
   getFilteredRowModel,
   ColumnSizingState,
 } from "@tanstack/react-table";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { useCallback } from "react";
 
 import {
   Table,
@@ -52,6 +53,21 @@ export function DataTable<TData, TValue>({
   searchField,
 }: DataTableProps<TData, TValue>) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+      if (value) {
+        params.set(name, value);
+      } else {
+        params.delete(name);
+      }
+      return params.toString();
+    },
+    [searchParams],
+  );
+
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [],
@@ -70,6 +86,7 @@ export function DataTable<TData, TValue>({
     [pageIndex, pageSize],
   );
 
+  // Initialize search from URL on mount
   const table = useReactTable({
     data,
     columns,
@@ -90,8 +107,29 @@ export function DataTable<TData, TValue>({
     },
   });
 
+  // Initialize search from URL on mount
+  React.useEffect(() => {
+    if (searchField) {
+      const searchValue = searchParams.get("search") || "";
+      table.getColumn(searchField)?.setFilterValue(searchValue);
+    }
+  }, [searchField, searchParams]);
+
+  // Update URL when search changes
+  const handleSearchChange = useCallback(
+    (value: string) => {
+      if (searchField) {
+        table.getColumn(searchField)?.setFilterValue(value);
+        router.push(pathname + "?" + createQueryString("search", value), {
+          scroll: false,
+        });
+      }
+    },
+    [searchField, router, pathname, createQueryString],
+  );
+
   return (
-    <div className="grow overflow-hidden px-1">
+    <div className="mb-6 grow overflow-hidden px-1">
       <div className="mb-8 flex h-full flex-col">
         <div className="flex w-full items-center justify-between">
           {searchField && (
@@ -101,9 +139,7 @@ export function DataTable<TData, TValue>({
               value={
                 (table.getColumn(searchField)?.getFilterValue() as string) ?? ""
               }
-              onChange={(event) =>
-                table.getColumn(searchField)?.setFilterValue(event.target.value)
-              }
+              onChange={(event) => handleSearchChange(event.target.value)}
             />
           )}
           <div className="flex items-center space-x-2">
