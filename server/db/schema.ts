@@ -404,8 +404,8 @@ export const bankInfo = pgTable(
 
 export const psiComRates = pgTable("psi_com_rates", {
   payoutId: serial("payout_id").primaryKey().notNull(),
-  repId: text("rep_id").notNull(),
-  payeeId: text("payee_id").notNull(),
+  repId: varchar("rep_id").notNull(),
+  payeeId: varchar("payee_id").notNull(),
   payoutPct: numeric("payout_pct", { precision: 5, scale: 2 }).notNull(),
   createdOn: timestamp("created_on", { mode: "string" }).default(
     sql`CURRENT_TIMESTAMP`,
@@ -413,7 +413,7 @@ export const psiComRates = pgTable("psi_com_rates", {
   lastUpdated: timestamp("last_updated", { mode: "string" }).default(
     sql`CURRENT_TIMESTAMP`,
   ),
-  typeNotes: text("type_notes"),
+  type: varchar("type", { length: 255 }),
 });
 
 export const notifications = pgTable(
@@ -610,7 +610,7 @@ export const pasComRates = pgTable("pas_com_rates", {
   repId: varchar("rep_id", { length: 50 }).notNull(),
   payeeId: varchar("payee_id", { length: 50 }).notNull(),
   payoutPct: numeric("payout_pct").notNull(),
-  typeNotes: text("type_notes"),
+  type: varchar("type", { length: 255 }),
   createdOn: timestamp("created_on", { mode: "string" }).default(
     sql`CURRENT_TIMESTAMP`,
   ),
@@ -1565,11 +1565,11 @@ export const reps = pgTable(
       .primaryKey()
       .notNull(),
     pcm: varchar({ length: 15 }),
-    createdon: timestamp({ mode: "string" }),
-    firstname: varchar({ length: 50 }),
-    middlename: varchar({ length: 50 }),
-    lastname: varchar({ length: 50 }),
-    fullname: varchar(),
+    createdOn: timestamp("createdon", { mode: "string" }),
+    firstName: varchar("firstname", { length: 50 }),
+    middleName: varchar("middlename", { length: 50 }),
+    lastName: varchar("lastname", { length: 50 }),
+    fullName: varchar("fullname"),
     isActive: boolean("is_active").default(true),
     repType: varchar("rep_type", { length: 50 })
       .default("Unassigned")
