@@ -25,8 +25,8 @@ export const columns: ColumnDef<Holding>[] = [
     size: 150,
   },
   {
-    accessorKey: "repNo",
-    header: "Rep #",
+    accessorKey: "holdingFan",
+    header: "Fan",
     size: 100,
   },
 ];

@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { H1, H2, H3 } from "@/components/typography";
+import { H1, H2, H3, H4 } from "@/components/typography";
 import { DataTable } from "@/components/data-table";
 import { columns } from "@/app/dashboard/(admin)/accounts/columns";
 import { getClientProfile } from "@/server/actions/clients";
@@ -119,7 +119,7 @@ export default async function ClientProfilePage({
               <div className="space-y-2">
                 {clientFields.map((field) => (
                   <div key={field.label} className="flex items-center gap-2">
-                    <div className="w-40 font-semibold">{field.label}:</div>
+                    <div className="w-1/2 font-semibold">{field.label}:</div>
                     <div>{field.value}</div>
                   </div>
                 ))}
@@ -136,7 +136,7 @@ export default async function ClientProfilePage({
                 <div>
                   <H3>Email</H3>
                   {emails.map((email: Email) => (
-                    <div key={email.emailId} className="mb-2">
+                    <div key={email.emailId} className="mb-2 ml-2">
                       <div className="font-medium capitalize">
                         {email.emailType}
                       </div>
@@ -144,14 +144,16 @@ export default async function ClientProfilePage({
                     </div>
                   ))}
                   {emails.length === 0 && (
-                    <div className="text-gray-500">No associated emails</div>
+                    <div className="ml-2 text-gray-500">
+                      No associated emails
+                    </div>
                   )}
                 </div>
 
                 <div>
                   <H3>Phone</H3>
                   {phones.map((phone: Phone) => (
-                    <div key={phone.phoneId} className="mb-2">
+                    <div key={phone.phoneId} className="mb-2 ml-2">
                       <div className="font-medium capitalize">
                         {phone.phoneType}
                       </div>
@@ -159,7 +161,7 @@ export default async function ClientProfilePage({
                     </div>
                   ))}
                   {phones.length === 0 && (
-                    <div className="text-gray-500">
+                    <div className="ml-2 text-gray-500">
                       No associated phone numbers
                     </div>
                   )}
@@ -168,10 +170,8 @@ export default async function ClientProfilePage({
                 <div>
                   <H3>Address</H3>
                   {addresses.map((address: Address) => (
-                    <div key={address.addressId} className="mb-2">
-                      <div className="font-medium capitalize">
-                        {address.addressType}
-                      </div>
+                    <div key={address.addressId} className="mb-2 ml-2">
+                      <H4 className="capitalize">{address.addressType}</H4>
                       <div>
                         {address.address1} {address.address2 || ""}
                       </div>
@@ -181,7 +181,9 @@ export default async function ClientProfilePage({
                     </div>
                   ))}
                   {addresses.length === 0 && (
-                    <div className="text-gray-500">No associated addresses</div>
+                    <div className="ml-2 text-gray-500">
+                      No associated addresses
+                    </div>
                   )}
                 </div>
               </div>
@@ -196,7 +198,7 @@ export default async function ClientProfilePage({
               <div className="space-y-2">
                 {identificationFields.map((field) => (
                   <div key={field.label} className="flex items-center gap-2">
-                    <div className="w-40 font-semibold">{field.label}:</div>
+                    <div className="w-1/2 font-semibold">{field.label}:</div>
                     <div>{field.value}</div>
                   </div>
                 ))}
@@ -212,7 +214,7 @@ export default async function ClientProfilePage({
               <div className="space-y-2">
                 {finProfileFields.map((field) => (
                   <div key={field.label} className="flex items-center gap-2">
-                    <div className="w-40 font-semibold">{field.label}:</div>
+                    <div className="w-1/2 font-semibold">{field.label}:</div>
                     <div>{field.value}</div>
                   </div>
                 ))}

@@ -66,7 +66,7 @@ export default async function RepProfilePage({ params }: RepProfilePageProps) {
             <div className="space-y-2">
               {repFields.map((field) => (
                 <div key={field.label} className="flex items-center gap-2">
-                  <div className="w-40 font-semibold">{field.label}:</div>
+                  <div className="w-1/2 font-semibold">{field.label}:</div>
                   <div>{field.value}</div>
                 </div>
               ))}

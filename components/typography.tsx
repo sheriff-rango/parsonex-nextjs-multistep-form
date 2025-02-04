@@ -24,10 +24,14 @@ export function H2({ children, className = "" }: HeadingProps) {
 
 export function H3({ children, className = "" }: HeadingProps) {
   return (
-    <h3 className={`text-lg font-medium text-black ${className}`}>
+    <h3 className={`text-xl font-medium text-black ${className}`}>
       {children}
     </h3>
   );
+}
+
+export function H4({ children, className = "" }: HeadingProps) {
+  return <h4 className={`text-base font-medium ${className}`}>{children}</h4>;
 }
 
 export function P({ children, className = "" }: HeadingProps) {
