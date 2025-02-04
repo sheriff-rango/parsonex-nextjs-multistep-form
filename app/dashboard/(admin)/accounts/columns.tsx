@@ -7,7 +7,7 @@ export const columns: ColumnDef<Account>[] = [
   {
     accessorKey: "searchid",
     header: "Name",
-    size: 600,
+    size: 300,
     enableResizing: true,
   },
   {
