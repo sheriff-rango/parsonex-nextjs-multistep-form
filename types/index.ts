@@ -1,91 +1,5 @@
-export type ClientWithPhoneAndEmail = {
-  clientId: string;
-  fullName: string;
-  riaClient: boolean;
-  bdClient: boolean;
-  repFullname: string | null;
-  isActive: boolean;
-  phoneNumber: string | null;
-  emailAddress: string | null;
-};
-
-export type ClientFull = {
-  clientId: string;
-  createdon: string | null;
-  lastupdated: string | null;
-  isActive: boolean | null;
-  nameSuffix: string | null;
-  entityname: string | null;
-  nameFull: string | null;
-  nameSalutation: string | null;
-  nameFirst: string | null;
-  nameMiddle: string | null;
-  nameLast: string | null;
-  householdId: string | null;
-  terminationDate: string | null;
-  addressId: number | null;
-  finprofileId: number | null;
-  ofacId: number | null;
-  dob: string | null;
-  ssnTaxid: string | null;
-  gender: string | null;
-  maritalstatus: string | null;
-  employmentStatus: string | null;
-  employmentOccupation: string | null;
-  employer: string | null;
-  employerBusinessType: string | null;
-  idNumber: string | null;
-  idIssuer: string | null;
-  idIssuedate: string | null;
-  idExpires: string | null;
-  idCitizenship: string | null;
-  isUscitizen: boolean | null;
-  idVerifiedby: string | null;
-  idType: string | null;
-  riaClient: boolean | null;
-  bdClient: boolean | null;
-  ofacResource: string | null;
-  ofacResult: string | null;
-  ofacBy: string | null;
-  ofacDate: string | null;
-  pcm: string | null;
-  repFullname: string | null;
-};
-
-export type Rep = {
-  repId: string;
-  pcm: string | null;
-  fullName: string | null;
-  repType: string;
-  isBranchMgr: boolean | null;
-};
-
-export type RepData = {
-  firstName: string;
-  middleName: string;
-  lastName: string;
-  fullName: string;
-  repType: string;
-  isActive: boolean;
-  isBranchMgr: boolean;
-  dob: string | null;
-  gender: string | null;
-  phones: {
-    type: string;
-    value: string;
-    isPrimary: boolean;
-  }[];
-  emails: {
-    type: string;
-    value: string;
-    isPrimary: boolean;
-  }[];
-  addresses: {
-    type: string;
-    value: string;
-    isPrimary: boolean;
-  }[];
-};
+export * from "./clients";
+export * from "./reps";
 
 export interface ContactField {
   type: string;
@@ -93,41 +7,44 @@ export interface ContactField {
   isPrimary: boolean;
 }
 
-export interface ClientData {
-  nameFirst: string;
-  nameMiddle: string;
-  nameLast: string;
-  nameSuffix: string;
-  nameSalutation: string;
-  nameFull: string;
-  dob: string | null;
-  gender: string | null;
-  maritalstatus: string | null;
-  ssnTaxid: string;
-  employmentStatus: string;
-  employmentOccupation: string;
-  employer: string;
-  employerBusinessType: string;
-  isUscitizen: boolean;
-  riaClient: boolean;
-  bdClient: boolean;
-  isActive: boolean;
-  phones: ContactField[];
-  emails: ContactField[];
-  addresses: ContactField[];
-  finProfile?: {
-    profileType?: string | null;
-    networth?: number | null;
-    networthLiquid?: number | null;
-    incomeAnnual?: number | null;
-    taxbracket?: string | null;
-    incomeSource?: string | null;
-    investExperience?: string | null;
-    investExperienceYears?: number | null;
-    totalHeldawayAssets?: number | null;
-    incomeSourceType?: string | null;
-    incomeDescription?: string | null;
-    incomeSourceAdditional?: string | null;
-    jointClientId?: string | null;
-  };
-}
+export type Account = {
+  accountId: string;
+  searchid: string | null;
+  estDate: string | null;
+  tin: string | null;
+  lastupdated: string | null;
+  accountType: string | null;
+  date17A3: string | null;
+  method17A3: string | null;
+  emailAuth: boolean | null;
+  ownerId: string | null;
+  owner2Id: string | null;
+  status: string | null;
+  termDate: string | null;
+  invObjective: string | null;
+  riskTolerance: string | null;
+  timeHorizon: string | null;
+  pcm: string | null;
+  branch: string | null;
+  registration1: string | null;
+  registration2: string | null;
+  registration3: string | null;
+  clientResState: string | null;
+  accountEmail: string | null;
+};
+
+export type Holding = {
+  holdingId: string;
+  accountId: string;
+  holdingType: string;
+  securityName: string | null;
+  securityTicker: string | null;
+  cusip: string | null;
+  units: number | null;
+  unitPrice: number | null;
+  marketValue: number | null;
+  costBasis: number | null;
+  productFamily: string | null;
+  repNo: string | null;
+  holdingFan: string | null;
+};

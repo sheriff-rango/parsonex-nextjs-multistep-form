@@ -6,11 +6,11 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 export default async function ClientsPage() {
-  const clients = await getClients();
+  const clients = (await getClients()) || [];
 
   return (
     <>
-      <div className="bg-gray-bg sticky top-16 z-10 flex items-center justify-between">
+      <div className="sticky top-16 z-10 flex items-center justify-between bg-gray-bg">
         <H1>Clients</H1>
         <Link href="/dashboard/clients/new">
           <Button>New Client</Button>

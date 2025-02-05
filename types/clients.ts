@@ -1,0 +1,94 @@
+import { ContactField } from "@/types";
+
+export type ClientWithPhoneAndEmail = {
+  clientId: string;
+  fullName: string;
+  riaClient: boolean;
+  bdClient: boolean;
+  repFullname: string | null;
+  isActive: boolean;
+  phoneNumber: string | null;
+  emailAddress: string | null;
+};
+
+export type ClientFull = {
+  clientId: string;
+  createdon: string | null;
+  lastupdated: string | null;
+  isActive: boolean | null;
+  nameSuffix: string | null;
+  entityname: string | null;
+  nameFull: string | null;
+  nameSalutation: string | null;
+  nameFirst: string | null;
+  nameMiddle: string | null;
+  nameLast: string | null;
+  householdId: string | null;
+  terminationDate: string | null;
+  addressId: number | null;
+  finprofileId: number | null;
+  ofacId: number | null;
+  dob: string | null;
+  ssnTaxid: string | null;
+  gender: string | null;
+  maritalstatus: string | null;
+  employmentStatus: string | null;
+  employmentOccupation: string | null;
+  employer: string | null;
+  employerBusinessType: string | null;
+  idNumber: string | null;
+  idIssuer: string | null;
+  idIssuedate: string | null;
+  idExpires: string | null;
+  idCitizenship: string | null;
+  isUscitizen: boolean | null;
+  idVerifiedby: string | null;
+  idType: string | null;
+  riaClient: boolean | null;
+  bdClient: boolean | null;
+  ofacResource: string | null;
+  ofacResult: string | null;
+  ofacBy: string | null;
+  ofacDate: string | null;
+  pcm: string | null;
+  repFullname: string | null;
+};
+
+export interface ClientData {
+  nameFirst: string;
+  nameMiddle: string;
+  nameLast: string;
+  nameSuffix: string;
+  nameSalutation: string;
+  nameFull: string;
+  dob: string | null;
+  gender: string | null;
+  maritalstatus: string | null;
+  ssnTaxid: string;
+  employmentStatus: string;
+  employmentOccupation: string;
+  employer: string;
+  employerBusinessType: string;
+  isUscitizen: boolean;
+  riaClient: boolean;
+  bdClient: boolean;
+  isActive: boolean;
+  phones: ContactField[];
+  emails: ContactField[];
+  addresses: ContactField[];
+  finProfile?: {
+    profileType?: string | null;
+    networth?: number | null;
+    networthLiquid?: number | null;
+    incomeAnnual?: number | null;
+    taxbracket?: string | null;
+    incomeSource?: string | null;
+    investExperience?: string | null;
+    investExperienceYears?: number | null;
+    totalHeldawayAssets?: number | null;
+    incomeSourceType?: string | null;
+    incomeDescription?: string | null;
+    incomeSourceAdditional?: string | null;
+    jointClientId?: string | null;
+  };
+}

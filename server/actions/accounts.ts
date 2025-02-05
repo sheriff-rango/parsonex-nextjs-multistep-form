@@ -3,52 +3,42 @@
 import { db } from "@/server/db";
 import { psiAccounts, psiHoldings } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
+import { checkAdmin } from "@/server/server-only/auth";
+import { Account, Holding } from "@/types";
 
-export type Account = {
-  accountId: string;
-  searchid: string | null;
-  accountType: string | null;
-  status: string | null;
-  pcm: string | null;
-  branch: string | null;
-  accountEmail: string | null;
-};
+export async function getAccounts(): Promise<Account[] | null> {
+  if (!checkAdmin()) {
+    return null;
+  }
 
-export async function getAccounts(): Promise<Account[]> {
   const result = await db
-    .select({
-      accountId: psiAccounts.accountId,
-      searchid: psiAccounts.searchid,
-      accountType: psiAccounts.accountType,
-      status: psiAccounts.status,
-      pcm: psiAccounts.pcm,
-      branch: psiAccounts.branch,
-      accountEmail: psiAccounts.accountEmail,
-    })
+    .select()
     .from(psiAccounts)
     .orderBy(psiAccounts.searchid);
 
   return result;
 }
 
-export async function getAccountsByPCM(pcm: string): Promise<Account[]> {
+export async function getAccountsByPCM(pcm: string): Promise<Account[] | null> {
+  if (!checkAdmin()) {
+    return null;
+  }
+
   const result = await db
-    .select({
-      accountId: psiAccounts.accountId,
-      searchid: psiAccounts.searchid,
-      accountType: psiAccounts.accountType,
-      status: psiAccounts.status,
-      pcm: psiAccounts.pcm,
-      branch: psiAccounts.branch,
-      accountEmail: psiAccounts.accountEmail,
-    })
+    .select()
     .from(psiAccounts)
     .where(eq(psiAccounts.pcm, pcm));
 
   return result;
 }
 
-export async function getAccountProfile(accountId: string) {
+export async function getAccountProfile(
+  accountId: string,
+): Promise<Account | null> {
+  if (!checkAdmin()) {
+    return null;
+  }
+
   try {
     const [account] = await db
       .select()
@@ -67,8 +57,13 @@ export async function getAccountProfile(accountId: string) {
   }
 }
 
-export async function getAccountHoldings(accountId: string) {
-  console.log("Fetching holdings for account:", accountId);
+export async function getAccountHoldings(
+  accountId: string,
+): Promise<Holding[] | null> {
+  if (!checkAdmin()) {
+    return null;
+  }
+
   try {
     const holdings = await db
       .select()
@@ -85,31 +80,6 @@ export async function getAccountHoldings(accountId: string) {
     }));
   } catch (error) {
     console.error("Error fetching account holdings:", error);
-    throw error;
-  }
-}
-
-export async function getHolding(holdingId: string) {
-  try {
-    const [holding] = await db
-      .select()
-      .from(psiHoldings)
-      .where(eq(psiHoldings.holdingId, holdingId));
-
-    if (!holding) {
-      console.log("No holding found with ID:", holdingId);
-      return null;
-    }
-
-    return {
-      ...holding,
-      units: holding.units ? Number(holding.units) : null,
-      unitPrice: holding.unitPrice ? Number(holding.unitPrice) : null,
-      marketValue: holding.marketValue ? Number(holding.marketValue) : null,
-      costBasis: holding.costBasis ? Number(holding.costBasis) : null,
-    };
-  } catch (error) {
-    console.error("Error fetching holding:", error);
     throw error;
   }
 }

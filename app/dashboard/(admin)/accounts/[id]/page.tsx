@@ -118,22 +118,24 @@ export default async function AccountProfilePage({
           </Card>
         </div>
 
-        <div className="mt-4">
-          <Card>
-            <CardHeader>
-              <H2>Holdings</H2>
-            </CardHeader>
-            <CardContent>
-              <DataTable
-                columns={columns}
-                data={holdings}
-                basePath="/dashboard/holdings"
-                idField="holdingId"
-                searchField="securityName"
-              />
-            </CardContent>
-          </Card>
-        </div>
+        {holdings && (
+          <div className="mt-4">
+            <Card>
+              <CardHeader>
+                <H2>Holdings</H2>
+              </CardHeader>
+              <CardContent>
+                <DataTable
+                  columns={columns}
+                  data={holdings}
+                  basePath="/dashboard/holdings"
+                  idField="holdingId"
+                  searchField="securityName"
+                />
+              </CardContent>
+            </Card>
+          </div>
+        )}
       </div>
     </div>
   );

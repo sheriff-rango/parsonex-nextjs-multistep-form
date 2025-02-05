@@ -6,11 +6,11 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 export default async function HoldingsPage() {
-  const holdings = await getHoldings();
+  const holdings = (await getHoldings()) || [];
 
   return (
     <>
-      <div className="bg-gray-bg sticky top-16 z-10 flex items-center justify-between">
+      <div className="sticky top-16 z-10 flex items-center justify-between bg-gray-bg">
         <H1>Holdings</H1>
         <Link href="#">
           <Button>New Holding</Button>

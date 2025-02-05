@@ -19,11 +19,9 @@ export function NavMain({ items }: NavMainProps) {
   const pathname = usePathname();
 
   const isActive = (url: string) => {
-    // Handle root dashboard path
     if (url === "/dashboard" && pathname === "/dashboard") {
       return true;
     }
-    // For other paths, check if the current path starts with the url (for nested routes)
     return pathname.startsWith(url) && url !== "/dashboard";
   };
 

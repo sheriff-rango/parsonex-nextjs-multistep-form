@@ -6,11 +6,11 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 export default async function AccountsPage() {
-  const accounts = await getAccounts();
+  const accounts = (await getAccounts()) || [];
 
   return (
     <>
-      <div className="bg-gray-bg sticky top-16 z-10 flex items-center justify-between">
+      <div className="sticky top-16 z-10 flex items-center justify-between bg-gray-bg">
         <H1>Accounts</H1>
         <Link href="#">
           <Button>New Account</Button>

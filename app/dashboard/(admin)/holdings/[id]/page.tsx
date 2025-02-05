@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { H1, H2 } from "@/components/typography";
-import { getHolding } from "@/server/actions/accounts";
+import { getHolding } from "@/server/actions/holdings";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 

@@ -18,50 +18,11 @@ import {
 } from "@/components/ui/select";
 import { Plus, Minus } from "lucide-react";
 import { H2 } from "@/components/typography";
-import { ContactField } from "@/types";
+import { ContactField, ClientData } from "@/types";
 import { createClient, updateClient } from "@/server/actions/clients";
 
 type ContactType = "phone" | "email" | "address";
 type ContactArrayType = "phones" | "emails" | "addresses";
-
-interface ClientData {
-  nameFirst: string;
-  nameMiddle: string;
-  nameLast: string;
-  nameSuffix: string;
-  nameSalutation: string;
-  nameFull: string;
-  dob: string | null;
-  gender: string | null;
-  maritalstatus: string | null;
-  ssnTaxid: string;
-  employmentStatus: string;
-  employmentOccupation: string;
-  employer: string;
-  employerBusinessType: string;
-  isUscitizen: boolean;
-  riaClient: boolean;
-  bdClient: boolean;
-  isActive: boolean;
-  phones: ContactField[];
-  emails: ContactField[];
-  addresses: ContactField[];
-  finProfile?: {
-    profileType?: string | null;
-    networth?: number | null;
-    networthLiquid?: number | null;
-    incomeAnnual?: number | null;
-    taxbracket?: string | null;
-    incomeSource?: string | null;
-    investExperience?: string | null;
-    investExperienceYears?: number | null;
-    totalHeldawayAssets?: number | null;
-    incomeSourceType?: string | null;
-    incomeDescription?: string | null;
-    incomeSourceAdditional?: string | null;
-    jointClientId?: string | null;
-  };
-}
 
 interface ClientFormProps {
   data?: ClientData;
@@ -86,7 +47,6 @@ const contactFieldMap: Record<
   },
 };
 
-// Add these constants for select options
 const PROFILE_TYPES = ["Individual", "Joint", "Trust", "Corporate"] as const;
 const TAX_BRACKETS = ["0-12%", "22-24%", "32-35%", "37%+"] as const;
 const INCOME_SOURCES = [

@@ -2,24 +2,44 @@
 
 import { db } from "@/server/db";
 import { psiHoldings } from "@/server/db/schema";
+import { eq } from "drizzle-orm";
+import { checkAdmin } from "@/server/server-only/auth";
+import { Holding } from "@/types";
 
-export type Holding = {
-  holdingId: string;
-  accountId: string;
-  holdingType: string;
-  securityName: string | null;
-  securityTicker: string | null;
-  cusip: string | null;
-  units: number | null;
-  unitPrice: number | null;
-  marketValue: number | null;
-  costBasis: number | null;
-  productFamily: string | null;
-  repNo: string | null;
-  holdingFan: string | null;
-};
+export async function getHolding(holdingId: string) {
+  if (!checkAdmin()) {
+    return null;
+  }
 
-export async function getHoldings(): Promise<Holding[]> {
+  try {
+    const [holding] = await db
+      .select()
+      .from(psiHoldings)
+      .where(eq(psiHoldings.holdingId, holdingId));
+
+    if (!holding) {
+      console.log("No holding found with ID:", holdingId);
+      return null;
+    }
+
+    return {
+      ...holding,
+      units: holding.units ? Number(holding.units) : null,
+      unitPrice: holding.unitPrice ? Number(holding.unitPrice) : null,
+      marketValue: holding.marketValue ? Number(holding.marketValue) : null,
+      costBasis: holding.costBasis ? Number(holding.costBasis) : null,
+    };
+  } catch (error) {
+    console.error("Error fetching holding:", error);
+    throw error;
+  }
+}
+
+export async function getHoldings(): Promise<Holding[] | null> {
+  if (!checkAdmin()) {
+    return null;
+  }
+
   const result = await db
     .select({
       holdingId: psiHoldings.holdingId,
