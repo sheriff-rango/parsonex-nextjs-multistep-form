@@ -7,7 +7,7 @@ export default async function RepProductionPage({
   params: { id: string };
 }) {
   const repName = decodeURIComponent(params.id);
-  const productionData = await getRepYearlyProduction(repName);
+  const productionData = (await getRepYearlyProduction(repName)) || [];
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("en-US", {
@@ -18,7 +18,7 @@ export default async function RepProductionPage({
   };
 
   return (
-    <div className="flex h-full flex-col space-y-8 overflow-y-auto">
+    <div className="space-y-8">
       <H1>Production History: {repName}</H1>
       <div className="rounded-md border">
         <table className="w-full bg-background">

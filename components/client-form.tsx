@@ -262,7 +262,7 @@ export function ClientForm({ data, clientId }: ClientFormProps) {
         return (
           <>
             <H2>General Information</H2>
-            <div className="grid gap-4">
+            <div className="grid grid-cols-2 gap-x-8 gap-y-4">
               <div className="space-y-2">
                 <Label htmlFor="nameSalutation">Salutation</Label>
                 <Select
@@ -463,37 +463,125 @@ export function ClientForm({ data, clientId }: ClientFormProps) {
         return (
           <>
             <H2>Contact Information</H2>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-medium">Phone Numbers</h3>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => addField("phone")}
-                >
-                  <Plus className="h-4 w-4" />
-                  Add Phone
-                </Button>
+            <div className="grid grid-cols-2 gap-x-8 gap-y-4">
+              <div className="col-span-2 space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-medium">Phone Numbers</h3>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => addField("phone")}
+                  >
+                    <Plus className="h-4 w-4" />
+                    Add Phone
+                  </Button>
+                </div>
+                {formData.phones.map((phone: ContactField, index: number) => (
+                  <div
+                    key={index}
+                    className="grid grid-cols-12 items-center gap-4"
+                  >
+                    <div className="col-span-3">
+                      <Select
+                        value={phone.type}
+                        onValueChange={(value) =>
+                          updateContactField("phone", index, "type", value)
+                        }
+                      >
+                        <SelectTrigger className="capitalize">
+                          <SelectValue placeholder="Type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {["mobile", "home", "work", "other"].map(
+                            (type: string) => (
+                              <SelectItem
+                                key={type}
+                                value={type}
+                                className="capitalize"
+                              >
+                                {type}
+                              </SelectItem>
+                            ),
+                          )}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="col-span-6">
+                      <Input
+                        placeholder="Phone Number"
+                        type="tel"
+                        value={phone.value}
+                        onChange={(e) =>
+                          updateContactField(
+                            "phone",
+                            index,
+                            "value",
+                            e.target.value,
+                          )
+                        }
+                      />
+                    </div>
+                    <div className="col-span-2 flex items-center gap-2">
+                      <Checkbox
+                        checked={phone.isPrimary}
+                        onCheckedChange={(checked) =>
+                          updateContactField(
+                            "phone",
+                            index,
+                            "isPrimary",
+                            !!checked,
+                          )
+                        }
+                      />
+                      <Label>Primary</Label>
+                    </div>
+                    <div className="col-span-1">
+                      {index > 0 && (
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => removeField("phone", index)}
+                        >
+                          <Minus className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                ))}
               </div>
-              {formData.phones.map((phone: ContactField, index: number) => (
-                <div
-                  key={index}
-                  className="grid grid-cols-12 items-center gap-4"
-                >
-                  <div className="col-span-3">
-                    <Select
-                      value={phone.type}
-                      onValueChange={(value) =>
-                        updateContactField("phone", index, "type", value)
-                      }
-                    >
-                      <SelectTrigger className="capitalize">
-                        <SelectValue placeholder="Type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {["mobile", "home", "work", "other"].map(
-                          (type: string) => (
+
+              <div className="col-span-2 space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-medium">Email Addresses</h3>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => addField("email")}
+                  >
+                    <Plus className="h-4 w-4" />
+                    Add Email
+                  </Button>
+                </div>
+                {formData.emails.map((email: ContactField, index: number) => (
+                  <div
+                    key={index}
+                    className="grid grid-cols-12 items-center gap-4"
+                  >
+                    <div className="col-span-3">
+                      <Select
+                        value={email.type}
+                        onValueChange={(value) =>
+                          updateContactField("email", index, "type", value)
+                        }
+                      >
+                        <SelectTrigger className="capitalize">
+                          <SelectValue placeholder="Type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {["work", "personal", "other"].map((type: string) => (
                             <SelectItem
                               key={type}
                               value={type}
@@ -501,246 +589,138 @@ export function ClientForm({ data, clientId }: ClientFormProps) {
                             >
                               {type}
                             </SelectItem>
-                          ),
-                        )}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="col-span-6">
-                    <Input
-                      placeholder="Phone Number"
-                      type="tel"
-                      value={phone.value}
-                      onChange={(e) =>
-                        updateContactField(
-                          "phone",
-                          index,
-                          "value",
-                          e.target.value,
-                        )
-                      }
-                    />
-                  </div>
-                  <div className="col-span-2 flex items-center gap-2">
-                    <Checkbox
-                      checked={phone.isPrimary}
-                      onCheckedChange={(checked) =>
-                        updateContactField(
-                          "phone",
-                          index,
-                          "isPrimary",
-                          !!checked,
-                        )
-                      }
-                    />
-                    <Label>Primary</Label>
-                  </div>
-                  <div className="col-span-1">
-                    {index > 0 && (
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => removeField("phone", index)}
-                      >
-                        <Minus className="h-4 w-4" />
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-medium">Email Addresses</h3>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => addField("email")}
-                >
-                  <Plus className="h-4 w-4" />
-                  Add Email
-                </Button>
-              </div>
-              {formData.emails.map((email: ContactField, index: number) => (
-                <div
-                  key={index}
-                  className="grid grid-cols-12 items-center gap-4"
-                >
-                  <div className="col-span-3">
-                    <Select
-                      value={email.type}
-                      onValueChange={(value) =>
-                        updateContactField("email", index, "type", value)
-                      }
-                    >
-                      <SelectTrigger className="capitalize">
-                        <SelectValue placeholder="Type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {["work", "personal", "other"].map((type: string) => (
-                          <SelectItem
-                            key={type}
-                            value={type}
-                            className="capitalize"
-                          >
-                            {type}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="col-span-6">
-                    <Input
-                      placeholder="Email Address"
-                      type="email"
-                      value={email.value}
-                      onChange={(e) =>
-                        updateContactField(
-                          "email",
-                          index,
-                          "value",
-                          e.target.value,
-                        )
-                      }
-                    />
-                  </div>
-                  <div className="col-span-2 flex items-center gap-2">
-                    <Checkbox
-                      checked={email.isPrimary}
-                      onCheckedChange={(checked) =>
-                        updateContactField(
-                          "email",
-                          index,
-                          "isPrimary",
-                          !!checked,
-                        )
-                      }
-                    />
-                    <Label>Primary</Label>
-                  </div>
-                  <div className="col-span-1">
-                    {index > 0 && (
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => removeField("email", index)}
-                      >
-                        <Minus className="h-4 w-4" />
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-medium">Addresses</h3>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => addField("address")}
-                >
-                  <Plus className="h-4 w-4" />
-                  Add Address
-                </Button>
-              </div>
-
-              {formData.addresses.map(
-                (address: ContactField, index: number) => (
-                  <div key={index} className="space-y-4 rounded-lg border p-4">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4">
-                        <Select
-                          value={address.type}
-                          onValueChange={(value) =>
-                            updateContactField("address", index, "type", value)
-                          }
-                        >
-                          <SelectTrigger className="w-[150px] capitalize">
-                            <SelectValue placeholder="Type" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {["home", "work", "mailing", "other"].map(
-                              (type: string) => (
-                                <SelectItem
-                                  key={type}
-                                  value={type}
-                                  className="capitalize"
-                                >
-                                  {type}
-                                </SelectItem>
-                              ),
-                            )}
-                          </SelectContent>
-                        </Select>
-                        <div className="flex items-center gap-2">
-                          <Checkbox
-                            checked={address.isPrimary}
-                            onCheckedChange={(checked) =>
-                              updateContactField(
-                                "address",
-                                index,
-                                "isPrimary",
-                                !!checked,
-                              )
-                            }
-                          />
-                          <Label>Primary</Label>
-                        </div>
-                      </div>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="col-span-6">
+                      <Input
+                        placeholder="Email Address"
+                        type="email"
+                        value={email.value}
+                        onChange={(e) =>
+                          updateContactField(
+                            "email",
+                            index,
+                            "value",
+                            e.target.value,
+                          )
+                        }
+                      />
+                    </div>
+                    <div className="col-span-2 flex items-center gap-2">
+                      <Checkbox
+                        checked={email.isPrimary}
+                        onCheckedChange={(checked) =>
+                          updateContactField(
+                            "email",
+                            index,
+                            "isPrimary",
+                            !!checked,
+                          )
+                        }
+                      />
+                      <Label>Primary</Label>
+                    </div>
+                    <div className="col-span-1">
                       {index > 0 && (
                         <Button
                           type="button"
                           variant="ghost"
                           size="sm"
-                          onClick={() => removeField("address", index)}
+                          onClick={() => removeField("email", index)}
                         >
                           <Minus className="h-4 w-4" />
                         </Button>
                       )}
                     </div>
-                    <div className="grid grid-cols-1 gap-4">
-                      <Input
-                        placeholder="Address Line 1"
-                        value={address.value.split(",")[0]?.trim() || ""}
-                        onChange={(e) => {
-                          const addressParts = address.value.split(",");
-                          addressParts[0] = e.target.value;
-                          updateContactField(
-                            "address",
-                            index,
-                            "value",
-                            addressParts.join(","),
-                          );
-                        }}
-                      />
-                      <Input
-                        placeholder="Address Line 2"
-                        value={address.value.split(",")[1]?.trim() || ""}
-                        onChange={(e) => {
-                          const addressParts = address.value.split(",");
-                          addressParts[1] = e.target.value;
-                          updateContactField(
-                            "address",
-                            index,
-                            "value",
-                            addressParts.join(","),
-                          );
-                        }}
-                      />
-                      <div className="grid grid-cols-3 gap-4">
+                  </div>
+                ))}
+              </div>
+
+              <div className="col-span-2 space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-medium">Addresses</h3>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => addField("address")}
+                  >
+                    <Plus className="h-4 w-4" />
+                    Add Address
+                  </Button>
+                </div>
+
+                {formData.addresses.map(
+                  (address: ContactField, index: number) => (
+                    <div
+                      key={index}
+                      className="space-y-4 rounded-lg border p-4"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                          <Select
+                            value={address.type}
+                            onValueChange={(value) =>
+                              updateContactField(
+                                "address",
+                                index,
+                                "type",
+                                value,
+                              )
+                            }
+                          >
+                            <SelectTrigger className="w-[150px] capitalize">
+                              <SelectValue placeholder="Type" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {["home", "work", "mailing", "other"].map(
+                                (type: string) => (
+                                  <SelectItem
+                                    key={type}
+                                    value={type}
+                                    className="capitalize"
+                                  >
+                                    {type}
+                                  </SelectItem>
+                                ),
+                              )}
+                            </SelectContent>
+                          </Select>
+                          <div className="flex items-center gap-2">
+                            <Checkbox
+                              checked={address.isPrimary}
+                              onCheckedChange={(checked) =>
+                                updateContactField(
+                                  "address",
+                                  index,
+                                  "isPrimary",
+                                  !!checked,
+                                )
+                              }
+                            />
+                            <Label>Primary</Label>
+                          </div>
+                        </div>
+                        {index > 0 && (
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => removeField("address", index)}
+                          >
+                            <Minus className="h-4 w-4" />
+                          </Button>
+                        )}
+                      </div>
+                      <div className="grid grid-cols-1 gap-4">
                         <Input
-                          placeholder="City"
-                          value={address.value.split(",")[2]?.trim() || ""}
+                          placeholder="Address Line 1"
+                          value={address.value.split(",")[0]?.trim() || ""}
                           onChange={(e) => {
                             const addressParts = address.value.split(",");
-                            addressParts[2] = e.target.value;
+                            addressParts[0] = e.target.value;
                             updateContactField(
                               "address",
                               index,
@@ -750,11 +730,11 @@ export function ClientForm({ data, clientId }: ClientFormProps) {
                           }}
                         />
                         <Input
-                          placeholder="State"
-                          value={address.value.split(",")[3]?.trim() || ""}
+                          placeholder="Address Line 2"
+                          value={address.value.split(",")[1]?.trim() || ""}
                           onChange={(e) => {
                             const addressParts = address.value.split(",");
-                            addressParts[3] = e.target.value;
+                            addressParts[1] = e.target.value;
                             updateContactField(
                               "address",
                               index,
@@ -763,25 +743,55 @@ export function ClientForm({ data, clientId }: ClientFormProps) {
                             );
                           }}
                         />
-                        <Input
-                          placeholder="ZIP Code"
-                          value={address.value.split(",")[4]?.trim() || ""}
-                          onChange={(e) => {
-                            const addressParts = address.value.split(",");
-                            addressParts[4] = e.target.value;
-                            updateContactField(
-                              "address",
-                              index,
-                              "value",
-                              addressParts.join(","),
-                            );
-                          }}
-                        />
+                        <div className="grid grid-cols-3 gap-4">
+                          <Input
+                            placeholder="City"
+                            value={address.value.split(",")[2]?.trim() || ""}
+                            onChange={(e) => {
+                              const addressParts = address.value.split(",");
+                              addressParts[2] = e.target.value;
+                              updateContactField(
+                                "address",
+                                index,
+                                "value",
+                                addressParts.join(","),
+                              );
+                            }}
+                          />
+                          <Input
+                            placeholder="State"
+                            value={address.value.split(",")[3]?.trim() || ""}
+                            onChange={(e) => {
+                              const addressParts = address.value.split(",");
+                              addressParts[3] = e.target.value;
+                              updateContactField(
+                                "address",
+                                index,
+                                "value",
+                                addressParts.join(","),
+                              );
+                            }}
+                          />
+                          <Input
+                            placeholder="ZIP Code"
+                            value={address.value.split(",")[4]?.trim() || ""}
+                            onChange={(e) => {
+                              const addressParts = address.value.split(",");
+                              addressParts[4] = e.target.value;
+                              updateContactField(
+                                "address",
+                                index,
+                                "value",
+                                addressParts.join(","),
+                              );
+                            }}
+                          />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ),
-              )}
+                  ),
+                )}
+              </div>
             </div>
           </>
         );
@@ -789,7 +799,7 @@ export function ClientForm({ data, clientId }: ClientFormProps) {
         return (
           <>
             <H2>Financial Profile</H2>
-            <div className="grid gap-4">
+            <div className="grid grid-cols-2 gap-x-8 gap-y-4">
               <div>
                 <Label htmlFor="profileType">Profile Type</Label>
                 <Select
@@ -1001,7 +1011,7 @@ export function ClientForm({ data, clientId }: ClientFormProps) {
   };
 
   return (
-    <Card className="mt-4 grow overflow-y-auto overflow-x-hidden py-4">
+    <Card className="mt-4 py-4">
       <CardContent>
         <form
           onSubmit={handleSubmit}

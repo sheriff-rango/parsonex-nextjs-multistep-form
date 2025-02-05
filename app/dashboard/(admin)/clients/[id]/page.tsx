@@ -99,7 +99,7 @@ export default async function ClientProfilePage({
     : [];
 
   return (
-    <div className="-mr-4 flex h-full grow flex-col overflow-y-auto p-4 pr-8">
+    <div className="p-4 outline-none">
       <div className="flex items-center justify-between">
         <H1>{client.nameFull}</H1>
         <ClientMenu client={client} />
@@ -159,20 +159,15 @@ export default async function ClientProfilePage({
         </div>
 
         <div className="mt-4">
-          <Card>
-            <CardHeader>
-              <H2>Accounts</H2>
-            </CardHeader>
-            <CardContent>
-              <DataTable<SimpleAccount, unknown>
-                columns={columns}
-                data={accounts}
-                basePath="/dashboard/accounts"
-                idField="accountId"
-                searchField="searchid"
-              />
-            </CardContent>
-          </Card>
+          <H2>Accounts</H2>
+          <DataTable<SimpleAccount, unknown>
+            columns={columns}
+            data={accounts}
+            basePath="/dashboard/accounts"
+            idField="accountId"
+            searchField="searchid"
+            stickySearch={false}
+          />
         </div>
       </div>
     </div>

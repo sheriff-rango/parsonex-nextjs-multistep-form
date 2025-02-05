@@ -78,7 +78,7 @@ export default async function AccountProfilePage({
   ];
 
   return (
-    <div className="-mr-4 flex h-full grow flex-col overflow-y-auto p-4 pr-8 outline-none">
+    <div className="p-4 outline-none">
       <div className="flex items-center justify-between">
         <H1>{account.searchid || account.accountId}</H1>
       </div>
@@ -117,23 +117,17 @@ export default async function AccountProfilePage({
             </CardContent>
           </Card>
         </div>
-
         {holdings && (
           <div className="mt-4">
-            <Card>
-              <CardHeader>
-                <H2>Holdings</H2>
-              </CardHeader>
-              <CardContent>
-                <DataTable
-                  columns={columns}
-                  data={holdings}
-                  basePath="/dashboard/holdings"
-                  idField="holdingId"
-                  searchField="securityName"
-                />
-              </CardContent>
-            </Card>
+            <H2>Holdings</H2>
+            <DataTable
+              columns={columns}
+              data={holdings}
+              basePath="/dashboard/holdings"
+              idField="holdingId"
+              searchField="securityName"
+              stickySearch={false}
+            />
           </div>
         )}
       </div>

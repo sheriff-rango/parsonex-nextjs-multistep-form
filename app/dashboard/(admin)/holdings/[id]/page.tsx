@@ -63,7 +63,7 @@ export default async function HoldingProfilePage({
   ];
 
   return (
-    <div className="-mr-4 flex h-full grow flex-col overflow-y-auto p-4 pr-8 outline-none">
+    <div className="p-4 outline-none">
       <div className="flex items-center justify-between">
         <H1>{holding.securityName}</H1>
         <Link href={`/dashboard/accounts/${holding.accountId}`}>

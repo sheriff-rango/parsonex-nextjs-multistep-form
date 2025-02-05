@@ -168,13 +168,13 @@ export function RepForm({ data, repId }: RepFormProps) {
   }
 
   return (
-    <Card className="mt-4 grow overflow-y-auto overflow-x-hidden pt-4">
+    <Card className="mt-4 pt-4">
       <CardContent className="h-full">
         <form
           onSubmit={handleSubmit}
           className="relative flex h-full flex-col space-y-4"
         >
-          <div className="-mr-2 grow overflow-y-auto overflow-x-hidden pl-1 pr-3">
+          <div className="px-1">
             {step === 1 && (
               <StepOne
                 repData={repData}

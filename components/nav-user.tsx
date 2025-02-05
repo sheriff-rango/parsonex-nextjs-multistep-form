@@ -12,7 +12,7 @@ export function NavUser() {
         <UserButton
           appearance={{
             elements: {
-              userButtonAvatarBox: "size-7 pl-px",
+              userButtonAvatarBox: "size-7",
               userButtonTrigger: "rounded-lg",
             },
           }}

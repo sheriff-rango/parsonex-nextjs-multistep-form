@@ -3,6 +3,8 @@
 import { db } from "@/server/db";
 import { checkAdmin } from "@/server/server-only/auth";
 import { ARRData, YearlyProductionData } from "@/types";
+import { sql, and, eq, gte, lte, desc } from "drizzle-orm";
+import { summaryProduction, listOrderTypes } from "@/server/db/schema";
 
 export async function getARR(): Promise<ARRData[] | null> {
   try {
@@ -10,25 +12,31 @@ export async function getARR(): Promise<ARRData[] | null> {
       throw new Error("Unauthorized access");
     }
 
-    const query = `
-      SELECT 
-        sp.pcm,
-        sp.rep_searchid AS rep_name,
-        SUM(sp.production) AS quarterly_production,
-        SUM(sp.production) * 4 AS annual_recurring_revenue
-      FROM summary_production sp
-      INNER JOIN list_order_types ot ON sp.product_type = ot.order_name
-      WHERE ot.is_arr = TRUE
-        AND sp.biz_date >= '2024-10-01'
-        AND sp.biz_date <= '2024-12-31'
-      GROUP BY sp.pcm, sp.rep_searchid
-      ORDER BY annual_recurring_revenue DESC;
-    `;
+    const result = await db
+      .select({
+        pcm: summaryProduction.pcm,
+        rep_name: summaryProduction.repSearchid,
+        quarterly_production: sql<number>`sum(${summaryProduction.production})`,
+        annual_recurring_revenue: sql<number>`sum(${summaryProduction.production}) * 4`,
+      })
+      .from(summaryProduction)
+      .innerJoin(
+        listOrderTypes,
+        eq(summaryProduction.productType, listOrderTypes.orderName),
+      )
+      .where(
+        and(
+          eq(listOrderTypes.isArr, true),
+          gte(summaryProduction.bizDate, "2024-10-01"),
+          lte(summaryProduction.bizDate, "2024-12-31"),
+        ),
+      )
+      .groupBy(summaryProduction.pcm, summaryProduction.repSearchid)
+      .orderBy(desc(sql`sum(${summaryProduction.production}) * 4`));
 
-    const result = await db.execute(query);
-    return result.rows.map((row) => ({
-      pcm: row.pcm as string,
-      rep_name: row.rep_name as string,
+    return result.map((row) => ({
+      pcm: row.pcm ?? "",
+      rep_name: row.rep_name,
       quarterly_production: Number(row.quarterly_production),
       annual_recurring_revenue: Number(row.annual_recurring_revenue),
     }));
@@ -40,39 +48,40 @@ export async function getARR(): Promise<ARRData[] | null> {
 
 export async function getRepYearlyProduction(
   repName: string,
-): Promise<YearlyProductionData[]> {
-  const query = `
-    WITH quarterly_data AS (
-      SELECT 
-        EXTRACT(YEAR FROM sp.biz_date) as year,
-        EXTRACT(QUARTER FROM sp.biz_date) as quarter,
-        SUM(sp.production) as production
-      FROM summary_production sp
-      INNER JOIN list_order_types ot ON sp.product_type = ot.order_name
-      WHERE sp.rep_searchid = '${repName}'
-      GROUP BY 
-        EXTRACT(YEAR FROM sp.biz_date),
-        EXTRACT(QUARTER FROM sp.biz_date)
-    )
-    SELECT 
-      year,
-      SUM(CASE WHEN quarter = 1 THEN production ELSE 0 END) as q1,
-      SUM(CASE WHEN quarter = 2 THEN production ELSE 0 END) as q2,
-      SUM(CASE WHEN quarter = 3 THEN production ELSE 0 END) as q3,
-      SUM(CASE WHEN quarter = 4 THEN production ELSE 0 END) as q4,
-      SUM(production) as total
-    FROM quarterly_data
-    GROUP BY year
-    ORDER BY year DESC;
-  `;
+): Promise<YearlyProductionData[] | null> {
+  try {
+    if (!checkAdmin()) {
+      throw new Error("Unauthorized access");
+    }
 
-  const result = await db.execute(query);
-  return result.rows.map((row) => ({
-    year: Number(row.year),
-    q1: Number(row.q1),
-    q2: Number(row.q2),
-    q3: Number(row.q3),
-    q4: Number(row.q4),
-    total: Number(row.total),
-  }));
+    const result = await db
+      .select({
+        year: sql<number>`EXTRACT(YEAR FROM ${summaryProduction.bizDate})`,
+        q1: sql<number>`SUM(CASE WHEN EXTRACT(QUARTER FROM ${summaryProduction.bizDate}) = 1 THEN ${summaryProduction.production} ELSE 0 END)`,
+        q2: sql<number>`SUM(CASE WHEN EXTRACT(QUARTER FROM ${summaryProduction.bizDate}) = 2 THEN ${summaryProduction.production} ELSE 0 END)`,
+        q3: sql<number>`SUM(CASE WHEN EXTRACT(QUARTER FROM ${summaryProduction.bizDate}) = 3 THEN ${summaryProduction.production} ELSE 0 END)`,
+        q4: sql<number>`SUM(CASE WHEN EXTRACT(QUARTER FROM ${summaryProduction.bizDate}) = 4 THEN ${summaryProduction.production} ELSE 0 END)`,
+        total: sql<number>`SUM(${summaryProduction.production})`,
+      })
+      .from(summaryProduction)
+      .innerJoin(
+        listOrderTypes,
+        eq(summaryProduction.productType, listOrderTypes.orderName),
+      )
+      .where(eq(summaryProduction.repSearchid, repName))
+      .groupBy(sql`EXTRACT(YEAR FROM ${summaryProduction.bizDate})`)
+      .orderBy(desc(sql`EXTRACT(YEAR FROM ${summaryProduction.bizDate})`));
+
+    return result.map((row) => ({
+      year: Number(row.year),
+      q1: Number(row.q1),
+      q2: Number(row.q2),
+      q3: Number(row.q3),
+      q4: Number(row.q4),
+      total: Number(row.total),
+    }));
+  } catch (error) {
+    console.error("Error getting yearly production data:", error);
+    return null;
+  }
 }

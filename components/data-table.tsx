@@ -43,6 +43,7 @@ interface DataTableProps<TData, TValue> {
   basePath: string;
   idField: keyof TData;
   searchField?: string;
+  stickySearch?: boolean;
 }
 
 export function DataTable<TData, TValue>({
@@ -51,6 +52,7 @@ export function DataTable<TData, TValue>({
   basePath,
   idField,
   searchField,
+  stickySearch = true,
 }: DataTableProps<TData, TValue>) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -131,7 +133,11 @@ export function DataTable<TData, TValue>({
   return (
     <div className="mb-6 px-1">
       <div className="mb-8 flex h-full flex-col">
-        <div className="sticky top-[7.25rem] z-10 flex w-full items-center justify-between bg-gray-bg">
+        <div
+          className={`z-10 flex w-full items-center justify-between bg-gray-bg ${
+            stickySearch ? "sticky top-[7.25rem]" : ""
+          }`}
+        >
           {searchField && (
             <Input
               placeholder="Search"
@@ -188,7 +194,7 @@ export function DataTable<TData, TValue>({
           </div>
         </div>
         <div className="grow overflow-y-auto">
-          <div className="rounded-md border">
+          <div className="overflow-hidden rounded-md border">
             <Table className="relative bg-background text-base">
               <TableHeader>
                 {table.getHeaderGroups().map((headerGroup) => (

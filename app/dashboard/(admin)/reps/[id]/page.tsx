@@ -46,7 +46,7 @@ export default async function RepProfilePage({ params }: RepProfilePageProps) {
   ];
 
   return (
-    <div className="max-h-screen overflow-y-auto overflow-x-hidden">
+    <div className="">
       <div className="flex items-center justify-between">
         <div>
           <H1>{rep.fullName}</H1>
@@ -80,20 +80,15 @@ export default async function RepProfilePage({ params }: RepProfilePageProps) {
 
       {accounts && (
         <div className="mt-4">
-          <Card>
-            <CardHeader>
-              <H2>Accounts</H2>
-            </CardHeader>
-            <CardContent>
-              <DataTable
-                columns={columns}
-                data={accounts}
-                basePath="/dashboard/accounts"
-                idField="accountId"
-                searchField="searchid"
-              />
-            </CardContent>
-          </Card>
+          <H2>Accounts</H2>
+          <DataTable
+            columns={columns}
+            data={accounts}
+            basePath="/dashboard/accounts"
+            idField="accountId"
+            searchField="searchid"
+            stickySearch={false}
+          />
         </div>
       )}
     </div>

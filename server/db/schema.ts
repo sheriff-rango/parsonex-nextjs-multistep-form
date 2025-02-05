@@ -449,6 +449,7 @@ export const summaryProduction = pgTable("summary_production", {
   production: numeric({ precision: 15, scale: 2 }).notNull(),
   commissions: numeric({ precision: 15, scale: 2 }).notNull(),
   pcm: varchar(),
+  isArr: boolean("isarr").notNull(),
 });
 
 export const listOrderStatus = pgTable("list_order_status", {
