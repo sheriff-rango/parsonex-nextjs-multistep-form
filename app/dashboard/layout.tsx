@@ -10,11 +10,9 @@ export default function DashboardLayout({
   return (
     <SidebarProvider>
       <AppSidebar />
-      <SidebarInset>
-        <div className="bg-gray-bg">
-          <Header />
-          <div className="container pb-6">{children}</div>
-        </div>
+      <SidebarInset className="bg-gray-bg">
+        <Header />
+        <div className="container pb-6">{children}</div>
       </SidebarInset>
     </SidebarProvider>
   );
