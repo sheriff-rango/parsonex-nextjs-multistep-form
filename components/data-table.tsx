@@ -131,7 +131,7 @@ export function DataTable<TData, TValue>({
   return (
     <div className="mb-6 px-1">
       <div className="mb-8 flex h-full flex-col">
-        <div className="bg-gray-bg sticky top-28 z-10 flex w-full items-center justify-between">
+        <div className="sticky top-[7.25rem] z-10 flex w-full items-center justify-between bg-gray-bg">
           {searchField && (
             <Input
               placeholder="Search"

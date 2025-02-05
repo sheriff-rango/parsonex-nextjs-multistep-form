@@ -1,16 +1,18 @@
 import { DataTable } from "@/components/data-table";
 import { columns } from "./columns";
 import { getARR } from "@/server/actions/reports";
-import { H1 } from "@/components/typography";
+import { StickyHeader } from "@/components/sticky-header";
 
 export default async function ReportsPage() {
   const data = (await getARR()) || [];
 
   return (
     <>
-      <div className="sticky top-16 z-10 flex items-center justify-between bg-gray-bg">
-        <H1>Revenue Report</H1>
-      </div>
+      <StickyHeader
+        title="Revenue Report"
+        link="/dashboard/reports/revenue/new"
+        buttonText="New Revenue Report"
+      />
       <DataTable
         columns={columns}
         data={data}

@@ -1,21 +1,18 @@
 import { getHoldings } from "@/server/actions/holdings";
 import { DataTable } from "@/components/data-table";
 import { columns } from "./columns";
-import { H1 } from "@/components/typography";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import { StickyHeader } from "@/components/sticky-header";
 
 export default async function HoldingsPage() {
   const holdings = (await getHoldings()) || [];
 
   return (
     <>
-      <div className="sticky top-16 z-10 flex items-center justify-between bg-gray-bg">
-        <H1>Holdings</H1>
-        <Link href="#">
-          <Button>New Holding</Button>
-        </Link>
-      </div>
+      <StickyHeader
+        title="Holdings"
+        link="/dashboard/holdings/new"
+        buttonText="New Holding"
+      />
       <DataTable
         columns={columns}
         data={holdings}

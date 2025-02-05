@@ -7,6 +7,8 @@ import { NavMain } from "@/components/nav-main";
 import { NavUser } from "@/components/nav-user";
 import { useAdmin } from "@/hooks/use-admin";
 
+import Image from "next/image";
+
 import {
   Sidebar,
   SidebarContent,
@@ -60,8 +62,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   return (
     <Sidebar {...props}>
-      <SidebarHeader />
-      <SidebarContent>
+      <SidebarHeader className="p-4">
+        <div className="relative flex aspect-[487/100] w-full items-center justify-center">
+          <Image src="/parsonex-logo.avif" alt="Logo" fill />
+        </div>
+      </SidebarHeader>
+      <SidebarContent className="px-2">
         <NavMain items={navItems} />
       </SidebarContent>
       <SidebarFooter>
