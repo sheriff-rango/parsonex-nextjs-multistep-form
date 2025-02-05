@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { ARRData } from "@/server/actions/reports";
+import { ARRData } from "@/types";
 import { formatCurrency } from "@/lib/utils";
 
 export const columns: ColumnDef<ARRData>[] = [

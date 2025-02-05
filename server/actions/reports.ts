@@ -2,13 +2,7 @@
 
 import { db } from "@/server/db";
 import { checkAdmin } from "@/server/server-only/auth";
-
-export interface ARRData {
-  pcm: string;
-  rep_name: string;
-  quarterly_production: number;
-  annual_recurring_revenue: number;
-}
+import { ARRData } from "@/types";
 
 export async function getARR(): Promise<ARRData[] | null> {
   try {

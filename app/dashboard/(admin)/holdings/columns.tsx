@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Holding } from "@/server/actions/holdings";
+import { Holding } from "@/types";
 
 export const columns: ColumnDef<Holding>[] = [
   {
