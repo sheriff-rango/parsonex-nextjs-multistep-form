@@ -1,10 +1,11 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { H1, H2 } from "@/components/typography";
 import { DataTable } from "@/components/data-table";
-import { columns } from "@/app/dashboard/(admin)/accounts/columns";
+import { columns } from "./columns";
 import { getClientProfile } from "@/server/actions/clients";
 import { ClientMenu } from "@/components/client-menu";
 import { ContactCard } from "@/components/contact-card";
+import type { SimpleAccount } from "./columns";
 
 interface ClientProfilePageProps {
   params: {
@@ -163,7 +164,7 @@ export default async function ClientProfilePage({
               <H2>Accounts</H2>
             </CardHeader>
             <CardContent>
-              <DataTable
+              <DataTable<SimpleAccount, unknown>
                 columns={columns}
                 data={accounts}
                 basePath="/dashboard/accounts"
