@@ -6,11 +6,11 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 export default async function RepsPage() {
-  const reps = await getReps();
+  const reps = (await getReps()) || [];
 
   return (
     <>
-      <div className="bg-gray-bg sticky top-16 z-10 flex items-center justify-between">
+      <div className="sticky top-16 z-10 flex items-center justify-between bg-gray-bg">
         <H1>Reps</H1>
         <Link href="/dashboard/reps/new">
           <Button>New Rep</Button>

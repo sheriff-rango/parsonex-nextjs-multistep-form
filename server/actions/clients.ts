@@ -14,41 +14,46 @@ import { ClientWithPhoneAndEmail, ClientData, ContactField } from "@/types";
 import { revalidatePath } from "next/cache";
 import { checkAdmin } from "@/server/server-only/auth";
 
-export async function getClients(): Promise<ClientWithPhoneAndEmail[] | null> {
-  if (!checkAdmin()) {
-    return null;
+export async function getClients(): Promise<ClientWithPhoneAndEmail[]> {
+  try {
+    if (!checkAdmin()) {
+      throw new Error("Unauthorized access");
+    }
+
+    const result = await db
+      .select({
+        clientId: clients.clientId,
+        fullName: clients.nameFull,
+        riaClient: clients.riaClient,
+        bdClient: clients.bdClient,
+        repFullname: clients.repFullname,
+        isActive: clients.isActive,
+        emailAddress: emails.emailAddress,
+      })
+      .from(clients)
+      .leftJoin(
+        emails,
+        and(
+          eq(emails.refId, clients.clientId),
+          eq(emails.refTable, sql`'clients'`),
+          eq(emails.isPrimary, true),
+        ),
+      )
+      .orderBy(clients.nameFull);
+
+    return result as ClientWithPhoneAndEmail[];
+  } catch (error) {
+    console.error("Error fetching clients:", error);
+    throw error;
   }
-
-  const result = await db
-    .select({
-      clientId: clients.clientId,
-      fullName: clients.nameFull,
-      riaClient: clients.riaClient,
-      bdClient: clients.bdClient,
-      repFullname: clients.repFullname,
-      isActive: clients.isActive,
-      emailAddress: emails.emailAddress,
-    })
-    .from(clients)
-    .leftJoin(
-      emails,
-      and(
-        eq(emails.refId, clients.clientId),
-        eq(emails.refTable, sql`'clients'`),
-        eq(emails.isPrimary, true),
-      ),
-    )
-    .orderBy(clients.nameFull);
-
-  return result as ClientWithPhoneAndEmail[];
 }
 
 export async function getAccountsByClientId(clientId: string) {
-  if (!checkAdmin()) {
-    return null;
-  }
-
   try {
+    if (!checkAdmin()) {
+      throw new Error("Unauthorized access");
+    }
+
     const result = await db
       .select({
         accountId: psiAccounts.accountId,
@@ -71,11 +76,11 @@ export async function getAccountsByClientId(clientId: string) {
 }
 
 export async function getClientEmails(clientId: string) {
-  if (!checkAdmin()) {
-    return null;
-  }
-
   try {
+    if (!checkAdmin()) {
+      throw new Error("Unauthorized access");
+    }
+
     const results = await db
       .select()
       .from(emails)
@@ -83,16 +88,16 @@ export async function getClientEmails(clientId: string) {
     return results;
   } catch (error) {
     console.error("Error fetching client emails:", error);
-    return [];
+    throw error;
   }
 }
 
 export async function getClientPhones(clientId: string) {
-  if (!checkAdmin()) {
-    return null;
-  }
-
   try {
+    if (!checkAdmin()) {
+      throw new Error("Unauthorized access");
+    }
+
     const results = await db
       .select()
       .from(phones)
@@ -100,16 +105,16 @@ export async function getClientPhones(clientId: string) {
     return results;
   } catch (error) {
     console.error("Error fetching client phones:", error);
-    return [];
+    throw error;
   }
 }
 
 export async function getClientAddresses(clientId: string) {
-  if (!checkAdmin()) {
-    return null;
-  }
-
   try {
+    if (!checkAdmin()) {
+      throw new Error("Unauthorized access");
+    }
+
     const results = await db
       .select()
       .from(addresses)
@@ -119,16 +124,16 @@ export async function getClientAddresses(clientId: string) {
     return results;
   } catch (error) {
     console.error("Error fetching client addresses:", error);
-    return [];
+    throw error;
   }
 }
 
 export async function getClientProfile(clientId: string) {
-  if (!checkAdmin()) {
-    return null;
-  }
-
   try {
+    if (!checkAdmin()) {
+      throw new Error("Unauthorized access");
+    }
+
     const clientResult = await db
       .select()
       .from(clients)
@@ -168,11 +173,11 @@ export async function getClientProfile(clientId: string) {
 }
 
 export async function createClient(data: ClientData) {
-  if (!checkAdmin()) {
-    return null;
-  }
-
   try {
+    if (!checkAdmin()) {
+      throw new Error("Unauthorized access");
+    }
+
     // Insert client
     const [client] = await db
       .insert(clients)
@@ -276,11 +281,11 @@ export async function createClient(data: ClientData) {
 }
 
 export async function updateClient(clientId: string, data: ClientData) {
-  if (!checkAdmin()) {
-    return null;
-  }
-
   try {
+    if (!checkAdmin()) {
+      throw new Error("Unauthorized access");
+    }
+
     // Update client
     await db
       .update(clients)
@@ -404,11 +409,11 @@ export async function updateClient(clientId: string, data: ClientData) {
 }
 
 export async function deleteClient(clientId: string) {
-  if (!checkAdmin()) {
-    return null;
-  }
-
   try {
+    if (!checkAdmin()) {
+      throw new Error("Unauthorized access");
+    }
+
     // Delete associated records first
     await Promise.all([
       db

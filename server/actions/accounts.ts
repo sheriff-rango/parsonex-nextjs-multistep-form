@@ -6,48 +6,55 @@ import { eq } from "drizzle-orm";
 import { checkAdmin } from "@/server/server-only/auth";
 import { Account, Holding } from "@/types";
 
-export async function getAccounts(): Promise<Account[] | null> {
-  if (!checkAdmin()) {
-    return null;
-  }
-
-  const result = await db
-    .select()
-    .from(psiAccounts)
-    .orderBy(psiAccounts.searchid);
-
-  return result;
-}
-
-export async function getAccountsByPCM(pcm: string): Promise<Account[] | null> {
-  if (!checkAdmin()) {
-    return null;
-  }
-
-  const result = await db
-    .select()
-    .from(psiAccounts)
-    .where(eq(psiAccounts.pcm, pcm));
-
-  return result;
-}
-
-export async function getAccountProfile(
-  accountId: string,
-): Promise<Account | null> {
-  if (!checkAdmin()) {
-    return null;
-  }
-
+export async function getAccounts(): Promise<Account[]> {
   try {
+    if (!checkAdmin()) {
+      throw new Error("Unauthorized access");
+    }
+
+    const result = await db
+      .select()
+      .from(psiAccounts)
+      .orderBy(psiAccounts.searchid);
+
+    return result;
+  } catch (error) {
+    console.error("Error fetching accounts:", error);
+    throw error;
+  }
+}
+
+export async function getAccountsByPCM(pcm: string): Promise<Account[]> {
+  try {
+    if (!checkAdmin()) {
+      throw new Error("Unauthorized access");
+    }
+
+    const result = await db
+      .select()
+      .from(psiAccounts)
+      .where(eq(psiAccounts.pcm, pcm));
+
+    return result;
+  } catch (error) {
+    console.error("Error fetching accounts by PCM:", error);
+    throw error;
+  }
+}
+
+export async function getAccountProfile(accountId: string): Promise<Account> {
+  try {
+    if (!checkAdmin()) {
+      throw new Error("Unauthorized access");
+    }
+
     const [account] = await db
       .select()
       .from(psiAccounts)
       .where(eq(psiAccounts.accountId, accountId));
 
     if (!account) {
-      console.log("No account found with ID:", accountId);
-      return null;
+      throw new Error(`No account found with ID: ${accountId}`);
     }
 
     return account;
@@ -59,12 +66,12 @@ export async function getAccountProfile(
 
 export async function getAccountHoldings(
   accountId: string,
-): Promise<Holding[] | null> {
-  if (!checkAdmin()) {
-    return null;
-  }
-
+): Promise<Holding[]> {
   try {
+    if (!checkAdmin()) {
+      throw new Error("Unauthorized access");
+    }
+
     const holdings = await db
       .select()
       .from(psiHoldings)

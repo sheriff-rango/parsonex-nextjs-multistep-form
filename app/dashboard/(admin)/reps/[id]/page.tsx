@@ -78,22 +78,24 @@ export default async function RepProfilePage({ params }: RepProfilePageProps) {
         <ContactCard emails={emails} phones={phones} addresses={addresses} />
       </div>
 
-      <div className="mt-4">
-        <Card>
-          <CardHeader>
-            <H2>Accounts</H2>
-          </CardHeader>
-          <CardContent>
-            <DataTable
-              columns={columns}
-              data={accounts}
-              basePath="/dashboard/accounts"
-              idField="accountId"
-              searchField="searchid"
-            />
-          </CardContent>
-        </Card>
-      </div>
+      {accounts && (
+        <div className="mt-4">
+          <Card>
+            <CardHeader>
+              <H2>Accounts</H2>
+            </CardHeader>
+            <CardContent>
+              <DataTable
+                columns={columns}
+                data={accounts}
+                basePath="/dashboard/accounts"
+                idField="accountId"
+                searchField="searchid"
+              />
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </div>
   );
 }

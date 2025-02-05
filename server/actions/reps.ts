@@ -11,31 +11,42 @@ import {
 import { ContactField, RepData } from "@/types";
 import { eq, and } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { checkAdmin } from "@/server/server-only/auth";
 
 export async function getReps() {
-  console.log("Getting reps");
   try {
-    const results = await db.select().from(reps).orderBy(reps.fullName);
+    if (!checkAdmin()) {
+      throw new Error("Unauthorized access");
+    }
 
+    const results = await db.select().from(reps).orderBy(reps.fullName);
     return results;
   } catch (error) {
     console.error("Error fetching reps:", error);
-    return [];
+    throw error;
   }
 }
 
 export async function getRepProfile(id: string) {
   try {
+    if (!checkAdmin()) {
+      throw new Error("Unauthorized access");
+    }
+
     const result = await db.select().from(reps).where(eq(reps.repId, id));
     return result[0];
   } catch (error) {
     console.error("Error fetching rep profile:", error);
-    return null;
+    throw error;
   }
 }
 
 export async function getRepAddresses(pcm: string) {
   try {
+    if (!checkAdmin()) {
+      throw new Error("Unauthorized access");
+    }
+
     const results = await db
       .select()
       .from(addresses)
@@ -43,12 +54,16 @@ export async function getRepAddresses(pcm: string) {
     return results;
   } catch (error) {
     console.error("Error fetching rep addresses:", error);
-    return [];
+    throw error;
   }
 }
 
 export async function getRepEmails(pcm: string) {
   try {
+    if (!checkAdmin()) {
+      throw new Error("Unauthorized access");
+    }
+
     const results = await db
       .select()
       .from(emails)
@@ -56,12 +71,16 @@ export async function getRepEmails(pcm: string) {
     return results;
   } catch (error) {
     console.error("Error fetching rep emails:", error);
-    return [];
+    throw error;
   }
 }
 
 export async function getRepPhones(pcm: string) {
   try {
+    if (!checkAdmin()) {
+      throw new Error("Unauthorized access");
+    }
+
     const results = await db
       .select()
       .from(phones)
@@ -69,22 +88,30 @@ export async function getRepPhones(pcm: string) {
     return results;
   } catch (error) {
     console.error("Error fetching rep phones:", error);
-    return [];
+    throw error;
   }
 }
 
 export async function getRepTypes() {
   try {
+    if (!checkAdmin()) {
+      throw new Error("Unauthorized access");
+    }
+
     const results = await db.select().from(listRepTypes);
     return results;
   } catch (error) {
     console.error("Error fetching rep types:", error);
-    return [];
+    throw error;
   }
 }
 
 export async function createRep(repData: RepData) {
   try {
+    if (!checkAdmin()) {
+      throw new Error("Unauthorized access");
+    }
+
     const repId = crypto.randomUUID().slice(0, 8);
     const createdOn = new Date();
     const rep = {
@@ -156,12 +183,16 @@ export async function createRep(repData: RepData) {
     return rep;
   } catch (error) {
     console.error("Error creating rep:", error);
-    throw new Error("Failed to create rep.");
+    throw error;
   }
 }
 
 export async function getRep(id: string) {
   try {
+    if (!checkAdmin()) {
+      throw new Error("Unauthorized access");
+    }
+
     const rep = await db.select().from(reps).where(eq(reps.repId, id));
 
     if (!rep || rep.length === 0) {
@@ -176,8 +207,11 @@ export async function getRep(id: string) {
 }
 
 export async function updateRep(id: string, data: RepData) {
-  console.log(data);
   try {
+    if (!checkAdmin()) {
+      throw new Error("Unauthorized access");
+    }
+
     const {
       phones: phoneData,
       emails: emailData,
@@ -256,19 +290,20 @@ export async function updateRep(id: string, data: RepData) {
 
 export async function deleteRep(repId: string) {
   try {
+    if (!checkAdmin()) {
+      throw new Error("Unauthorized access");
+    }
+
     await db.transaction(async (tx) => {
-      // Delete associated records first
       await tx.delete(phones).where(eq(phones.refId, repId));
       await tx.delete(emails).where(eq(emails.refId, repId));
       await tx.delete(addresses).where(eq(addresses.refId, repId));
-
-      // Delete the rep record last
       await tx.delete(reps).where(eq(reps.repId, repId));
     });
 
     revalidatePath("/dashboard/reps");
   } catch (error) {
     console.error("Error deleting rep:", error);
-    throw new Error("Failed to delete rep.");
+    throw error;
   }
 }

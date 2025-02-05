@@ -4,11 +4,11 @@ import { getARR } from "@/server/actions/reports";
 import { H1 } from "@/components/typography";
 
 export default async function ReportsPage() {
-  const data = await getARR();
+  const data = (await getARR()) || [];
 
   return (
     <>
-      <div className="bg-gray-bg sticky top-16 z-10 flex items-center justify-between">
+      <div className="sticky top-16 z-10 flex items-center justify-between bg-gray-bg">
         <H1>Revenue Report</H1>
       </div>
       <DataTable
