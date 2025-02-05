@@ -10,7 +10,7 @@ export default async function ClientsPage() {
 
   return (
     <>
-      <div className="flex items-center justify-between">
+      <div className="bg-gray-bg sticky top-16 z-10 flex items-center justify-between">
         <H1>Clients</H1>
         <Link href="/dashboard/clients/new">
           <Button>New Client</Button>

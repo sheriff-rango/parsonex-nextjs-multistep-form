@@ -7,8 +7,10 @@ export default async function ReportsPage() {
   const data = await getARR();
 
   return (
-    <div className="flex h-full flex-col space-y-8">
-      <H1>Annual Recurring Revenue Report</H1>
+    <>
+      <div className="bg-gray-bg sticky top-16 z-10 flex items-center justify-between">
+        <H1>Revenue Report</H1>
+      </div>
       <DataTable
         columns={columns}
         data={data}
@@ -16,6 +18,6 @@ export default async function ReportsPage() {
         idField="rep_name"
         searchField="rep_name"
       />
-    </div>
+    </>
   );
 }

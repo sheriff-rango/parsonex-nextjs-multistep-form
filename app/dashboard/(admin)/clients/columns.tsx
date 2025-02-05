@@ -11,11 +11,12 @@ export const columns: ColumnDef<ClientWithPhoneAndEmail>[] = [
   {
     accessorKey: "fullName",
     header: "Name",
-    size: 300,
+    size: 225,
   },
   {
     accessorKey: "emailAddress",
     header: "Email",
+    size: 225,
   },
   {
     accessorKey: "isActive",

@@ -26,7 +26,7 @@ export async function getAccounts(): Promise<Account[]> {
       accountEmail: psiAccounts.accountEmail,
     })
     .from(psiAccounts)
-    .orderBy(psiAccounts.accountId);
+    .orderBy(psiAccounts.searchid);
 
   return result;
 }
