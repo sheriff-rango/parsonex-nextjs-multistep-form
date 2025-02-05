@@ -26,7 +26,7 @@ export const columns: ColumnDef<Holding>[] = [
   },
   {
     accessorKey: "holdingFan",
-    header: "Fan",
+    header: "Holding Fan",
     size: 100,
   },
 ];

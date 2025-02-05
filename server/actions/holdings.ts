@@ -16,6 +16,7 @@ export type Holding = {
   costBasis: number | null;
   productFamily: string | null;
   repNo: string | null;
+  holdingFan: string | null;
 };
 
 export async function getHoldings(): Promise<Holding[]> {
@@ -33,6 +34,7 @@ export async function getHoldings(): Promise<Holding[]> {
       costBasis: psiHoldings.costBasis,
       productFamily: psiHoldings.productFamily,
       repNo: psiHoldings.repNo,
+      holdingFan: psiHoldings.holdingFan,
     })
     .from(psiHoldings)
     .orderBy(psiHoldings.holdingId);
