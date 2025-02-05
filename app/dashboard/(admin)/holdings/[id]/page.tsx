@@ -60,12 +60,6 @@ export default async function HoldingProfilePage({
     },
     { label: "Holding Type", value: holding.holdingType || "N/A" },
     { label: "Product Family", value: holding.productFamily || "N/A" },
-    {
-      label: "Last Updated",
-      value: holding.lastUpdated
-        ? new Date(holding.lastUpdated).toLocaleString()
-        : "N/A",
-    },
   ];
 
   return (
