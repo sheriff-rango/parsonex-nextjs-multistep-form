@@ -1,7 +1,15 @@
 "use client";
 
 import * as React from "react";
-import { Landmark, Briefcase, Home, User, Users, BarChart } from "lucide-react";
+import {
+  Landmark,
+  Briefcase,
+  Home,
+  User,
+  Users,
+  BarChart,
+  FileText,
+} from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
 import { NavUser } from "@/components/nav-user";
@@ -45,6 +53,11 @@ const data = {
       title: "Holdings",
       url: "/dashboard/holdings",
       icon: Briefcase,
+    },
+    {
+      title: "Submissions",
+      url: "/dashboard/submissions",
+      icon: FileText,
     },
     {
       title: "Reports",
