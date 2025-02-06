@@ -8,15 +8,17 @@ export function StickyHeader({
   buttonText,
 }: {
   title: string;
-  link: string;
-  buttonText: string;
+  link?: string;
+  buttonText?: string;
 }) {
   return (
     <div className="sticky top-16 z-10 flex items-center justify-between bg-gray-bg">
       <H1>{title}</H1>
-      <Link href={link}>
-        <Button>{buttonText}</Button>
-      </Link>
+      {link && (
+        <Link href={link}>
+          <Button>{buttonText}</Button>
+        </Link>
+      )}
     </div>
   );
 }

@@ -8,11 +8,7 @@ export default async function ReportsPage() {
 
   return (
     <>
-      <StickyHeader
-        title="Revenue Report"
-        link="/dashboard/reports/revenue/new"
-        buttonText="New Revenue Report"
-      />
+      <StickyHeader title="Revenue Report" />
       <DataTable
         columns={columns}
         data={data}

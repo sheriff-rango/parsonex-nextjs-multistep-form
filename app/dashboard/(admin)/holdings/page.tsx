@@ -8,11 +8,7 @@ export default async function HoldingsPage() {
 
   return (
     <>
-      <StickyHeader
-        title="Holdings"
-        link="/dashboard/holdings/new"
-        buttonText="New Holding"
-      />
+      <StickyHeader title="Holdings" />
       <DataTable
         columns={columns}
         data={holdings}

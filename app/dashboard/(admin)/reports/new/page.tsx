@@ -195,8 +195,6 @@ export default function NewReportPage() {
               <DataTable
                 columns={columns}
                 data={data}
-                basePath="/dashboard/reports"
-                idField="rep_name"
                 searchField="rep_name"
                 stickySearch={false}
               />

@@ -14,28 +14,22 @@ export async function getARR(): Promise<ARRData[] | null> {
 
     const result = await db
       .select({
-        pcm: summaryProduction.pcm,
         rep_name: summaryProduction.repSearchid,
         quarterly_production: sql<number>`sum(${summaryProduction.production})`,
         annual_recurring_revenue: sql<number>`sum(${summaryProduction.production}) * 4`,
       })
       .from(summaryProduction)
-      .innerJoin(
-        listOrderTypes,
-        eq(summaryProduction.productType, listOrderTypes.orderName),
-      )
       .where(
         and(
-          eq(listOrderTypes.isArr, true),
+          eq(summaryProduction.isArr, true),
           gte(summaryProduction.bizDate, "2024-10-01"),
           lte(summaryProduction.bizDate, "2024-12-31"),
         ),
       )
-      .groupBy(summaryProduction.pcm, summaryProduction.repSearchid)
-      .orderBy(desc(sql`sum(${summaryProduction.production}) * 4`));
+      .groupBy(summaryProduction.repSearchid)
+      .orderBy(desc(sql`sum(${summaryProduction.production})`));
 
     return result.map((row) => ({
-      pcm: row.pcm ?? "",
       rep_name: row.rep_name,
       quarterly_production: Number(row.quarterly_production),
       annual_recurring_revenue: Number(row.annual_recurring_revenue),

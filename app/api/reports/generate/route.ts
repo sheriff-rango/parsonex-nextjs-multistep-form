@@ -1,6 +1,6 @@
 import { db } from "@/server/db";
 import { checkAdmin } from "@/server/server-only/auth";
-import { summaryProduction } from "@/server/db/schema";
+import { summaryProduction, listOrderTypes } from "@/server/db/schema";
 import { and, eq, gte, lte, sql } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
@@ -18,7 +18,7 @@ export async function POST(request: Request) {
     ];
 
     if (isArr) {
-      whereConditions.push(eq(summaryProduction.isArr, true));
+      whereConditions.push(eq(listOrderTypes.isArr, true));
     }
 
     if (productType && productType !== "all") {
@@ -28,25 +28,22 @@ export async function POST(request: Request) {
     const result = await db
       .select({
         rep_name: summaryProduction.repSearchid,
-        pcm: summaryProduction.pcm,
-        product_type: summaryProduction.productCode,
         investment_amount: sql<number>`sum(${summaryProduction.investmentAmt})`,
         production: sql<number>`sum(${summaryProduction.production})`,
         commissions: sql<number>`sum(${summaryProduction.commissions})`,
       })
       .from(summaryProduction)
-      .where(and(...whereConditions))
-      .groupBy(
-        summaryProduction.repSearchid,
-        summaryProduction.pcm,
-        summaryProduction.productCode,
+      .innerJoin(
+        listOrderTypes,
+        eq(summaryProduction.productCode, listOrderTypes.orderCode),
       )
+      .where(and(...whereConditions))
+      .groupBy(summaryProduction.repSearchid)
       .orderBy(sql`sum(${summaryProduction.production}) desc`);
 
     return NextResponse.json(
       result.map((row) => ({
         ...row,
-        pcm: row.pcm ?? "",
         investment_amount: Number(row.investment_amount),
         production: Number(row.production),
         commissions: Number(row.commissions),

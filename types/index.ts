@@ -2,7 +2,6 @@ export * from "./clients";
 export * from "./reps";
 
 export interface ARRData {
-  pcm: string;
   rep_name: string;
   quarterly_production: number;
   annual_recurring_revenue: number;

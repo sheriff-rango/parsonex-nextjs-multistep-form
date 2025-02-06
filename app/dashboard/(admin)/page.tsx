@@ -9,7 +9,7 @@ import {
   psiAccounts,
   psiHoldings,
 } from "@/server/db/schema";
-import { sql, eq, and, gte, between } from "drizzle-orm";
+import { sql, eq, gte } from "drizzle-orm";
 
 async function getQuarterlyRevenue() {
   // Get date from 48 months ago

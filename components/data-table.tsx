@@ -40,8 +40,8 @@ import { ChevronLeftIcon } from "lucide-react";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  basePath: string;
-  idField: keyof TData;
+  basePath?: string;
+  idField?: keyof TData;
   searchField?: string;
   stickySearch?: boolean;
 }
@@ -198,7 +198,10 @@ export function DataTable<TData, TValue>({
             <Table className="relative bg-background text-base">
               <TableHeader>
                 {table.getHeaderGroups().map((headerGroup) => (
-                  <TableRow key={headerGroup.id}>
+                  <TableRow
+                    key={headerGroup.id}
+                    className="hover:bg-background"
+                  >
                     {headerGroup.headers.map((header) => {
                       return (
                         <TableHead
@@ -223,11 +226,17 @@ export function DataTable<TData, TValue>({
                     <TableRow
                       key={row.id}
                       data-state={row.getIsSelected() && "selected"}
-                      className="cursor-pointer hover:bg-muted/50"
+                      className={
+                        basePath && idField
+                          ? "cursor-pointer hover:bg-muted/50"
+                          : "hover:bg-background"
+                      }
                       onClick={() => {
-                        const id = row.original[idField];
-                        if (id) {
-                          router.push(`${basePath}/${id}`);
+                        if (basePath && idField) {
+                          const id = row.original[idField];
+                          if (id) {
+                            router.push(`${basePath}/${id}`);
+                          }
                         }
                       }}
                     >
