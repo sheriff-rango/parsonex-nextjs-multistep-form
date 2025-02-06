@@ -40,7 +40,6 @@ const formatRevenue = (value: number) => {
 };
 
 export function GradientChart({ data }: { data: RevenueData[] }) {
-  const currentYear = new Date().getFullYear();
   const lastQuarter = data[data.length - 1];
   const previousQuarter = data[data.length - 2];
 
@@ -61,19 +60,22 @@ export function GradientChart({ data }: { data: RevenueData[] }) {
       <CardHeader>
         <div className="flex items-center justify-between">
           <div className="space-y-1">
-            <CardTitle>Quarterly Revenue</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-2xl">Quarterly Revenue</CardTitle>
+            <CardDescription className="text-base">
               {data[0]?.quarter} - {lastQuarter?.quarter}
             </CardDescription>
           </div>
-          <Badge variant={percentageChange > 0 ? "success" : "destructive"}>
+          <Badge
+            variant={percentageChange > 0 ? "success" : "destructive"}
+            className="text-base"
+          >
             {percentageChange > 0 ? "↑" : "↓"}{" "}
             {Math.abs(percentageChange).toFixed(1)}%
           </Badge>
         </div>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig} className="h-80 w-full">
+        <ChartContainer config={chartConfig} className="max-h-[25rem] w-full">
           <AreaChart accessibilityLayer data={data}>
             <CartesianGrid vertical={false} />
             <XAxis

@@ -22,8 +22,6 @@ export default async function SubmissionsPage() {
           columns={columns}
           data={submissions}
           searchField="clientLastName"
-          basePath="/dashboard/submissions"
-          idField="submissionId"
         />
       </div>
     </>

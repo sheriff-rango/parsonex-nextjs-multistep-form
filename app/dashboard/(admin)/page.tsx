@@ -1,18 +1,11 @@
 import { H1 } from "@/components/typography";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { GradientChart } from "@/components/gradient-chart";
 import { db } from "@/server/db";
-import {
-  summaryProduction,
-  listOrderTypes,
-  clients,
-  psiAccounts,
-  psiHoldings,
-} from "@/server/db/schema";
-import { sql, eq, gte } from "drizzle-orm";
+import { summaryProduction, listOrderTypes, clients } from "@/server/db/schema";
+import { sql, eq, gte, lte, and } from "drizzle-orm";
 
 async function getQuarterlyRevenue() {
-  // Get date from 48 months ago
   const fourYearsAgo = new Date();
   fourYearsAgo.setFullYear(fourYearsAgo.getFullYear() - 4);
 
@@ -36,73 +29,57 @@ async function getQuarterlyRevenue() {
       sql`EXTRACT(YEAR FROM ${summaryProduction.bizDate}), EXTRACT(QUARTER FROM ${summaryProduction.bizDate})`,
     );
 
-  // If we don't have any data, return sample data
-  if (result.length === 0) {
-    const currentYear = new Date().getFullYear();
-    return [
-      { quarter: `Q1 ${currentYear - 3}`, revenue: 180000 },
-      { quarter: `Q2 ${currentYear - 3}`, revenue: 210000 },
-      { quarter: `Q3 ${currentYear - 3}`, revenue: 195000 },
-      { quarter: `Q4 ${currentYear - 3}`, revenue: 240000 },
-      { quarter: `Q1 ${currentYear - 2}`, revenue: 220000 },
-      { quarter: `Q2 ${currentYear - 2}`, revenue: 260000 },
-      { quarter: `Q3 ${currentYear - 2}`, revenue: 245000 },
-      { quarter: `Q4 ${currentYear - 2}`, revenue: 290000 },
-      { quarter: `Q1 ${currentYear - 1}`, revenue: 280000 },
-      { quarter: `Q2 ${currentYear - 1}`, revenue: 320000 },
-      { quarter: `Q3 ${currentYear - 1}`, revenue: 300000 },
-      { quarter: `Q4 ${currentYear - 1}`, revenue: 390000 },
-      { quarter: `Q1 ${currentYear}`, revenue: 350000 },
-      { quarter: `Q2 ${currentYear}`, revenue: 410000 },
-      { quarter: `Q3 ${currentYear}`, revenue: 440000 },
-      { quarter: `Q4 ${currentYear}`, revenue: 480000 },
-    ];
-  }
-
   return result;
 }
 
 async function getDashboardMetrics() {
-  const currentDate = new Date();
-  const firstDayOfYear = new Date(currentDate.getFullYear(), 0, 1);
-  const thirtyDaysAgo = new Date(currentDate);
-  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-
-  // Get total active clients
   const activeClients = await db
     .select({ count: sql<number>`count(*)` })
     .from(clients)
     .where(eq(clients.isActive, true));
 
-  // Get new accounts this year
-  const newAccounts = await db
-    .select({ count: sql<number>`count(*)` })
-    .from(psiAccounts)
+  const q4Production = await db
+    .select({
+      total: sql<number>`sum(${summaryProduction.production})`,
+    })
+    .from(summaryProduction)
     .where(
-      gte(psiAccounts.estDate, sql`${firstDayOfYear.toISOString()}::date`),
+      and(
+        gte(summaryProduction.bizDate, "2024-10-01"),
+        lte(summaryProduction.bizDate, "2024-12-31"),
+      ),
     );
 
-  // Get total AUM
-  const totalAUM = await db
+  const totalArr = await db
     .select({
-      total: sql<number>`sum(${psiHoldings.marketValue})`,
+      total: sql<number>`sum(${summaryProduction.production})`,
     })
-    .from(psiHoldings);
+    .from(summaryProduction)
+    .where(
+      and(
+        eq(summaryProduction.isArr, true),
+        gte(summaryProduction.bizDate, "2024-10-01"),
+        lte(summaryProduction.bizDate, "2024-12-31"),
+      ),
+    );
 
-  // Get new investment dollars in last 30 days
+  // Get new investment dollars in Q4
   const newInvestments = await db
     .select({
       total: sql<number>`sum(${summaryProduction.investmentAmt})`,
     })
     .from(summaryProduction)
     .where(
-      gte(summaryProduction.bizDate, sql`${thirtyDaysAgo.toISOString()}::date`),
+      and(
+        gte(summaryProduction.bizDate, "2024-10-01"),
+        lte(summaryProduction.bizDate, "2024-12-31"),
+      ),
     );
 
   return {
     activeClients: activeClients[0]?.count ?? 0,
-    newAccounts: newAccounts[0]?.count ?? 0,
-    totalAUM: totalAUM[0]?.total ?? 0,
+    q4Production: q4Production[0]?.total ?? 0,
+    totalArr: totalArr[0]?.total ?? 0,
     newInvestments: newInvestments[0]?.total ?? 0,
   };
 }
@@ -124,24 +101,20 @@ export default async function Page() {
 
       <div className="grid grid-cols-4 gap-4">
         <MetricCard
+          title="Q4 Production"
+          value={formatCurrency(metrics.q4Production)}
+        />
+        <MetricCard
+          title="Total ARR"
+          value={formatCurrency(metrics.totalArr)}
+        />
+        <MetricCard
+          title="Q4 New Investments"
+          value={formatCurrency(metrics.newInvestments)}
+        />
+        <MetricCard
           title="Active Clients"
           value={metrics.activeClients.toLocaleString()}
-          description="Total active clients"
-        />
-        <MetricCard
-          title="New Accounts YTD"
-          value={metrics.newAccounts.toLocaleString()}
-          description="Opened this year"
-        />
-        <MetricCard
-          title="Total AUM"
-          value={formatCurrency(metrics.totalAUM)}
-          description="Assets under management"
-        />
-        <MetricCard
-          title="New Investments"
-          value={formatCurrency(metrics.newInvestments)}
-          description="Last 30 days"
         />
 
         <div className="col-span-4">
@@ -155,23 +128,14 @@ export default async function Page() {
 interface MetricCardProps {
   title: string;
   value: string;
-  description: string;
+  description?: string;
 }
 
-function MetricCard({ title, value, description }: MetricCardProps) {
+function MetricCard({ title, value }: MetricCardProps) {
   return (
-    <Card>
-      <CardHeader className="space-y-1">
-        <CardTitle className="text-sm font-medium text-gray-500">
-          {title}
-        </CardTitle>
-        <div className="flex items-baseline justify-between">
-          <div className="text-3xl font-medium">{value}</div>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <p className="text-sm text-muted-foreground">{description}</p>
-      </CardContent>
+    <Card className="space-y-2 p-4 pb-6 text-center">
+      <div className="font-medium text-gray-500">{title}</div>
+      <div className="text-5xl font-medium">{value}</div>
     </Card>
   );
 }
