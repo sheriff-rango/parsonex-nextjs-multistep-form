@@ -26,6 +26,7 @@ import { useState } from "react";
 import { DataTable } from "@/components/data-table";
 import { columns } from "./columns";
 import { Loader2 } from "lucide-react";
+import { generateReport } from "@/server/actions/reports";
 
 const formSchema = z.object({
   startDate: z.string(),
@@ -54,19 +55,7 @@ export default function NewReportPage() {
     try {
       setIsLoading(true);
       setHasSubmitted(true);
-      const response = await fetch("/api/reports/generate", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(values),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to generate report");
-      }
-
-      const result = await response.json();
+      const result = await generateReport(values);
       setData(result);
     } catch (error) {
       console.error("Error generating report:", error);

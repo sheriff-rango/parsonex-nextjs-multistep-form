@@ -17,7 +17,6 @@ export default async function UpdateClientPage({
 
   const { client, finProfile, addresses, emails, phones } = result;
 
-  // Transform the data to match ClientData format
   const formData: ClientData = {
     nameFirst: client.nameFirst || "",
     nameMiddle: client.nameMiddle || "",

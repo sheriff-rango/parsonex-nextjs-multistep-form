@@ -149,7 +149,6 @@ export function ClientForm({ data, clientId }: ClientFormProps) {
         ...prev,
         [name]: value,
       };
-      // Update full name when any name component changes
       if (
         ["nameFirst", "nameMiddle", "nameLast", "nameSuffix"].includes(name)
       ) {
