@@ -16,11 +16,11 @@ export interface YearlyProductionData {
   total: number;
 }
 
-export interface ContactField {
+export type ContactField = {
   type: string;
   value: string;
   isPrimary: boolean;
-}
+};
 
 export type Account = {
   accountId: string;
@@ -63,3 +63,40 @@ export type Holding = {
   repNo: string | null;
   holdingFan: string | null;
 };
+
+export type Rep = {
+  repId: string;
+  pcm: string | null;
+  fullName: string | null;
+  repType: string;
+  isBranchMgr: boolean | null;
+};
+
+export type RepData = {
+  firstName: string;
+  middleName?: string;
+  lastName: string;
+  fullName: string;
+  repType: string;
+  isActive: boolean;
+  isBranchMgr: boolean;
+  dob: string | null;
+  gender: string | null;
+  phones: ContactField[];
+  emails: ContactField[];
+  addresses: ContactField[];
+};
+
+export type FormStepData = {
+  title: string;
+  description: string;
+  items: {
+    label: string;
+    value: string;
+    props: {
+      [key: string]: string;
+    };
+  }[];
+};
+
+export * from "./forms";

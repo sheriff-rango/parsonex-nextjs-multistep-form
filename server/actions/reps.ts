@@ -12,6 +12,32 @@ import { ContactField, RepData } from "@/types";
 import { eq, and } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { checkAdmin } from "@/server/server-only/auth";
+import { z } from "zod";
+
+const contactFieldSchema = z.object({
+  type: z.string().min(1, "Type is required"),
+  value: z.string().min(1, "Value is required"),
+  isPrimary: z.boolean(),
+});
+
+const repFormSchema = z.object({
+  firstName: z.string().min(1, "First name is required"),
+  middleName: z.string().optional(),
+  lastName: z.string().min(1, "Last name is required"),
+  fullName: z.string(),
+  repType: z.string().min(1, "Rep type is required"),
+  isActive: z.boolean().default(true),
+  isBranchMgr: z.boolean().default(false),
+  dob: z.string().nullable(),
+  gender: z.string().nullable(),
+  phones: z
+    .array(contactFieldSchema)
+    .min(1, "At least one phone number is required"),
+  emails: z.array(contactFieldSchema).min(1, "At least one email is required"),
+  addresses: z
+    .array(contactFieldSchema)
+    .min(1, "At least one address is required"),
+});
 
 export async function getReps() {
   try {
@@ -106,22 +132,22 @@ export async function getRepTypes() {
   }
 }
 
-export async function createRep(repData: RepData) {
+export async function createRep(formData: z.infer<typeof repFormSchema>) {
   try {
     if (!checkAdmin()) {
       throw new Error("Unauthorized access");
     }
 
+    const validatedData = repFormSchema.parse(formData);
     const repId = crypto.randomUUID().slice(0, 8);
     const createdOn = new Date();
+
     const rep = {
       repId,
       pcm: repId,
       createdOn: createdOn.toISOString(),
-      ...repData,
+      ...validatedData,
     };
-
-    console.log(rep);
 
     // Start a transaction to ensure all related data is inserted together
     await db.transaction(async (tx) => {
@@ -129,8 +155,8 @@ export async function createRep(repData: RepData) {
       await tx.insert(reps).values(rep);
 
       // Process phone numbers
-      if (repData.phones) {
-        for (const phone of repData.phones) {
+      if (validatedData.phones) {
+        for (const phone of validatedData.phones) {
           await tx.insert(phones).values({
             refTable: "reps",
             refId: rep.repId,
@@ -143,8 +169,8 @@ export async function createRep(repData: RepData) {
       }
 
       // Process email addresses
-      if (repData.emails) {
-        for (const email of repData.emails) {
+      if (validatedData.emails) {
+        for (const email of validatedData.emails) {
           await tx.insert(emails).values({
             refTable: "reps",
             refId: rep.repId,
@@ -157,8 +183,8 @@ export async function createRep(repData: RepData) {
       }
 
       // Process addresses
-      if (repData.addresses) {
-        for (const address of repData.addresses) {
+      if (validatedData.addresses) {
+        for (const address of validatedData.addresses) {
           const [address1, address2, city, state, zip] = address.value
             .split(",")
             .map((s: string) => s.trim());
@@ -206,20 +232,22 @@ export async function getRep(id: string) {
   }
 }
 
-export async function updateRep(id: string, data: RepData) {
+export async function updateRep(
+  id: string,
+  formData: z.infer<typeof repFormSchema>,
+) {
   try {
     if (!checkAdmin()) {
       throw new Error("Unauthorized access");
     }
 
+    const validatedData = repFormSchema.parse(formData);
     const {
       phones: phoneData,
       emails: emailData,
       addresses: addressData,
       ...repData
-    } = data;
-
-    repData.fullName = `${repData.firstName} ${repData.lastName}`;
+    } = validatedData;
 
     // Update main rep data
     await db.update(reps).set(repData).where(eq(reps.repId, id));

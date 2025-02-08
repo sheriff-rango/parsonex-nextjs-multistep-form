@@ -10,7 +10,7 @@ export type Rep = {
 
 export type RepData = {
   firstName: string;
-  middleName: string;
+  middleName?: string;
   lastName: string;
   fullName: string;
   repType: string;
