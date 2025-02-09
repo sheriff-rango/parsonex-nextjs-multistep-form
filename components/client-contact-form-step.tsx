@@ -19,7 +19,7 @@ import {
 import { useFieldArray } from "react-hook-form";
 import { Plus, Minus } from "lucide-react";
 import { H2 } from "@/components/typography";
-import { ContactField, RepFormValues, ClientFormValues } from "@/types";
+import { ContactField, ClientFormValues } from "@/types";
 
 type ContactType = "phone" | "email" | "address";
 type ContactArrayType = "phones" | "emails" | "addresses";
@@ -42,23 +42,11 @@ const contactFieldMap: Record<
   },
 };
 
-export function RepContactFormStep({
-  form,
-}: {
-  form: UseFormReturn<RepFormValues>;
-}) {
-  return <ContactFormStep form={form} />;
-}
-
-export function ClientContactFormStep({
-  form,
-}: {
+interface ClientContactFormStepProps {
   form: UseFormReturn<ClientFormValues>;
-}) {
-  return <ContactFormStep form={form} />;
 }
 
-function ContactFormStep({ form }: { form: any }) {
+export function ClientContactFormStep({ form }: ClientContactFormStepProps) {
   const phoneTypes = ["mobile", "home", "work", "other"];
   const emailTypes = ["work", "personal", "other"];
   const addressTypes = ["home", "work", "mailing", "other"];

@@ -11,8 +11,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import { useActionState } from "@/hooks/use-action-state";
-import React from "react";
-import { ContactFormStep } from "@/components/contact-form-step";
+import { RepContactFormStep } from "@/components/contact-form-step";
 import { GeneralFormStep } from "@/components/general-form-step";
 import { repFormSchema } from "@/types/forms";
 
@@ -118,7 +117,7 @@ export function RepForm({ data, repId }: RepFormProps) {
           >
             <div className="px-1">
               {step === 1 && <GeneralFormStep form={form} />}
-              {step === 2 && <ContactFormStep form={form} />}
+              {step === 2 && <RepContactFormStep form={form} />}
             </div>
 
             <div className="flex w-full justify-between">
