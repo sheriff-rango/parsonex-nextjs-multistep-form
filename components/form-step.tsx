@@ -108,7 +108,7 @@ export function FormStep({ title, fields, form, gridCols = 2 }: FormStepProps) {
   return (
     <div className="space-y-4">
       <H2>{title}</H2>
-      <div className={`grid grid-cols-${gridCols} gap-4`}>
+      <div className={`grid grid-cols-${gridCols} gap-2`}>
         {gridFields.map(renderField)}
       </div>
       {checkboxFields.length > 0 && (

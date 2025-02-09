@@ -12,7 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import { useActionState } from "@/hooks/use-action-state";
 import { RepContactFormStep } from "@/components/contact-form-step";
-import { GeneralFormStep } from "@/components/general-form-step";
+import { RepGeneralFormStep } from "@/components/rep-general-form-step";
 import { repFormSchema } from "@/types/forms";
 
 interface RepFormProps {
@@ -116,7 +116,7 @@ export function RepForm({ data, repId }: RepFormProps) {
             className="relative flex h-full flex-col space-y-4"
           >
             <div className="px-1">
-              {step === 1 && <GeneralFormStep form={form} />}
+              {step === 1 && <RepGeneralFormStep form={form} />}
               {step === 2 && <RepContactFormStep form={form} />}
             </div>
 

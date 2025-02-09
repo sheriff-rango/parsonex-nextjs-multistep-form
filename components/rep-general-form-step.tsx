@@ -1,12 +1,12 @@
 import { UseFormReturn } from "react-hook-form";
 import { RepFormValues } from "@/types";
-import { FormStep } from "@/components/ui/form-step";
+import { FormStep } from "@/components/form-step";
 
 interface GeneralFormStepProps {
   form: UseFormReturn<RepFormValues>;
 }
 
-export function GeneralFormStep({ form }: GeneralFormStepProps) {
+export function RepGeneralFormStep({ form }: GeneralFormStepProps) {
   const fields = [
     {
       name: "firstName",

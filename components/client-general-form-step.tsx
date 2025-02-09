@@ -1,6 +1,6 @@
 import { UseFormReturn } from "react-hook-form";
 import { ClientFormValues } from "@/types/forms";
-import { FormStep } from "@/components/ui/form-step";
+import { FormStep } from "@/components/form-step";
 
 interface ClientGeneralFormStepProps {
   form: UseFormReturn<ClientFormValues>;
