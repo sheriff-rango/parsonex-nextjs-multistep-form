@@ -42,7 +42,7 @@ export default async function RepProfilePage({ params }: RepProfilePageProps) {
     { label: "Date of Birth", value: rep.dob || "N/A" },
     { label: "Marital Status", value: rep.maritalStatus || "N/A" },
     { label: "Gender", value: rep.gender || "N/A" },
-    { label: "TIN", value: rep.tin || "N/A" },
+    { label: "TIN", value: rep.tin ? "XXX-XX-" + rep.tin.slice(-4) : "N/A" },
   ];
 
   return (
