@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/server/db";
-import { and, eq, sql } from "drizzle-orm";
+import { and, eq, or, sql } from "drizzle-orm";
 import {
   clients,
   emails,
@@ -65,7 +65,12 @@ export async function getAccountsByClientId(clientId: string) {
         accountEmail: psiAccounts.accountEmail,
       })
       .from(psiAccounts)
-      .where(eq(psiAccounts.ownerId, clientId))
+      .where(
+        or(
+          eq(psiAccounts.clientIdPrimary, clientId),
+          eq(psiAccounts.clientIdJoint, clientId),
+        ),
+      )
       .orderBy(psiAccounts.accountId);
 
     return result;
@@ -191,7 +196,7 @@ export async function createClient(data: ClientData) {
         dob: data.dob ? sql`${data.dob}` : null,
         gender: data.gender ?? null,
         maritalstatus: data.maritalstatus ?? null,
-        ssnTaxid: data.ssnTaxid ?? null,
+        tin: data.tin ?? null,
         employmentStatus: data.employmentStatus ?? null,
         employmentOccupation: data.employmentOccupation ?? null,
         employer: data.employer ?? null,
@@ -299,7 +304,7 @@ export async function updateClient(clientId: string, data: ClientData) {
         dob: data.dob ? sql`${data.dob}` : null,
         gender: data.gender ?? null,
         maritalstatus: data.maritalstatus ?? null,
-        ssnTaxid: data.ssnTaxid ?? null,
+        tin: data.tin ?? null,
         employmentStatus: data.employmentStatus ?? null,
         employmentOccupation: data.employmentOccupation ?? null,
         employer: data.employer ?? null,

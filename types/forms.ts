@@ -37,7 +37,7 @@ export const clientFormSchema = z.object({
   dob: z.string().nullable(),
   gender: z.string().nullable(),
   maritalstatus: z.string().nullable(),
-  ssnTaxid: z.string().min(1, "SSN/Tax ID is required"),
+  tin: z.string().min(1, "TIN is required"),
   employmentStatus: z.string().optional().default(""),
   employmentOccupation: z.string().optional().default(""),
   employer: z.string().optional().default(""),

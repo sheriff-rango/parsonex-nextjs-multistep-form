@@ -36,8 +36,8 @@ export default async function ClientProfilePage({
     { label: "Marital Status", value: client.maritalstatus || "N/A" },
     { label: "Gender", value: client.gender || "N/A" },
     {
-      label: "SSN/Tax ID",
-      value: client.ssnTaxid ? `XXX-XX-${client.ssnTaxid.slice(-4)}` : "N/A",
+      label: "TIN",
+      value: client.tin ? `XXX-XX-${client.tin.slice(-4)}` : "N/A",
     },
     { label: "Employment Status", value: client.employmentStatus || "N/A" },
     { label: "Occupation", value: client.employmentOccupation || "N/A" },

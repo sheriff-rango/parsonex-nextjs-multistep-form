@@ -29,7 +29,7 @@ export type ClientFull = {
   finprofileId: number | null;
   ofacId: number | null;
   dob: string | null;
-  ssnTaxid: string | null;
+  tin: string | null;
   gender: string | null;
   maritalstatus: string | null;
   employmentStatus: string | null;
@@ -64,7 +64,7 @@ export interface ClientData {
   dob: string | null;
   gender: string | null;
   maritalstatus: string | null;
-  ssnTaxid: string;
+  tin: string;
   employmentStatus: string;
   employmentOccupation: string;
   employer: string;

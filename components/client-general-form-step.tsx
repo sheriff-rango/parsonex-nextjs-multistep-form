@@ -61,8 +61,8 @@ export function ClientGeneralFormStep({ form }: ClientGeneralFormStepProps) {
       ],
     },
     {
-      name: "ssnTaxid",
-      label: "SSN/Tax ID",
+      name: "tin",
+      label: "TIN",
       type: "text" as const,
       required: true,
     },

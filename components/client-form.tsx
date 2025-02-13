@@ -39,7 +39,7 @@ export function ClientForm({ data, clientId }: ClientFormProps) {
       dob: null,
       gender: null,
       maritalstatus: null,
-      ssnTaxid: "",
+      tin: "",
       employmentStatus: "",
       employmentOccupation: "",
       employer: "",
@@ -121,8 +121,8 @@ export function ClientForm({ data, clientId }: ClientFormProps) {
 
     // Validate step one before proceeding
     if (step === 1) {
-      form.clearErrors(["nameFirst", "nameLast", "ssnTaxid"]);
-      const isValid = await form.trigger(["nameFirst", "nameLast", "ssnTaxid"]);
+      form.clearErrors(["nameFirst", "nameLast", "tin"]);
+      const isValid = await form.trigger(["nameFirst", "nameLast", "tin"]);
       if (!isValid) {
         return;
       }

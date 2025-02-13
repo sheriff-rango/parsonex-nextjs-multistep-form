@@ -27,7 +27,7 @@ export default async function UpdateClientPage({
     dob: client.dob,
     gender: client.gender,
     maritalstatus: client.maritalstatus,
-    ssnTaxid: client.ssnTaxid || "",
+    tin: client.tin || "",
     employmentStatus: client.employmentStatus || "",
     employmentOccupation: client.employmentOccupation || "",
     employer: client.employer || "",
