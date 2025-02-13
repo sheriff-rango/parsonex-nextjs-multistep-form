@@ -1,14 +1,8 @@
 "use server";
 
 import { db } from "@/server/db";
-import {
-  reps,
-  addresses,
-  emails,
-  phones,
-  listRepTypes,
-} from "@/server/db/schema";
-import { ContactField, RepData } from "@/types";
+import { reps, addresses, emails, phones } from "@/server/db/schema";
+import { ContactField } from "@/types";
 import { eq, and } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { checkAdmin } from "@/server/server-only/auth";
@@ -118,20 +112,6 @@ export async function getRepPhones(pcm: string) {
   }
 }
 
-export async function getRepTypes() {
-  try {
-    if (!checkAdmin()) {
-      throw new Error("Unauthorized access");
-    }
-
-    const results = await db.select().from(listRepTypes);
-    return results;
-  } catch (error) {
-    console.error("Error fetching rep types:", error);
-    throw error;
-  }
-}
-
 export async function createRep(formData: z.infer<typeof repFormSchema>) {
   try {
     if (!checkAdmin()) {
@@ -149,12 +129,9 @@ export async function createRep(formData: z.infer<typeof repFormSchema>) {
       ...validatedData,
     };
 
-    // Start a transaction to ensure all related data is inserted together
     await db.transaction(async (tx) => {
-      // Insert the rep
       await tx.insert(reps).values(rep);
 
-      // Process phone numbers
       if (validatedData.phones) {
         for (const phone of validatedData.phones) {
           await tx.insert(phones).values({
@@ -168,7 +145,6 @@ export async function createRep(formData: z.infer<typeof repFormSchema>) {
         }
       }
 
-      // Process email addresses
       if (validatedData.emails) {
         for (const email of validatedData.emails) {
           await tx.insert(emails).values({
