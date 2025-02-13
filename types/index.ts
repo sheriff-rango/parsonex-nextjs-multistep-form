@@ -32,8 +32,8 @@ export type Account = {
   date17A3: string | null;
   method17A3: string | null;
   emailAuth: boolean | null;
-  ownerId: string | null;
-  owner2Id: string | null;
+  clientIdPrimary: string | null;
+  clientIdJoint: string | null;
   status: string | null;
   termDate: string | null;
   invObjective: string | null;
