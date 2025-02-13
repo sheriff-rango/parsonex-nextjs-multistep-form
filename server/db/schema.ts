@@ -439,7 +439,7 @@ export const summaryProduction = pgTable("summary_production", {
   production: numeric({ precision: 15, scale: 2 }).notNull(),
   commissions: numeric({ precision: 15, scale: 2 }).notNull(),
   pcm: varchar(),
-  isarr: boolean(),
+  isArr: boolean("isarr").notNull(),
 });
 
 export const auditLog = pgTable(
