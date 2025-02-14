@@ -6,6 +6,7 @@ import {
 } from "@/server/actions/accounts";
 import { DataTable } from "@/components/data-table";
 import { columns } from "@/app/dashboard/(admin)/holdings/columns";
+import { AccountMenu } from "@/components/account-menu";
 
 interface AccountProfilePageProps {
   params: {
@@ -81,6 +82,7 @@ export default async function AccountProfilePage({
     <div className="p-4 outline-none">
       <div className="flex items-center justify-between">
         <H1>{account.searchid || account.accountId}</H1>
+        <AccountMenu account={account} />
       </div>
 
       <div className="outline-none">

@@ -59,9 +59,14 @@ export type Holding = {
   unitPrice: number | null;
   marketValue: number | null;
   costBasis: number | null;
-  productFamily: string | null;
-  repNo: string | null;
+  lastUpdated: string | null;
+  createdOn: string | null;
   holdingFan: string | null;
+  productNo: string | null;
+  productFamily: string | null;
+  holdPriceDate: string | null;
+  branchNo: string | null;
+  repNo: string | null;
 };
 
 export type Rep = {

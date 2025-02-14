@@ -1,10 +1,12 @@
 "use server";
 
 import { db } from "@/server/db";
-import { psiAccounts, psiHoldings } from "@/server/db/schema";
-import { eq } from "drizzle-orm";
+import { psiAccounts, psiHoldings, listValues } from "@/server/db/schema";
+import { eq, and } from "drizzle-orm";
 import { checkAdmin } from "@/server/server-only/auth";
 import { Account, Holding } from "@/types";
+import { AccountFormValues } from "@/types/forms";
+import { revalidatePath } from "next/cache";
 
 export async function getAccounts(): Promise<Account[]> {
   try {
@@ -88,5 +90,100 @@ export async function getAccountHoldings(
   } catch (error) {
     console.error("Error fetching account holdings:", error);
     throw error;
+  }
+}
+
+export async function createAccount(data: AccountFormValues) {
+  try {
+    await db.insert(psiAccounts).values({
+      accountType: data.accountType,
+      status: data.status,
+      estDate: data.openDate,
+      termDate: data.closeDate,
+      clientIdPrimary: data.primaryClientId,
+      clientIdJoint: data.jointClientId,
+      branch: data.branch,
+      invObjective: data.invObjective,
+      riskTolerance: data.riskTolerance,
+      timeHorizon: data.timeHorizon,
+      pcm: data.pcm,
+      date17A3: data.date17A3,
+      method17A3: data.method17A3,
+    });
+
+    revalidatePath("/dashboard/accounts");
+    return { success: true };
+  } catch (error) {
+    console.error("Error creating account:", error);
+    throw new Error("Failed to create account");
+  }
+}
+
+export async function updateAccount(
+  accountId: string,
+  data: AccountFormValues,
+) {
+  try {
+    const result = await db
+      .update(psiAccounts)
+      .set({
+        accountType: data.accountType,
+        status: data.status,
+        estDate: data.openDate,
+        termDate: data.closeDate,
+        clientIdPrimary: data.primaryClientId,
+        clientIdJoint: data.jointClientId,
+        branch: data.branch,
+        invObjective: data.invObjective,
+        riskTolerance: data.riskTolerance,
+        timeHorizon: data.timeHorizon,
+        pcm: data.pcm,
+        date17A3: data.date17A3,
+        method17A3: data.method17A3,
+      })
+      .where(eq(psiAccounts.accountId, accountId));
+
+    revalidatePath("/dashboard/accounts");
+  } catch (error) {
+    console.error("Error updating account:", error);
+    throw new Error("Failed to update account");
+  }
+}
+
+export async function getAccountTypes(): Promise<string[]> {
+  try {
+    if (!checkAdmin()) {
+      throw new Error("Unauthorized access");
+    }
+
+    const results = await db
+      .select({ name: listValues.name })
+      .from(listValues)
+      .where(eq(listValues.listName, "account_types"))
+      .orderBy(listValues.name);
+
+    return results.map((result) => result.name);
+  } catch (error) {
+    console.error("Error fetching account types:", error);
+    throw error;
+  }
+}
+
+export async function deleteAccount(accountId: string) {
+  try {
+    if (!checkAdmin()) {
+      throw new Error("Unauthorized access");
+    }
+
+    // Delete associated holdings first
+    await db.delete(psiHoldings).where(eq(psiHoldings.accountId, accountId));
+
+    // Delete the account record
+    await db.delete(psiAccounts).where(eq(psiAccounts.accountId, accountId));
+
+    revalidatePath("/dashboard/accounts");
+  } catch (error) {
+    console.error("Error deleting account:", error);
+    throw new Error("Failed to delete account");
   }
 }

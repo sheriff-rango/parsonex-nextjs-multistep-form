@@ -8,7 +8,11 @@ export default async function AccountsPage() {
 
   return (
     <>
-      <StickyHeader title="Accounts" />
+      <StickyHeader
+        title="Accounts"
+        link="/dashboard/accounts/new"
+        buttonText="New Account"
+      />
       <DataTable
         columns={columns}
         data={accounts}

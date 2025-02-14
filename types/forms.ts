@@ -73,3 +73,41 @@ export const clientFormSchema = z.object({
 });
 
 export type ClientFormValues = z.infer<typeof clientFormSchema>;
+
+export const accountFormSchema = z.object({
+  accountType: z.string().min(1, "Account type is required"),
+  pcm: z.string().min(1, "PCM is required"),
+  primaryClientId: z.string().min(1, "Primary client is required"),
+  jointClientId: z.string().optional(),
+  status: z.string().default("active"),
+  openDate: z.string().nullable(),
+  closeDate: z.string().nullable(),
+  branch: z.string().optional(),
+  invObjective: z.string().optional(),
+  riskTolerance: z.string().optional(),
+  timeHorizon: z.string().optional(),
+  date17A3: z.string().nullable(),
+  method17A3: z.string().optional(),
+});
+
+export type AccountFormValues = z.infer<typeof accountFormSchema>;
+
+export const holdingFormSchema = z.object({
+  accountId: z.string().min(1, "Account ID is required"),
+  holdingType: z.string().min(1, "Holding type is required"),
+  securityName: z.string().min(1, "Security name is required"),
+  securityTicker: z.string().optional(),
+  cusip: z.string().optional(),
+  units: z.number().nullable(),
+  unitPrice: z.number().nullable(),
+  marketValue: z.number().nullable(),
+  costBasis: z.number().nullable(),
+  productFamily: z.string().optional(),
+  repNo: z.string().optional(),
+  holdingFan: z.string().optional(),
+  productNo: z.string().optional(),
+  branchNo: z.string().optional(),
+  holdPriceDate: z.string().nullable(),
+});
+
+export type HoldingFormValues = z.infer<typeof holdingFormSchema>;
