@@ -67,9 +67,10 @@ const data = {
   ],
 };
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const isAdmin = useAdmin();
-  const navItems = isAdmin
+export function AppSidebar({
+  ...props
+}: React.ComponentProps<typeof Sidebar> & { isAdmin?: boolean }) {
+  const navItems = props.isAdmin
     ? [...data.navMain, ...data.adminLinks]
     : data.navMain;
 
