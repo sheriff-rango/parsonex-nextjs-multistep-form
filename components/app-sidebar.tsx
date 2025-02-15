@@ -13,7 +13,6 @@ import {
 
 import { NavMain } from "@/components/nav-main";
 import { NavUser } from "@/components/nav-user";
-import { useAdmin } from "@/hooks/use-admin";
 
 import Image from "next/image";
 
