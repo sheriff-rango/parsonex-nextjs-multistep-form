@@ -8,16 +8,14 @@ import { DataTable } from "@/components/data-table";
 import { columns } from "@/app/dashboard/(admin)/holdings/columns";
 import { AccountMenu } from "@/components/account-menu";
 
-interface AccountProfilePageProps {
-  params: {
-    id: string;
-  };
-}
+type Params = Promise<{ id: string }>;
 
 export default async function AccountProfilePage({
   params,
-}: AccountProfilePageProps) {
-  const { id } = params;
+}: {
+  params: Params;
+}) {
+  const { id } = await params;
   const decodedId = decodeURIComponent(id);
 
   const [account, holdings] = await Promise.all([

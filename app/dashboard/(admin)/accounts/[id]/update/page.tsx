@@ -4,12 +4,14 @@ import { AccountForm } from "@/components/account-form";
 import { H1 } from "@/components/typography";
 import { AccountFormValues } from "@/types/forms";
 
-export default async function UpdateAccountPage({
+type Params = Promise<{ id: string }>;
+
+export default async function AccountUpdatePage({
   params,
 }: {
-  params: { id: string };
+  params: Params;
 }) {
-  const id = decodeURIComponent(params.id);
+  const { id } = await params;
   const [
     account,
     accountTypes,

@@ -3,12 +3,10 @@ import { ClientForm } from "@/components/client-form";
 import { H1 } from "@/components/typography";
 import { ContactField, ClientData } from "@/types";
 
-export default async function UpdateClientPage({
-  params,
-}: {
-  params: { id: string };
-}) {
-  const id = decodeURIComponent(params.id);
+type Params = Promise<{ id: string }>;
+
+export default async function ClientUpdatePage({ params }: { params: Params }) {
+  const { id } = await params;
   const result = await getClientProfile(id);
 
   if (!result) {

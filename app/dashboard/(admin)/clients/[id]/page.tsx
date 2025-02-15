@@ -7,16 +7,14 @@ import { ClientMenu } from "@/components/client-menu";
 import { ContactCard } from "@/components/contact-card";
 import type { SimpleAccount } from "./columns";
 
-interface ClientProfilePageProps {
-  params: {
-    id: string;
-  };
-}
+type Params = Promise<{ id: string }>;
 
 export default async function ClientProfilePage({
   params,
-}: ClientProfilePageProps) {
-  const { id } = params;
+}: {
+  params: Params;
+}) {
+  const { id } = await params;
   const decodedId = decodeURIComponent(id);
 
   const result = await getClientProfile(decodedId);

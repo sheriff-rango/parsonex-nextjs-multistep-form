@@ -5,16 +5,10 @@ import { HoldingMenu } from "@/components/holding-menu";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
-interface HoldingProfilePageProps {
-  params: {
-    id: string;
-  };
-}
+type Params = Promise<{ id: string }>;
 
-export default async function HoldingProfilePage({
-  params,
-}: HoldingProfilePageProps) {
-  const id = decodeURIComponent(params.id);
+export default async function HoldingPage({ params }: { params: Params }) {
+  const { id } = await params;
   const holding = await getHolding(id);
 
   if (!holding) {

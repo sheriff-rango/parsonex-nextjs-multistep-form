@@ -7,16 +7,15 @@ import {
   getRepPhones,
 } from "@/server/actions/reps";
 
-export default async function UpdateRepPage({
-  params,
-}: {
-  params: { id: string };
-}) {
+type Params = Promise<{ id: string }>;
+
+export default async function UpdateRepPage({ params }: { params: Params }) {
+  const { id } = await params;
   const [rawRepData, addressData, emailData, phoneData] = await Promise.all([
-    getRep(params.id),
-    getRepAddresses(params.id),
-    getRepEmails(params.id),
-    getRepPhones(params.id),
+    getRep(id),
+    getRepAddresses(id),
+    getRepEmails(id),
+    getRepPhones(id),
   ]);
 
   if (!rawRepData) {
@@ -63,7 +62,7 @@ export default async function UpdateRepPage({
   return (
     <div className="flex h-full flex-col space-y-8 p-8">
       <H1>Update Representative</H1>
-      <RepForm data={repData} repId={params.id} />
+      <RepForm data={repData} repId={id} />
     </div>
   );
 }

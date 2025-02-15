@@ -3,12 +3,14 @@ import { HoldingForm } from "@/components/holding-form";
 import { H1 } from "@/components/typography";
 import { HoldingFormValues } from "@/types/forms";
 
+type Params = Promise<{ id: string }>;
+
 export default async function UpdateHoldingPage({
   params,
 }: {
-  params: { id: string };
+  params: Params;
 }) {
-  const id = decodeURIComponent(params.id);
+  const { id } = await params;
   const holding = await getHolding(id);
 
   if (!holding) {

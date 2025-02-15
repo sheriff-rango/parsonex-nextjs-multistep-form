@@ -13,14 +13,10 @@ import {
 } from "@/server/actions/reps";
 import { getAccountsByPCM } from "@/server/actions/accounts";
 
-interface RepProfilePageProps {
-  params: {
-    id: string;
-  };
-}
+type Params = Promise<{ id: string }>;
 
-export default async function RepProfilePage({ params }: RepProfilePageProps) {
-  const { id } = params;
+export default async function RepProfilePage({ params }: { params: Params }) {
+  const { id } = await params;
 
   const [rep, addresses, emails, phones] = await Promise.all([
     getRepProfile(id),

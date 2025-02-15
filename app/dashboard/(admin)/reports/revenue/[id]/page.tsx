@@ -2,12 +2,15 @@ import { H1 } from "@/components/typography";
 import { getRepYearlyProduction } from "@/server/actions/reports";
 import { formatCurrency } from "@/lib/utils";
 
+type Params = Promise<{ id: string }>;
+
 export default async function RepProductionPage({
   params,
 }: {
-  params: { id: string };
+  params: Params;
 }) {
-  const repName = decodeURIComponent(params.id);
+  const { id } = await params;
+  const repName = decodeURIComponent(id);
   const productionData = (await getRepYearlyProduction(repName)) || [];
 
   return (
