@@ -1,5 +1,6 @@
 import { H1 } from "@/components/typography";
 import { getRepYearlyProduction } from "@/server/actions/reports";
+import { formatCurrency } from "@/lib/utils";
 
 export default async function RepProductionPage({
   params,
@@ -8,14 +9,6 @@ export default async function RepProductionPage({
 }) {
   const repName = decodeURIComponent(params.id);
   const productionData = (await getRepYearlyProduction(repName)) || [];
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-      maximumFractionDigits: 0,
-    }).format(amount);
-  };
 
   return (
     <div className="space-y-8">

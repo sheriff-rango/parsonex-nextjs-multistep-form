@@ -15,7 +15,7 @@ export default async function Page() {
     activeClients: 4681,
   };
 
-  const formatCurrency = (value: number) => {
+  const formatValue = (value: number) => {
     if (value >= 1000000000) return `$${(value / 1000000000).toFixed(1)}B`;
     if (value >= 1000000) return `$${(value / 1000000).toFixed(1)}M`;
     if (value >= 1000) return `$${(value / 1000).toFixed(0)}K`;
@@ -29,15 +29,12 @@ export default async function Page() {
       <div className="grid grid-cols-4 gap-4">
         <MetricCard
           title="Q4 Production"
-          value={formatCurrency(metrics.q4Production)}
+          value={formatValue(metrics.q4Production)}
         />
-        <MetricCard
-          title="Total ARR"
-          value={formatCurrency(metrics.totalArr)}
-        />
+        <MetricCard title="Total ARR" value={formatValue(metrics.totalArr)} />
         <MetricCard
           title="Q4 New Investments"
-          value={formatCurrency(metrics.newInvestments)}
+          value={formatValue(metrics.newInvestments)}
         />
         <MetricCard
           title="Active Clients"

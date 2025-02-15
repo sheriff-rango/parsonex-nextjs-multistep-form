@@ -150,25 +150,6 @@ export async function updateAccount(
   }
 }
 
-export async function getAccountTypes(): Promise<string[]> {
-  try {
-    if (!checkAdmin()) {
-      throw new Error("Unauthorized access");
-    }
-
-    const results = await db
-      .select({ name: listValues.name })
-      .from(listValues)
-      .where(eq(listValues.listName, "account_types"))
-      .orderBy(listValues.name);
-
-    return results.map((result) => result.name);
-  } catch (error) {
-    console.error("Error fetching account types:", error);
-    throw error;
-  }
-}
-
 export async function deleteAccount(accountId: string) {
   try {
     if (!checkAdmin()) {
