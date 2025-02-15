@@ -16,14 +16,24 @@ import { createAccount, updateAccount } from "@/server/actions/accounts";
 interface AccountFormProps {
   data?: AccountFormValues;
   accountId?: string;
-  accountTypes: string[];
+  lists: {
+    account_types: string[];
+    marital_status: string[];
+    risk_tolerance: string[];
+    time_horizon: string[];
+    investment_objectives: string[];
+  };
 }
 
-export function AccountForm({
-  data,
-  accountId,
-  accountTypes,
-}: AccountFormProps) {
+const timeHorizonOrder = [
+  "Under 3 Years",
+  "3-5 Years",
+  "6-10 Years",
+  "11-20 Years",
+  "20+ Years",
+];
+
+export function AccountForm({ data, accountId, lists }: AccountFormProps) {
   const router = useRouter();
   const { isLoading, setLoading, setError } = useActionState();
 
@@ -80,7 +90,7 @@ export function AccountForm({
       label: "Account Type",
       type: "select" as const,
       required: true,
-      options: accountTypes.map((type) => ({
+      options: lists.account_types.map((type) => ({
         label: type,
         value: type,
       })),
@@ -119,32 +129,32 @@ export function AccountForm({
       name: "invObjective",
       label: "Investment Objective",
       type: "select" as const,
-      options: [
-        { label: "Growth", value: "growth" },
-        { label: "Income", value: "income" },
-        { label: "Preservation", value: "preservation" },
-        { label: "Speculation", value: "speculation" },
-      ],
+      options: lists.investment_objectives.map((objective) => ({
+        label: objective,
+        value: objective,
+      })),
     },
     {
       name: "riskTolerance",
       label: "Risk Tolerance",
       type: "select" as const,
-      options: [
-        { label: "Conservative", value: "conservative" },
-        { label: "Moderate", value: "moderate" },
-        { label: "Aggressive", value: "aggressive" },
-      ],
+      options: lists.risk_tolerance.map((tolerance) => ({
+        label: tolerance,
+        value: tolerance,
+      })),
     },
     {
       name: "timeHorizon",
       label: "Time Horizon",
       type: "select" as const,
-      options: [
-        { label: "Short Term", value: "short" },
-        { label: "Medium Term", value: "medium" },
-        { label: "Long Term", value: "long" },
-      ],
+      options: lists.time_horizon
+        .sort(
+          (a, b) => timeHorizonOrder.indexOf(a) - timeHorizonOrder.indexOf(b),
+        )
+        .map((horizon) => ({
+          label: horizon,
+          value: horizon,
+        })),
     },
   ];
 

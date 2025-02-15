@@ -10,14 +10,9 @@ export const columns: ColumnDef<Holding>[] = [
     size: 300,
   },
   {
-    accessorKey: "securityTicker",
-    header: "Ticker",
-    size: 100,
-  },
-  {
     accessorKey: "holdingType",
     header: "Type",
-    size: 100,
+    size: 150,
   },
   {
     accessorKey: "productFamily",
@@ -27,6 +22,6 @@ export const columns: ColumnDef<Holding>[] = [
   {
     accessorKey: "holdingFan",
     header: "Holding Fan",
-    size: 100,
+    size: 150,
   },
 ];

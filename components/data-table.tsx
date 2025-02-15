@@ -88,7 +88,6 @@ export function DataTable<TData, TValue>({
     [pageIndex, pageSize],
   );
 
-  // Initialize search from URL on mount
   const table = useReactTable({
     data,
     columns,
@@ -109,7 +108,6 @@ export function DataTable<TData, TValue>({
     },
   });
 
-  // Initialize search from URL on mount
   React.useEffect(() => {
     if (searchField) {
       const searchValue = searchParams.get("search") || "";
@@ -117,7 +115,6 @@ export function DataTable<TData, TValue>({
     }
   }, [searchField, searchParams]);
 
-  // Update URL when search changes
   const handleSearchChange = useCallback(
     (value: string) => {
       if (searchField) {

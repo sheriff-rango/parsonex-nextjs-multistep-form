@@ -7,22 +7,22 @@ export const columns: ColumnDef<Account>[] = [
   {
     accessorKey: "searchid",
     header: "Name",
-    size: 225,
+    size: 400,
     enableResizing: true,
   },
   {
     accessorKey: "accountType",
     header: "Type",
-    size: 100,
+    size: 150,
+  },
+  {
+    accessorKey: "branch",
+    header: "Branch",
+    size: 150,
   },
   {
     accessorKey: "status",
     header: "Status",
     size: 100,
-  },
-  {
-    accessorKey: "branch",
-    header: "Branch",
-    size: 200,
   },
 ];

@@ -119,15 +119,6 @@ export function ClientForm({ data, clientId }: ClientFormProps) {
   const handleNextStep = async () => {
     if (isTransitioning) return;
 
-    // Validate step one before proceeding
-    if (step === 1) {
-      form.clearErrors(["nameFirst", "nameLast", "tin"]);
-      const isValid = await form.trigger(["nameFirst", "nameLast", "tin"]);
-      if (!isValid) {
-        return;
-      }
-    }
-
     setIsTransitioning(true);
     setTimeout(() => {
       setStep(step + 1);

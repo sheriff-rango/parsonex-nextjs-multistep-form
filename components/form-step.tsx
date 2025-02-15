@@ -77,7 +77,7 @@ export function FormStep({ title, fields, form, gridCols = 2 }: FormStepProps) {
                         }
                       />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="max-h-[200px] overflow-y-auto">
                       {field.options?.map((option) => (
                         <SelectItem key={option.value} value={option.value}>
                           {option.label}

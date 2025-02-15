@@ -1,4 +1,5 @@
-import { getAccountProfile, getAccountTypes } from "@/server/actions/accounts";
+import { getAccountProfile } from "@/server/actions/accounts";
+import { getListValues } from "@/server/actions/lists";
 import { AccountForm } from "@/components/account-form";
 import { H1 } from "@/components/typography";
 import { AccountFormValues } from "@/types/forms";
@@ -9,9 +10,20 @@ export default async function UpdateAccountPage({
   params: { id: string };
 }) {
   const id = decodeURIComponent(params.id);
-  const [account, accountTypes] = await Promise.all([
+  const [
+    account,
+    accountTypes,
+    maritalStatusTypes,
+    riskToleranceTypes,
+    timeHorizonTypes,
+    invObjectiveTypes,
+  ] = await Promise.all([
     getAccountProfile(id),
-    getAccountTypes(),
+    getListValues("account_types"),
+    getListValues("marital_status"),
+    getListValues("risk_tolerance"),
+    getListValues("time_horizon"),
+    getListValues("investment_objectives"),
   ]);
 
   if (!account) {
@@ -34,10 +46,18 @@ export default async function UpdateAccountPage({
     method17A3: account.method17A3 || "",
   };
 
+  const lists = {
+    account_types: accountTypes,
+    marital_status: maritalStatusTypes,
+    risk_tolerance: riskToleranceTypes,
+    time_horizon: timeHorizonTypes,
+    investment_objectives: invObjectiveTypes,
+  };
+
   return (
     <div className="flex h-full flex-col p-4">
       <H1>Update Account</H1>
-      <AccountForm data={formData} accountId={id} accountTypes={accountTypes} />
+      <AccountForm data={formData} accountId={id} lists={lists} />
     </div>
   );
 }
