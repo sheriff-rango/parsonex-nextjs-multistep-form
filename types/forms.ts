@@ -7,8 +7,8 @@ const contactFieldSchema = z.object({
 });
 
 export const repFormSchema = z.object({
+  pcm: z.string().min(1, "PCM is required"),
   firstName: z.string().min(1, "First name is required"),
-  middleName: z.string().optional(),
   lastName: z.string().min(1, "Last name is required"),
   fullName: z.string(),
   repType: z.string().min(1, "Rep type is required"),

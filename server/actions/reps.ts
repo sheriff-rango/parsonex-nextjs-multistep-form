@@ -15,8 +15,8 @@ const contactFieldSchema = z.object({
 });
 
 const repFormSchema = z.object({
+  pcm: z.string().min(1, "PCM is required"),
   firstName: z.string().min(1, "First name is required"),
-  middleName: z.string().optional(),
   lastName: z.string().min(1, "Last name is required"),
   fullName: z.string(),
   repType: z.string().min(1, "Rep type is required"),
@@ -33,7 +33,25 @@ const repFormSchema = z.object({
     .min(1, "At least one address is required"),
 });
 
-export async function getReps() {
+export async function getActiveReps() {
+  try {
+    if (!checkAdmin()) {
+      throw new Error("Unauthorized access");
+    }
+
+    const results = await db
+      .select()
+      .from(reps)
+      .where(eq(reps.isActive, true))
+      .orderBy(reps.fullName);
+    return results;
+  } catch (error) {
+    console.error("Error fetching active reps:", error);
+    throw error;
+  }
+}
+
+export async function getAllReps() {
   try {
     if (!checkAdmin()) {
       throw new Error("Unauthorized access");
@@ -47,13 +65,13 @@ export async function getReps() {
   }
 }
 
-export async function getRepProfile(id: string) {
+export async function getRepProfile(pcm: string) {
   try {
     if (!checkAdmin()) {
       throw new Error("Unauthorized access");
     }
 
-    const result = await db.select().from(reps).where(eq(reps.repId, id));
+    const result = await db.select().from(reps).where(eq(reps.pcm, pcm));
     return result[0];
   } catch (error) {
     console.error("Error fetching rep profile:", error);
@@ -119,24 +137,24 @@ export async function createRep(formData: z.infer<typeof repFormSchema>) {
     }
 
     const validatedData = repFormSchema.parse(formData);
-    const repId = crypto.randomUUID().slice(0, 8);
     const createdOn = new Date();
 
     const rep = {
-      repId,
-      pcm: repId,
       createdOn: createdOn.toISOString(),
       ...validatedData,
     };
 
     await db.transaction(async (tx) => {
-      await tx.insert(reps).values(rep);
+      const pcm = await tx
+        .insert(reps)
+        .values(rep)
+        .returning({ pcm: reps.pcm });
 
       if (validatedData.phones) {
         for (const phone of validatedData.phones) {
           await tx.insert(phones).values({
             refTable: "reps",
-            refId: rep.repId,
+            refId: rep.pcm,
             phoneType: phone.type,
             phoneNumber: phone.value,
             isPrimary: phone.isPrimary,
@@ -149,7 +167,7 @@ export async function createRep(formData: z.infer<typeof repFormSchema>) {
         for (const email of validatedData.emails) {
           await tx.insert(emails).values({
             refTable: "reps",
-            refId: rep.repId,
+            refId: rep.pcm,
             emailType: email.type,
             emailAddress: email.value,
             isPrimary: email.isPrimary,
@@ -166,7 +184,7 @@ export async function createRep(formData: z.infer<typeof repFormSchema>) {
             .map((s: string) => s.trim());
           await tx.insert(addresses).values({
             refTable: "reps",
-            refId: rep.repId,
+            refId: rep.pcm,
             addressType: address.type,
             address1,
             address2: address2 || null,
@@ -189,13 +207,13 @@ export async function createRep(formData: z.infer<typeof repFormSchema>) {
   }
 }
 
-export async function getRep(id: string) {
+export async function getRep(pcm: string) {
   try {
     if (!checkAdmin()) {
       throw new Error("Unauthorized access");
     }
 
-    const rep = await db.select().from(reps).where(eq(reps.repId, id));
+    const rep = await db.select().from(reps).where(eq(reps.pcm, pcm));
 
     if (!rep || rep.length === 0) {
       throw new Error("Representative not found");
@@ -208,10 +226,7 @@ export async function getRep(id: string) {
   }
 }
 
-export async function updateRep(
-  id: string,
-  formData: z.infer<typeof repFormSchema>,
-) {
+export async function updateRep(formData: z.infer<typeof repFormSchema>) {
   try {
     if (!checkAdmin()) {
       throw new Error("Unauthorized access");
@@ -225,17 +240,19 @@ export async function updateRep(
       ...repData
     } = validatedData;
 
+    const pcm = repData.pcm;
+
     // Update main rep data
-    await db.update(reps).set(repData).where(eq(reps.repId, id));
+    await db.update(reps).set(repData).where(eq(reps.pcm, pcm));
 
     // Update phones
-    await db.delete(phones).where(eq(phones.refId, id));
+    await db.delete(phones).where(eq(phones.refId, pcm));
     if (phoneData?.length) {
       await db.insert(phones).values(
         phoneData.map((phone: ContactField) => ({
-          repId: id,
+          repId: pcm,
           refTable: "reps",
-          refId: id,
+          refId: pcm,
           phoneType: phone.type,
           phoneNumber: phone.value,
           isPrimary: phone.isPrimary,
@@ -245,12 +262,12 @@ export async function updateRep(
     }
 
     // Update emails
-    await db.delete(emails).where(eq(emails.refId, id));
+    await db.delete(emails).where(eq(emails.refId, pcm));
     if (emailData?.length) {
       await db.insert(emails).values(
         emailData.map((email: ContactField) => ({
           refTable: "reps",
-          refId: id,
+          refId: pcm,
           emailType: email.type,
           emailAddress: email.value,
           isPrimary: email.isPrimary,
@@ -260,7 +277,7 @@ export async function updateRep(
     }
 
     // Update addresses
-    await db.delete(addresses).where(eq(addresses.refId, id));
+    await db.delete(addresses).where(eq(addresses.refId, pcm));
     if (addressData?.length) {
       await db.insert(addresses).values(
         addressData.map((address: ContactField) => {
@@ -270,7 +287,7 @@ export async function updateRep(
 
           return {
             refTable: "reps",
-            refId: id,
+            refId: pcm,
             addressType: address.type,
             address1: address1?.trim() || "",
             address2: address2?.trim() || "",
@@ -292,17 +309,17 @@ export async function updateRep(
   }
 }
 
-export async function deleteRep(repId: string) {
+export async function deleteRep(pcm: string) {
   try {
     if (!checkAdmin()) {
       throw new Error("Unauthorized access");
     }
 
     await db.transaction(async (tx) => {
-      await tx.delete(phones).where(eq(phones.refId, repId));
-      await tx.delete(emails).where(eq(emails.refId, repId));
-      await tx.delete(addresses).where(eq(addresses.refId, repId));
-      await tx.delete(reps).where(eq(reps.repId, repId));
+      await tx.delete(phones).where(eq(phones.refId, pcm));
+      await tx.delete(emails).where(eq(emails.refId, pcm));
+      await tx.delete(addresses).where(eq(addresses.refId, pcm));
+      await tx.delete(reps).where(eq(reps.pcm, pcm));
     });
 
     revalidatePath("/dashboard/reps");

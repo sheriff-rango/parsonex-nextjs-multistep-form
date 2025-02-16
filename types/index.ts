@@ -1,5 +1,6 @@
 export * from "./clients";
 export * from "./reps";
+export * from "./forms";
 
 export interface ARRData {
   rep_name: string;
@@ -68,40 +69,3 @@ export type Holding = {
   branchNo: string | null;
   repNo: string | null;
 };
-
-export type Rep = {
-  repId: string;
-  pcm: string | null;
-  fullName: string | null;
-  repType: string;
-  isBranchMgr: boolean | null;
-};
-
-export type RepData = {
-  firstName: string;
-  middleName?: string;
-  lastName: string;
-  fullName: string;
-  repType: string;
-  isActive: boolean;
-  isBranchMgr: boolean;
-  dob: string | null;
-  gender: string | null;
-  phones: ContactField[];
-  emails: ContactField[];
-  addresses: ContactField[];
-};
-
-export type FormStepData = {
-  title: string;
-  description: string;
-  items: {
-    label: string;
-    value: string;
-    props: {
-      [key: string]: string;
-    };
-  }[];
-};
-
-export * from "./forms";

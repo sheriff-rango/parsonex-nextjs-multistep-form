@@ -9,15 +9,16 @@ interface GeneralFormStepProps {
 export function RepGeneralFormStep({ form }: GeneralFormStepProps) {
   const fields = [
     {
-      name: "firstName",
-      label: "First Name",
+      name: "pcm",
+      label: "PCM",
       type: "text" as const,
       required: true,
     },
     {
-      name: "middleName",
-      label: "Middle Name",
+      name: "firstName",
+      label: "First Name",
       type: "text" as const,
+      required: true,
     },
     {
       name: "lastName",
