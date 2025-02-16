@@ -51,3 +51,21 @@ export async function getListValues(listName: ListName): Promise<string[]> {
     throw error;
   }
 }
+
+export async function getAllLists() {
+  try {
+    if (!checkAdmin()) {
+      throw new Error("Unauthorized access");
+    }
+
+    const results = await db
+      .selectDistinct({ listName: listValues.listName })
+      .from(listValues)
+      .orderBy(listValues.listName);
+
+    return results.map((result) => result.listName);
+  } catch (error) {
+    console.error("Error fetching all lists:", error);
+    throw error;
+  }
+}
