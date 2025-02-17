@@ -7,6 +7,5 @@ export async function checkAdmin() {
   if (user && user.publicMetadata.role === "admin") {
     return true;
   }
-
   return false;
 }

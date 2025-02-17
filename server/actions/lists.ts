@@ -35,7 +35,7 @@ export type ListName =
 
 export async function getListValues(listName: ListName): Promise<string[]> {
   try {
-    if (!checkAdmin()) {
+    if (!(await checkAdmin())) {
       console.error("Unauthorized access");
       return [];
     }

@@ -10,7 +10,7 @@ import { RepFormValues, repFormSchema } from "@/types/forms";
 
 export async function getActiveReps() {
   try {
-    if (!checkAdmin()) {
+    if (!(await checkAdmin())) {
       console.error("Unauthorized access");
       return [];
     }
@@ -29,7 +29,7 @@ export async function getActiveReps() {
 
 export async function getAllReps() {
   try {
-    if (!checkAdmin()) {
+    if (!(await checkAdmin())) {
       console.error("Unauthorized access");
       return [];
     }
@@ -44,7 +44,7 @@ export async function getAllReps() {
 
 export async function getRepProfile(pcm: string) {
   try {
-    if (!checkAdmin()) {
+    if (!(await checkAdmin())) {
       console.error("Unauthorized access");
       return null;
     }
@@ -59,7 +59,7 @@ export async function getRepProfile(pcm: string) {
 
 export async function getRepAddresses(pcm: string) {
   try {
-    if (!checkAdmin()) {
+    if (!(await checkAdmin())) {
       console.error("Unauthorized access");
       return [];
     }
@@ -77,7 +77,7 @@ export async function getRepAddresses(pcm: string) {
 
 export async function getRepEmails(pcm: string) {
   try {
-    if (!checkAdmin()) {
+    if (!(await checkAdmin())) {
       console.error("Unauthorized access");
       return [];
     }
@@ -95,7 +95,7 @@ export async function getRepEmails(pcm: string) {
 
 export async function getRepPhones(pcm: string) {
   try {
-    if (!checkAdmin()) {
+    if (!(await checkAdmin())) {
       console.error("Unauthorized access");
       return [];
     }
@@ -113,7 +113,7 @@ export async function getRepPhones(pcm: string) {
 
 export async function createRep(formData: RepFormValues) {
   try {
-    if (!checkAdmin()) {
+    if (!(await checkAdmin())) {
       console.error("Unauthorized access");
       return null;
     }
@@ -191,7 +191,7 @@ export async function createRep(formData: RepFormValues) {
 
 export async function getRep(pcm: string) {
   try {
-    if (!checkAdmin()) {
+    if (!(await checkAdmin())) {
       console.error("Unauthorized access");
       return null;
     }
@@ -211,7 +211,7 @@ export async function getRep(pcm: string) {
 
 export async function updateRep(formData: RepFormValues) {
   try {
-    if (!checkAdmin()) {
+    if (!(await checkAdmin())) {
       console.error("Unauthorized access");
       return null;
     }
@@ -295,7 +295,7 @@ export async function updateRep(formData: RepFormValues) {
 
 export async function deleteRep(pcm: string) {
   try {
-    if (!checkAdmin()) {
+    if (!(await checkAdmin())) {
       console.error("Unauthorized access");
       return null;
     }

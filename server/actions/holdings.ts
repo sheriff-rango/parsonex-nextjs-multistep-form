@@ -10,7 +10,7 @@ import { revalidatePath } from "next/cache";
 
 export async function getHolding(holdingId: string): Promise<Holding | null> {
   try {
-    if (!checkAdmin()) {
+    if (!(await checkAdmin())) {
       return null;
     }
 
@@ -38,7 +38,7 @@ export async function getHolding(holdingId: string): Promise<Holding | null> {
 
 export async function getHoldings(): Promise<Holding[] | null> {
   try {
-    if (!checkAdmin()) {
+    if (!(await checkAdmin())) {
       return [];
     }
 
@@ -83,7 +83,7 @@ export async function getHoldings(): Promise<Holding[] | null> {
 
 export async function createHolding(data: HoldingFormValues) {
   try {
-    if (!checkAdmin()) {
+    if (!(await checkAdmin())) {
       return null;
     }
 
@@ -118,7 +118,7 @@ export async function updateHolding(
   data: HoldingFormValues,
 ) {
   try {
-    if (!checkAdmin()) {
+    if (!(await checkAdmin())) {
       return null;
     }
 
@@ -153,7 +153,7 @@ export async function updateHolding(
 
 export async function deleteHolding(holdingId: string) {
   try {
-    if (!checkAdmin()) {
+    if (!(await checkAdmin())) {
       return null;
     }
 

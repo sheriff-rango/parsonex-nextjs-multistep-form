@@ -16,7 +16,7 @@ import { checkAdmin } from "@/server/server-only/auth";
 
 export async function getClients(): Promise<ClientWithPhoneAndEmail[]> {
   try {
-    if (!checkAdmin()) {
+    if (!(await checkAdmin())) {
       return [];
     }
 
@@ -50,7 +50,7 @@ export async function getClients(): Promise<ClientWithPhoneAndEmail[]> {
 
 export async function getAccountsByClientId(clientId: string) {
   try {
-    if (!checkAdmin()) {
+    if (!(await checkAdmin())) {
       throw new Error("Unauthorized access");
     }
 
@@ -82,7 +82,7 @@ export async function getAccountsByClientId(clientId: string) {
 
 export async function getClientEmails(clientId: string) {
   try {
-    if (!checkAdmin()) {
+    if (!(await checkAdmin())) {
       return [];
     }
 
@@ -99,7 +99,7 @@ export async function getClientEmails(clientId: string) {
 
 export async function getClientPhones(clientId: string) {
   try {
-    if (!checkAdmin()) {
+    if (!(await checkAdmin())) {
       return [];
     }
 
@@ -116,7 +116,7 @@ export async function getClientPhones(clientId: string) {
 
 export async function getClientAddresses(clientId: string) {
   try {
-    if (!checkAdmin()) {
+    if (!(await checkAdmin())) {
       return [];
     }
 
@@ -135,7 +135,7 @@ export async function getClientAddresses(clientId: string) {
 
 export async function getClientProfile(clientId: string) {
   try {
-    if (!checkAdmin()) {
+    if (!(await checkAdmin())) {
       return null;
     }
 
@@ -179,7 +179,7 @@ export async function getClientProfile(clientId: string) {
 
 export async function createClient(data: ClientData) {
   try {
-    if (!checkAdmin()) {
+    if (!(await checkAdmin())) {
       return null;
     }
 
@@ -287,7 +287,7 @@ export async function createClient(data: ClientData) {
 
 export async function updateClient(clientId: string, data: ClientData) {
   try {
-    if (!checkAdmin()) {
+    if (!(await checkAdmin())) {
       return null;
     }
 
@@ -416,7 +416,7 @@ export async function updateClient(clientId: string, data: ClientData) {
 
 export async function deleteClient(clientId: string) {
   try {
-    if (!checkAdmin()) {
+    if (!(await checkAdmin())) {
       return null;
     }
 
