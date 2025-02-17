@@ -27,6 +27,7 @@ import { DataTable } from "@/components/data-table";
 import { columns } from "./columns";
 import { Loader2 } from "lucide-react";
 import { generateReport } from "@/server/actions/reports";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   startDate: z.string(),
@@ -56,7 +57,11 @@ export default function NewReportPage() {
       setIsLoading(true);
       setHasSubmitted(true);
       const result = await generateReport(values);
-      setData(result);
+      if (result) {
+        setData(result);
+      } else {
+        toast.error("Error generating report");
+      }
     } catch (error) {
       console.error("Error generating report:", error);
     } finally {
