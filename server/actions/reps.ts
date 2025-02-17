@@ -61,7 +61,7 @@ export async function getRepAddresses(pcm: string) {
   try {
     if (!checkAdmin()) {
       console.error("Unauthorized access");
-      return null;
+      return [];
     }
 
     const results = await db
@@ -71,7 +71,7 @@ export async function getRepAddresses(pcm: string) {
     return results;
   } catch (error) {
     console.error("Error fetching rep addresses:", error);
-    return null;
+    return [];
   }
 }
 
