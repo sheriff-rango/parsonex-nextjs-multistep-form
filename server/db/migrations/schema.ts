@@ -1,4 +1,4 @@
-import { pgTable, serial, integer, varchar, numeric, date, timestamp, foreignKey, boolean, text, index, check, unique, uuid, jsonb, smallint, interval, pgSequence } from "drizzle-orm/pg-core"
+import { pgTable, serial, integer, varchar, numeric, date, timestamp, foreignKey, boolean, text, index, check, unique, jsonb, uuid, smallint, interval, pgSequence } from "drizzle-orm/pg-core"
 import { sql } from "drizzle-orm"
 
 
@@ -193,20 +193,6 @@ export const adDetail = pgTable("ad_detail", {
 	issocialmediahosted: boolean(),
 });
 
-export const signatures = pgTable("signatures", {
-	signatureid: serial().primaryKey().notNull(),
-	envelopeid: varchar({ length: 100 }).notNull(),
-	relatedid: integer().notNull(),
-	relatedentitytype: varchar({ length: 50 }).notNull(),
-	signaturedate: timestamp({ mode: 'string' }).notNull(),
-	isverified: boolean().notNull(),
-	verificationmethod: varchar({ length: 100 }),
-	provider: varchar({ length: 50 }).default('DocuSign').notNull(),
-}, (table) => [
-	index("idx_signatures_provider").using("btree", table.provider.asc().nullsLast().op("text_ops")),
-	check("chk_signatures_relatedentitytype", sql`(relatedentitytype)::text = ANY ((ARRAY['account'::character varying, 'rep'::character varying, 'compliance'::character varying, 'client'::character varying])::text[])`),
-]);
-
 export const wfItem = pgTable("wf_item", {
 	workItemId: serial("work_item_id").primaryKey().notNull(),
 	title: varchar({ length: 150 }).notNull(),
@@ -260,11 +246,6 @@ export const psiComRates = pgTable("psi_com_rates", {
 	createdOn: timestamp("created_on", { mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
 	lastUpdated: timestamp("last_updated", { mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
 	type: varchar({ length: 255 }),
-});
-
-export const repsArchived = pgTable("reps_archived", {
-	pcm: varchar({ length: 15 }).primaryKey().notNull(),
-	fullname: text().notNull(),
 });
 
 export const bankInfo = pgTable("bank_info", {
@@ -365,13 +346,6 @@ export const pasHoldings = pgTable("pas_holdings", {
 			name: "pas_account_holdings_product_id_fkey"
 		}),
 ]);
-
-export const reportingMetrics = pgTable("reporting_metrics", {
-	metricid: serial().primaryKey().notNull(),
-	metricname: varchar({ length: 100 }).notNull(),
-	metricvalue: numeric({ precision: 18, scale:  2 }).notNull(),
-	recordeddate: timestamp({ mode: 'string' }).notNull(),
-});
 
 export const documents = pgTable("documents", {
 	documentid: serial().primaryKey().notNull(),
@@ -500,7 +474,6 @@ export const clients = pgTable("clients", {
 	createdon: date().default(sql`CURRENT_TIMESTAMP`),
 	lastupdated: date().default(sql`CURRENT_TIMESTAMP`),
 	isActive: boolean("is_active").default(true),
-	nameSuffix: varchar("name_suffix", { length: 10 }),
 	entityname: varchar({ length: 100 }),
 	nameFull: text("name_full"),
 	nameSalutation: varchar("name_salutation", { length: 10 }),
@@ -509,33 +482,20 @@ export const clients = pgTable("clients", {
 	nameLast: varchar("name_last", { length: 50 }),
 	householdId: text("household_id"),
 	terminationDate: date("termination_date"),
-	addressId: integer("address_id"),
 	finprofileId: integer("finprofile_id"),
-	ofacId: integer("ofac_id"),
 	dob: date(),
 	tin: varchar({ length: 50 }),
 	gender: varchar({ length: 20 }),
-	maritalstatus: varchar({ length: 20 }),
-	employmentStatus: varchar("employment_status", { length: 50 }),
-	employmentOccupation: varchar("employment_occupation", { length: 100 }),
-	employer: varchar({ length: 100 }),
-	employerBusinessType: varchar("employer_business_type", { length: 100 }),
-	idNumber: varchar("id_number"),
-	idIssuer: varchar("id_issuer"),
-	idIssuedate: date("id_issuedate"),
-	idExpires: date("id_expires"),
-	idCitizenship: varchar("id_citizenship"),
-	isUscitizen: boolean("is_uscitizen"),
-	idVerifiedby: varchar("id_verifiedby"),
-	idType: varchar("id_type"),
+	maritalStatus: varchar("marital_status", { length: 20 }),
 	riaClient: boolean("ria_client").default(false),
 	bdClient: boolean("bd_client").default(false),
-	ofacResource: text("ofac_resource"),
-	ofacResult: varchar("ofac_result"),
-	ofacBy: varchar("ofac_by"),
-	ofacDate: date("ofac_date"),
 	pcm: varchar(),
 	repFullname: varchar("rep_fullname"),
+	employerAddress: jsonb("employer_address"),
+	address: jsonb(),
+	clientIdInfo: jsonb("client_id_info"),
+	employmentInfo: jsonb("employment_info"),
+	ofacCheck: jsonb("ofac_check"),
 }, (table) => [
 	unique("unique_clientid").on(table.clientId),
 ]);
@@ -635,18 +595,13 @@ export const clientFinprofile = pgTable("client_finprofile", {
 	networthLiquid: numeric("networth_liquid"),
 	incomeAnnual: numeric("income_annual"),
 	taxbracket: varchar({ length: 50 }),
-	incomeSource: varchar("income_source", { length: 50 }),
 	investExperience: varchar("invest_experience", { length: 50 }),
 	investExperienceYears: numeric("invest_experience_years"),
 	totalHeldawayAssets: numeric("total_heldaway_assets"),
-	updatedDate: text("updated_date"),
-	updatedBy: text("updated_by"),
-	incomeSourceType: varchar("income_source_type", { length: 50 }),
-	incomeDescription: varchar("income_description", { length: 255 }),
-	incomeSourceAdditional: varchar("income_source_additional", { length: 255 }),
 	createdOn: timestamp("created_on", { withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
 	lastUpdated: timestamp("last_updated", { withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
 	jointClientId: varchar("joint_client_id"),
+	incomeSources: jsonb("income_sources"),
 });
 
 export const psiHoldingsStaging = pgTable("psi_holdings_staging", {

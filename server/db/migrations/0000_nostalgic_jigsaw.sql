@@ -166,18 +166,6 @@ CREATE TABLE "ad_detail" (
 	"issocialmediahosted" boolean
 );
 --> statement-breakpoint
-CREATE TABLE "signatures" (
-	"signatureid" serial PRIMARY KEY NOT NULL,
-	"envelopeid" varchar(100) NOT NULL,
-	"relatedid" integer NOT NULL,
-	"relatedentitytype" varchar(50) NOT NULL,
-	"signaturedate" timestamp NOT NULL,
-	"isverified" boolean NOT NULL,
-	"verificationmethod" varchar(100),
-	"provider" varchar(50) DEFAULT 'DocuSign' NOT NULL,
-	CONSTRAINT "chk_signatures_relatedentitytype" CHECK ((relatedentitytype)::text = ANY ((ARRAY['account'::character varying, 'rep'::character varying, 'compliance'::character varying, 'client'::character varying])::text[]))
-);
---> statement-breakpoint
 CREATE TABLE "wf_item" (
 	"work_item_id" serial PRIMARY KEY NOT NULL,
 	"title" varchar(150) NOT NULL,
@@ -211,11 +199,6 @@ CREATE TABLE "psi_com_rates" (
 	"created_on" timestamp DEFAULT CURRENT_TIMESTAMP,
 	"last_updated" timestamp DEFAULT CURRENT_TIMESTAMP,
 	"type" varchar(255)
-);
---> statement-breakpoint
-CREATE TABLE "reps_archived" (
-	"pcm" varchar(15) PRIMARY KEY NOT NULL,
-	"fullname" text NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "bank_info" (
@@ -301,13 +284,6 @@ CREATE TABLE "pas_holdings" (
 	"cost_basis" numeric(18, 4),
 	"created_on" timestamp DEFAULT CURRENT_TIMESTAMP,
 	"last_updated" timestamp DEFAULT CURRENT_TIMESTAMP
-);
---> statement-breakpoint
-CREATE TABLE "reporting_metrics" (
-	"metricid" serial PRIMARY KEY NOT NULL,
-	"metricname" varchar(100) NOT NULL,
-	"metricvalue" numeric(18, 2) NOT NULL,
-	"recordeddate" timestamp NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "documents" (
@@ -427,7 +403,6 @@ CREATE TABLE "clients" (
 	"createdon" date DEFAULT CURRENT_TIMESTAMP,
 	"lastupdated" date DEFAULT CURRENT_TIMESTAMP,
 	"is_active" boolean DEFAULT true,
-	"name_suffix" varchar(10),
 	"entityname" varchar(100),
 	"name_full" text,
 	"name_salutation" varchar(10),
@@ -436,33 +411,20 @@ CREATE TABLE "clients" (
 	"name_last" varchar(50),
 	"household_id" text,
 	"termination_date" date,
-	"address_id" integer,
 	"finprofile_id" integer,
-	"ofac_id" integer,
 	"dob" date,
 	"tin" varchar(50),
 	"gender" varchar(20),
-	"maritalstatus" varchar(20),
-	"employment_status" varchar(50),
-	"employment_occupation" varchar(100),
-	"employer" varchar(100),
-	"employer_business_type" varchar(100),
-	"id_number" varchar,
-	"id_issuer" varchar,
-	"id_issuedate" date,
-	"id_expires" date,
-	"id_citizenship" varchar,
-	"is_uscitizen" boolean,
-	"id_verifiedby" varchar,
-	"id_type" varchar,
+	"marital_status" varchar(20),
 	"ria_client" boolean DEFAULT false,
 	"bd_client" boolean DEFAULT false,
-	"ofac_resource" text,
-	"ofac_result" varchar,
-	"ofac_by" varchar,
-	"ofac_date" date,
 	"pcm" varchar,
 	"rep_fullname" varchar,
+	"employer_address" jsonb,
+	"address" jsonb,
+	"client_id_info" jsonb,
+	"employment_info" jsonb,
+	"ofac_check" jsonb,
 	CONSTRAINT "unique_clientid" UNIQUE("client_id")
 );
 --> statement-breakpoint
@@ -554,18 +516,13 @@ CREATE TABLE "client_finprofile" (
 	"networth_liquid" numeric,
 	"income_annual" numeric,
 	"taxbracket" varchar(50),
-	"income_source" varchar(50),
 	"invest_experience" varchar(50),
 	"invest_experience_years" numeric,
 	"total_heldaway_assets" numeric,
-	"updated_date" text,
-	"updated_by" text,
-	"income_source_type" varchar(50),
-	"income_description" varchar(255),
-	"income_source_additional" varchar(255),
 	"created_on" timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
 	"last_updated" timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
-	"joint_client_id" varchar
+	"joint_client_id" varchar,
+	"income_sources" jsonb
 );
 --> statement-breakpoint
 CREATE TABLE "psi_holdings_staging" (
@@ -1074,7 +1031,6 @@ CREATE INDEX "idx_rep_registrations_type" ON "rep_registrations" USING btree ("r
 CREATE INDEX "idx_rep_commissions_account_id" ON "rep_commissions" USING btree ("account_id" int4_ops);--> statement-breakpoint
 CREATE INDEX "idx_rep_commissions_rep_id" ON "rep_commissions" USING btree ("rep_id" int4_ops);--> statement-breakpoint
 CREATE INDEX "idx_rep_commissions_transaction_id" ON "rep_commissions" USING btree ("order_id" int4_ops);--> statement-breakpoint
-CREATE INDEX "idx_signatures_provider" ON "signatures" USING btree ("provider" text_ops);--> statement-breakpoint
 CREATE INDEX "idx_wf_item_assignedto" ON "wf_item" USING btree ("assigned_to" int4_ops);--> statement-breakpoint
 CREATE INDEX "idx_wf_item_queue_roleid" ON "wf_item_queue" USING btree ("role_id" int4_ops);--> statement-breakpoint
 CREATE INDEX "idx_wf_item_queue_userid" ON "wf_item_queue" USING btree ("user_id" int4_ops);--> statement-breakpoint

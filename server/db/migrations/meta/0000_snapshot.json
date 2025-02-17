@@ -1059,90 +1059,6 @@
       "policies": {},
       "isRLSEnabled": false
     },
-    "public.signatures": {
-      "name": "signatures",
-      "schema": "",
-      "columns": {
-        "signatureid": {
-          "name": "signatureid",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "envelopeid": {
-          "name": "envelopeid",
-          "type": "varchar(100)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "relatedid": {
-          "name": "relatedid",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "relatedentitytype": {
-          "name": "relatedentitytype",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "signaturedate": {
-          "name": "signaturedate",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "isverified": {
-          "name": "isverified",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "verificationmethod": {
-          "name": "verificationmethod",
-          "type": "varchar(100)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "provider": {
-          "name": "provider",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'DocuSign'"
-        }
-      },
-      "indexes": {
-        "idx_signatures_provider": {
-          "name": "idx_signatures_provider",
-          "columns": [
-            {
-              "expression": "provider",
-              "asc": true,
-              "nulls": "last",
-              "opclass": "text_ops",
-              "isExpression": false
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "checkConstraints": {
-        "chk_signatures_relatedentitytype": {
-          "name": "chk_signatures_relatedentitytype",
-          "value": "(relatedentitytype)::text = ANY ((ARRAY['account'::character varying, 'rep'::character varying, 'compliance'::character varying, 'client'::character varying])::text[])"
-        }
-      },
-      "policies": {},
-      "isRLSEnabled": false
-    },
     "public.wf_item": {
       "name": "wf_item",
       "schema": "",
@@ -1424,31 +1340,6 @@
           "type": "varchar(255)",
           "primaryKey": false,
           "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "checkConstraints": {},
-      "policies": {},
-      "isRLSEnabled": false
-    },
-    "public.reps_archived": {
-      "name": "reps_archived",
-      "schema": "",
-      "columns": {
-        "pcm": {
-          "name": "pcm",
-          "type": "varchar(15)",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "fullname": {
-          "name": "fullname",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
         }
       },
       "indexes": {},
@@ -2020,43 +1911,6 @@
           "onUpdate": "no action"
         }
       },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "checkConstraints": {},
-      "policies": {},
-      "isRLSEnabled": false
-    },
-    "public.reporting_metrics": {
-      "name": "reporting_metrics",
-      "schema": "",
-      "columns": {
-        "metricid": {
-          "name": "metricid",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "metricname": {
-          "name": "metricname",
-          "type": "varchar(100)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "metricvalue": {
-          "name": "metricvalue",
-          "type": "numeric(18, 2)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "recordeddate": {
-          "name": "recordeddate",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "checkConstraints": {},
@@ -2842,12 +2696,6 @@
           "notNull": false,
           "default": true
         },
-        "name_suffix": {
-          "name": "name_suffix",
-          "type": "varchar(10)",
-          "primaryKey": false,
-          "notNull": false
-        },
         "entityname": {
           "name": "entityname",
           "type": "varchar(100)",
@@ -2896,20 +2744,8 @@
           "primaryKey": false,
           "notNull": false
         },
-        "address_id": {
-          "name": "address_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
         "finprofile_id": {
           "name": "finprofile_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "ofac_id": {
-          "name": "ofac_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -2932,81 +2768,9 @@
           "primaryKey": false,
           "notNull": false
         },
-        "maritalstatus": {
-          "name": "maritalstatus",
+        "marital_status": {
+          "name": "marital_status",
           "type": "varchar(20)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "employment_status": {
-          "name": "employment_status",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "employment_occupation": {
-          "name": "employment_occupation",
-          "type": "varchar(100)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "employer": {
-          "name": "employer",
-          "type": "varchar(100)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "employer_business_type": {
-          "name": "employer_business_type",
-          "type": "varchar(100)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "id_number": {
-          "name": "id_number",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "id_issuer": {
-          "name": "id_issuer",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "id_issuedate": {
-          "name": "id_issuedate",
-          "type": "date",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "id_expires": {
-          "name": "id_expires",
-          "type": "date",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "id_citizenship": {
-          "name": "id_citizenship",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "is_uscitizen": {
-          "name": "is_uscitizen",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "id_verifiedby": {
-          "name": "id_verifiedby",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "id_type": {
-          "name": "id_type",
-          "type": "varchar",
           "primaryKey": false,
           "notNull": false
         },
@@ -3024,30 +2788,6 @@
           "notNull": false,
           "default": false
         },
-        "ofac_resource": {
-          "name": "ofac_resource",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "ofac_result": {
-          "name": "ofac_result",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "ofac_by": {
-          "name": "ofac_by",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "ofac_date": {
-          "name": "ofac_date",
-          "type": "date",
-          "primaryKey": false,
-          "notNull": false
-        },
         "pcm": {
           "name": "pcm",
           "type": "varchar",
@@ -3057,6 +2797,36 @@
         "rep_fullname": {
           "name": "rep_fullname",
           "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "employer_address": {
+          "name": "employer_address",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "address": {
+          "name": "address",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "client_id_info": {
+          "name": "client_id_info",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "employment_info": {
+          "name": "employment_info",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ofac_check": {
+          "name": "ofac_check",
+          "type": "jsonb",
           "primaryKey": false,
           "notNull": false
         }
@@ -3626,12 +3396,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "income_source": {
-          "name": "income_source",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false
-        },
         "invest_experience": {
           "name": "invest_experience",
           "type": "varchar(50)",
@@ -3647,36 +3411,6 @@
         "total_heldaway_assets": {
           "name": "total_heldaway_assets",
           "type": "numeric",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "updated_date": {
-          "name": "updated_date",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "updated_by": {
-          "name": "updated_by",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "income_source_type": {
-          "name": "income_source_type",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "income_description": {
-          "name": "income_description",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "income_source_additional": {
-          "name": "income_source_additional",
-          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": false
         },
@@ -3697,6 +3431,12 @@
         "joint_client_id": {
           "name": "joint_client_id",
           "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "income_sources": {
+          "name": "income_sources",
+          "type": "jsonb",
           "primaryKey": false,
           "notNull": false
         }
