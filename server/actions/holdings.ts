@@ -11,7 +11,7 @@ import { revalidatePath } from "next/cache";
 export async function getHolding(holdingId: string): Promise<Holding | null> {
   try {
     if (!checkAdmin()) {
-      throw new Error("Unauthorized access");
+      return null;
     }
 
     const [holding] = await db
@@ -39,7 +39,7 @@ export async function getHolding(holdingId: string): Promise<Holding | null> {
 export async function getHoldings(): Promise<Holding[] | null> {
   try {
     if (!checkAdmin()) {
-      throw new Error("Unauthorized access");
+      return [];
     }
 
     const result = await db
@@ -77,14 +77,14 @@ export async function getHoldings(): Promise<Holding[] | null> {
       }));
   } catch (error) {
     console.error("Error fetching holdings:", error);
-    return null;
+    return [];
   }
 }
 
 export async function createHolding(data: HoldingFormValues) {
   try {
     if (!checkAdmin()) {
-      throw new Error("Unauthorized access");
+      return null;
     }
 
     await db.insert(psiHoldings).values({
@@ -109,7 +109,7 @@ export async function createHolding(data: HoldingFormValues) {
     return { success: true };
   } catch (error) {
     console.error("Error creating holding:", error);
-    throw new Error("Failed to create holding");
+    return null;
   }
 }
 
@@ -119,7 +119,7 @@ export async function updateHolding(
 ) {
   try {
     if (!checkAdmin()) {
-      throw new Error("Unauthorized access");
+      return null;
     }
 
     await db
@@ -144,23 +144,25 @@ export async function updateHolding(
       .where(eq(psiHoldings.holdingId, holdingId));
 
     revalidatePath("/dashboard/accounts");
+    return { success: true };
   } catch (error) {
     console.error("Error updating holding:", error);
-    throw new Error("Failed to update holding");
+    return null;
   }
 }
 
 export async function deleteHolding(holdingId: string) {
   try {
     if (!checkAdmin()) {
-      throw new Error("Unauthorized access");
+      return null;
     }
 
     await db.delete(psiHoldings).where(eq(psiHoldings.holdingId, holdingId));
 
     revalidatePath("/dashboard/accounts");
+    return { success: true };
   } catch (error) {
     console.error("Error deleting holding:", error);
-    throw new Error("Failed to delete holding");
+    return null;
   }
 }

@@ -4,7 +4,7 @@ import { columns } from "./columns";
 import { StickyHeader } from "@/components/sticky-header";
 
 export default async function RepsPage() {
-  const reps = (await getActiveReps()) || [];
+  const reps = await getActiveReps();
 
   return (
     <>

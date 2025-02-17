@@ -45,7 +45,8 @@ export async function getRepYearlyProduction(
 ): Promise<YearlyProductionData[] | null> {
   try {
     if (!checkAdmin()) {
-      throw new Error("Unauthorized access");
+      console.error("Unauthorized access");
+      return null;
     }
 
     const result = await db
@@ -93,7 +94,8 @@ export async function generateReport({
 }) {
   try {
     if (!checkAdmin()) {
-      throw new Error("Unauthorized access");
+      console.error("Unauthorized access");
+      return null;
     }
 
     const whereConditions = [
@@ -133,6 +135,6 @@ export async function generateReport({
     }));
   } catch (error) {
     console.error("Error generating report:", error);
-    throw error;
+    return null;
   }
 }

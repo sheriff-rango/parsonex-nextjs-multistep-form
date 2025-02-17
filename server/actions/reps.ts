@@ -6,37 +6,13 @@ import { ContactField } from "@/types";
 import { eq, and } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { checkAdmin } from "@/server/server-only/auth";
-import { z } from "zod";
-
-const contactFieldSchema = z.object({
-  type: z.string().min(1, "Type is required"),
-  value: z.string().min(1, "Value is required"),
-  isPrimary: z.boolean(),
-});
-
-const repFormSchema = z.object({
-  pcm: z.string().min(1, "PCM is required"),
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
-  fullName: z.string(),
-  repType: z.string().min(1, "Rep type is required"),
-  isActive: z.boolean().default(true),
-  isBranchMgr: z.boolean().default(false),
-  dob: z.string().nullable(),
-  gender: z.string().nullable(),
-  phones: z
-    .array(contactFieldSchema)
-    .min(1, "At least one phone number is required"),
-  emails: z.array(contactFieldSchema).min(1, "At least one email is required"),
-  addresses: z
-    .array(contactFieldSchema)
-    .min(1, "At least one address is required"),
-});
+import { RepFormValues, repFormSchema } from "@/types/forms";
 
 export async function getActiveReps() {
   try {
     if (!checkAdmin()) {
-      throw new Error("Unauthorized access");
+      console.error("Unauthorized access");
+      return [];
     }
 
     const results = await db
@@ -47,42 +23,45 @@ export async function getActiveReps() {
     return results;
   } catch (error) {
     console.error("Error fetching active reps:", error);
-    throw error;
+    return [];
   }
 }
 
 export async function getAllReps() {
   try {
     if (!checkAdmin()) {
-      throw new Error("Unauthorized access");
+      console.error("Unauthorized access");
+      return [];
     }
 
     const results = await db.select().from(reps).orderBy(reps.fullName);
     return results;
   } catch (error) {
     console.error("Error fetching reps:", error);
-    throw error;
+    return [];
   }
 }
 
 export async function getRepProfile(pcm: string) {
   try {
     if (!checkAdmin()) {
-      throw new Error("Unauthorized access");
+      console.error("Unauthorized access");
+      return null;
     }
 
     const result = await db.select().from(reps).where(eq(reps.pcm, pcm));
     return result[0];
   } catch (error) {
     console.error("Error fetching rep profile:", error);
-    throw error;
+    return null;
   }
 }
 
 export async function getRepAddresses(pcm: string) {
   try {
     if (!checkAdmin()) {
-      throw new Error("Unauthorized access");
+      console.error("Unauthorized access");
+      return null;
     }
 
     const results = await db
@@ -92,14 +71,15 @@ export async function getRepAddresses(pcm: string) {
     return results;
   } catch (error) {
     console.error("Error fetching rep addresses:", error);
-    throw error;
+    return null;
   }
 }
 
 export async function getRepEmails(pcm: string) {
   try {
     if (!checkAdmin()) {
-      throw new Error("Unauthorized access");
+      console.error("Unauthorized access");
+      return [];
     }
 
     const results = await db
@@ -109,14 +89,15 @@ export async function getRepEmails(pcm: string) {
     return results;
   } catch (error) {
     console.error("Error fetching rep emails:", error);
-    throw error;
+    return [];
   }
 }
 
 export async function getRepPhones(pcm: string) {
   try {
     if (!checkAdmin()) {
-      throw new Error("Unauthorized access");
+      console.error("Unauthorized access");
+      return [];
     }
 
     const results = await db
@@ -126,14 +107,15 @@ export async function getRepPhones(pcm: string) {
     return results;
   } catch (error) {
     console.error("Error fetching rep phones:", error);
-    throw error;
+    return [];
   }
 }
 
-export async function createRep(formData: z.infer<typeof repFormSchema>) {
+export async function createRep(formData: RepFormValues) {
   try {
     if (!checkAdmin()) {
-      throw new Error("Unauthorized access");
+      console.error("Unauthorized access");
+      return null;
     }
 
     const validatedData = repFormSchema.parse(formData);
@@ -203,14 +185,15 @@ export async function createRep(formData: z.infer<typeof repFormSchema>) {
     return rep;
   } catch (error) {
     console.error("Error creating rep:", error);
-    throw error;
+    return null;
   }
 }
 
 export async function getRep(pcm: string) {
   try {
     if (!checkAdmin()) {
-      throw new Error("Unauthorized access");
+      console.error("Unauthorized access");
+      return null;
     }
 
     const rep = await db.select().from(reps).where(eq(reps.pcm, pcm));
@@ -222,14 +205,15 @@ export async function getRep(pcm: string) {
     return rep[0];
   } catch (error) {
     console.error("Error getting rep:", error);
-    throw error;
+    return null;
   }
 }
 
-export async function updateRep(formData: z.infer<typeof repFormSchema>) {
+export async function updateRep(formData: RepFormValues) {
   try {
     if (!checkAdmin()) {
-      throw new Error("Unauthorized access");
+      console.error("Unauthorized access");
+      return null;
     }
 
     const validatedData = repFormSchema.parse(formData);
@@ -305,14 +289,15 @@ export async function updateRep(formData: z.infer<typeof repFormSchema>) {
     revalidatePath("/dashboard/reps");
   } catch (error) {
     console.error("Error updating rep:", error);
-    throw error;
+    return null;
   }
 }
 
 export async function deleteRep(pcm: string) {
   try {
     if (!checkAdmin()) {
-      throw new Error("Unauthorized access");
+      console.error("Unauthorized access");
+      return null;
     }
 
     await db.transaction(async (tx) => {
@@ -325,6 +310,6 @@ export async function deleteRep(pcm: string) {
     revalidatePath("/dashboard/reps");
   } catch (error) {
     console.error("Error deleting rep:", error);
-    throw error;
+    return null;
   }
 }
