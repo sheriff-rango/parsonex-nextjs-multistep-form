@@ -1,5 +1,5 @@
 import { FieldValue, WatchObserver } from "react-hook-form";
-import { z } from "zod";
+import { ZodType } from "zod";
 
 export enum TFieldItem {
   TEXT = "text",
@@ -20,7 +20,6 @@ export interface IBasicField {
   required?: boolean;
   className?: string;
   placeholder?: string;
-  resolver?: z.ZodString;
 }
 
 export interface IInputField extends IBasicField {}
@@ -56,4 +55,5 @@ export interface IMultiStepForm<DataType extends FieldValues> {
   className?: string;
   subscriptionCallback?: WatchObserver<FieldValue<DataType>>;
   events?: TEvents<DataType>;
+  resolver?: ZodType<any, any, any>;
 }

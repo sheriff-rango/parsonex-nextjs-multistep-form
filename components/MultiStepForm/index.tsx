@@ -18,6 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./components";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const MultiStepForm: React.FC<IMultiStepForm<DataType>> = (props) => {
   const [step, setStep] = useState(0);
@@ -29,6 +30,7 @@ const MultiStepForm: React.FC<IMultiStepForm<DataType>> = (props) => {
     subscriptionCallback,
     events,
     mode = TMode.CREATING,
+    resolver,
   } = props;
 
   const totalSteps = useMemo(() => options.length || 0, [options]);

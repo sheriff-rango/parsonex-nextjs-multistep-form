@@ -1,6 +1,6 @@
-import { H1 } from "@/components/typography";
-import { RepForm } from "@/components/rep-form";
 import MultiStepForm, { TFieldItem } from "@/components/MultiStepForm";
+import { clientFormSchema } from "@/types";
+import { z } from "zod";
 
 export default async function MultiStep() {
   return (
@@ -14,32 +14,38 @@ export default async function MultiStep() {
               label: "First Name",
               type: TFieldItem.TEXT,
               required: true,
+              //   resolver: z.string().min(1, "First name is required"),
             },
             {
               name: "nameMiddle",
               label: "Middle Name",
               type: TFieldItem.TEXT,
+              //   resolver: z.string().optional().default(""),
             },
             {
               name: "nameLast",
               label: "Last Name",
               type: TFieldItem.TEXT,
               required: true,
+              //   resolver: z.string().min(1, "Last name is required"),
             },
             {
               name: "nameSuffix",
               label: "Suffix",
               type: TFieldItem.TEXT,
+              //   resolver: z.string().optional().default(""),
             },
             {
               name: "nameSalutation",
               label: "Salutation",
               type: TFieldItem.TEXT,
+              //   resolver: z.string().optional().default(""),
             },
             {
               name: "dob",
               label: "Date of Birth",
               type: TFieldItem.DATE,
+              //   resolver: z.string().nullable(),
             },
             {
               name: "gender",
@@ -49,6 +55,7 @@ export default async function MultiStep() {
                 { label: "Male", value: "male" },
                 { label: "Female", value: "female" },
               ],
+              //   resolver: z.string().nullable(),
             },
             {
               name: "maritalstatus",
@@ -60,12 +67,14 @@ export default async function MultiStep() {
                 { label: "Divorced", value: "divorced" },
                 { label: "Widowed", value: "widowed" },
               ],
+              //   resolver: z.string().nullable(),
             },
             {
               name: "tin",
               label: "TIN",
               type: TFieldItem.TEXT,
               required: true,
+              //   resolver: z.string().min(1, "TIN is required"),
             },
           ],
         },
@@ -76,21 +85,25 @@ export default async function MultiStep() {
               name: "employmentStatus",
               label: "Employment Status",
               type: TFieldItem.TEXT,
+              //   resolver: z.string().optional().default(""),
             },
             {
               name: "employmentOccupation",
               label: "Occupation",
               type: TFieldItem.TEXT,
+              //   resolver: z.string().optional().default(""),
             },
             {
               name: "employer",
               label: "Employer",
               type: TFieldItem.TEXT,
+              //   resolver: z.string().optional().default(""),
             },
             {
               name: "employerBusinessType",
               label: "Employer Business Type",
               type: TFieldItem.TEXT,
+              //   resolver: z.string().optional().default(""),
             },
           ],
         },
@@ -101,21 +114,25 @@ export default async function MultiStep() {
               name: "isUscitizen",
               label: "US Citizen",
               type: TFieldItem.CHECKBOX,
+              //   resolver: z.boolean().default(false),
             },
             {
               name: "riaClient",
               label: "RIA Client",
               type: TFieldItem.CHECKBOX,
+              //   resolver: z.boolean().default(false),
             },
             {
               name: "bdClient",
               label: "BD Client",
               type: TFieldItem.CHECKBOX,
+              //   resolver: z.boolean().default(false),
             },
             {
               name: "isActive",
               label: "Active",
               type: TFieldItem.CHECKBOX,
+              //   resolver: z.boolean().default(true),
             },
           ],
           gridCols: 1,
@@ -190,6 +207,7 @@ export default async function MultiStep() {
           ],
         },
       ]}
+      resolver={clientFormSchema}
     />
   );
 }
