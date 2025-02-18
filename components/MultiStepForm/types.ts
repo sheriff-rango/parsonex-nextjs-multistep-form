@@ -1,3 +1,4 @@
+import { FieldValue, WatchObserver } from "react-hook-form";
 import { z } from "zod";
 
 export enum TFieldItem {
@@ -29,10 +30,24 @@ type TFormStepOption = {
   fields: IField[];
 };
 
-export interface IMultiStepForm {
+export type DataType = {
+  [x: string]: any;
+};
+
+import { FieldValues } from "react-hook-form";
+
+export type TEvents<DataType> = {
+  onSubmit: (values: DataType) => Promise<void>;
+  onError: (error: any) => void;
+};
+
+export interface IMultiStepForm<DataType extends FieldValues> {
   title?: string;
+  defaultValues?: DataType;
   options: TFormStepOption[];
   showProgress?: boolean;
   className?: string;
   gridCols?: number;
+  subscriptionCallback?: WatchObserver<FieldValue<DataType>>;
+  events?: TEvents<DataType>;
 }
