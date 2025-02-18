@@ -16,8 +16,8 @@ import { checkAdmin } from "@/server/server-only/auth";
 
 export async function getClients(): Promise<ClientWithPhoneAndEmail[]> {
   try {
-    if (!checkAdmin()) {
-      throw new Error("Unauthorized access");
+    if (!(await checkAdmin())) {
+      return [];
     }
 
     const result = await db
@@ -44,13 +44,13 @@ export async function getClients(): Promise<ClientWithPhoneAndEmail[]> {
     return result as ClientWithPhoneAndEmail[];
   } catch (error) {
     console.error("Error fetching clients:", error);
-    throw error;
+    return [];
   }
 }
 
 export async function getAccountsByClientId(clientId: string) {
   try {
-    if (!checkAdmin()) {
+    if (!(await checkAdmin())) {
       throw new Error("Unauthorized access");
     }
 
@@ -82,8 +82,8 @@ export async function getAccountsByClientId(clientId: string) {
 
 export async function getClientEmails(clientId: string) {
   try {
-    if (!checkAdmin()) {
-      throw new Error("Unauthorized access");
+    if (!(await checkAdmin())) {
+      return [];
     }
 
     const results = await db
@@ -93,14 +93,14 @@ export async function getClientEmails(clientId: string) {
     return results;
   } catch (error) {
     console.error("Error fetching client emails:", error);
-    throw error;
+    return [];
   }
 }
 
 export async function getClientPhones(clientId: string) {
   try {
-    if (!checkAdmin()) {
-      throw new Error("Unauthorized access");
+    if (!(await checkAdmin())) {
+      return [];
     }
 
     const results = await db
@@ -110,14 +110,14 @@ export async function getClientPhones(clientId: string) {
     return results;
   } catch (error) {
     console.error("Error fetching client phones:", error);
-    throw error;
+    return [];
   }
 }
 
 export async function getClientAddresses(clientId: string) {
   try {
-    if (!checkAdmin()) {
-      throw new Error("Unauthorized access");
+    if (!(await checkAdmin())) {
+      return [];
     }
 
     const results = await db
@@ -129,14 +129,14 @@ export async function getClientAddresses(clientId: string) {
     return results;
   } catch (error) {
     console.error("Error fetching client addresses:", error);
-    throw error;
+    return [];
   }
 }
 
 export async function getClientProfile(clientId: string) {
   try {
-    if (!checkAdmin()) {
-      throw new Error("Unauthorized access");
+    if (!(await checkAdmin())) {
+      return null;
     }
 
     const clientResult = await db
@@ -173,14 +173,14 @@ export async function getClientProfile(clientId: string) {
     };
   } catch (error) {
     console.error("Error fetching client profile:", error);
-    throw error;
+    return null;
   }
 }
 
 export async function createClient(data: ClientData) {
   try {
-    if (!checkAdmin()) {
-      throw new Error("Unauthorized access");
+    if (!(await checkAdmin())) {
+      return null;
     }
 
     // Insert client
@@ -281,14 +281,14 @@ export async function createClient(data: ClientData) {
     return client;
   } catch (error) {
     console.error("Error creating client:", error);
-    throw new Error("Failed to create client.");
+    return null;
   }
 }
 
 export async function updateClient(clientId: string, data: ClientData) {
   try {
-    if (!checkAdmin()) {
-      throw new Error("Unauthorized access");
+    if (!(await checkAdmin())) {
+      return null;
     }
 
     // Update client
@@ -407,16 +407,17 @@ export async function updateClient(clientId: string, data: ClientData) {
 
     revalidatePath("/dashboard/clients");
     revalidatePath(`/dashboard/clients/${clientId}`);
+    return true;
   } catch (error) {
     console.error("Error updating client:", error);
-    throw new Error("Failed to update client.");
+    return null;
   }
 }
 
 export async function deleteClient(clientId: string) {
   try {
-    if (!checkAdmin()) {
-      throw new Error("Unauthorized access");
+    if (!(await checkAdmin())) {
+      return null;
     }
 
     // Delete associated records first
@@ -441,8 +442,9 @@ export async function deleteClient(clientId: string) {
     await db.delete(clients).where(eq(clients.clientId, clientId));
 
     revalidatePath("/dashboard/clients");
+    return true;
   } catch (error) {
     console.error("Error deleting client:", error);
-    throw new Error("Failed to delete client");
+    return null;
   }
 }

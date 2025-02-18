@@ -29,7 +29,7 @@ export function RepMenu({ rep }: { rep: Rep }) {
 
   const handleDelete = async () => {
     try {
-      await deleteRep(rep.repId);
+      await deleteRep(rep.pcm);
       setOpen(false);
       router.push("/dashboard/reps");
     } catch (error) {
@@ -48,7 +48,7 @@ export function RepMenu({ rep }: { rep: Rep }) {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem
-            onClick={() => router.push(`/dashboard/reps/${rep.repId}/update`)}
+            onClick={() => router.push(`/dashboard/reps/${rep.pcm}/update`)}
           >
             Update Rep
           </DropdownMenuItem>

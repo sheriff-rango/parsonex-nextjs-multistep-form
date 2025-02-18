@@ -7,8 +7,9 @@ import { checkAdmin } from "@/server/server-only/auth";
 
 export async function getQuarterlyRevenue() {
   try {
-    if (!checkAdmin()) {
-      throw new Error("Unauthorized access");
+    if (!(await checkAdmin())) {
+      console.error("Unauthorized access");
+      return [];
     }
 
     const fourYearsAgo = new Date();
@@ -40,14 +41,15 @@ export async function getQuarterlyRevenue() {
     return result;
   } catch (error) {
     console.error("Error fetching quarterly revenue:", error);
-    return null;
+    return [];
   }
 }
 
 export async function getDashboardMetrics() {
   try {
-    if (!checkAdmin()) {
-      throw new Error("Unauthorized access");
+    if (!(await checkAdmin())) {
+      console.error("Unauthorized access");
+      return null;
     }
 
     const activeClients = await db

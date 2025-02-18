@@ -17,10 +17,9 @@ import { repFormSchema } from "@/types/forms";
 
 interface RepFormProps {
   data?: RepData;
-  repId?: string;
 }
 
-export function RepForm({ data, repId }: RepFormProps) {
+export function RepForm({ data }: RepFormProps) {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -30,8 +29,8 @@ export function RepForm({ data, repId }: RepFormProps) {
     resolver: zodResolver(repFormSchema),
     mode: "onChange",
     defaultValues: data || {
+      pcm: "",
       firstName: "",
-      middleName: "",
       lastName: "",
       fullName: "",
       repType: "",
@@ -47,11 +46,9 @@ export function RepForm({ data, repId }: RepFormProps) {
 
   useEffect(() => {
     const subscription = form.watch((value, { name }) => {
-      if (name?.match(/^(firstName|middleName|lastName)$/)) {
-        const { firstName, middleName, lastName } = value;
-        const fullName = [firstName, middleName, lastName]
-          .filter(Boolean)
-          .join(" ");
+      if (name?.match(/^(firstName|lastName)$/)) {
+        const { firstName, lastName } = value;
+        const fullName = [firstName, lastName].filter(Boolean).join(" ");
         form.setValue("fullName", fullName);
       }
     });
@@ -62,8 +59,8 @@ export function RepForm({ data, repId }: RepFormProps) {
     setLoading(true);
 
     try {
-      if (repId) {
-        await updateRep(repId, values);
+      if (data) {
+        await updateRep(values);
         toast.success("Rep updated successfully");
       } else {
         await createRep(values);
@@ -146,7 +143,7 @@ export function RepForm({ data, repId }: RepFormProps) {
                   disabled={isLoading || isTransitioning}
                   className="ml-auto"
                 >
-                  {repId
+                  {data
                     ? isLoading
                       ? "Updating..."
                       : "Update Rep"

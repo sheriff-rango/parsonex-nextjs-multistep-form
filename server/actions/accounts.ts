@@ -10,7 +10,7 @@ import { revalidatePath } from "next/cache";
 
 export async function getAccounts(): Promise<Account[]> {
   try {
-    if (!checkAdmin()) {
+    if (!(await checkAdmin())) {
       throw new Error("Unauthorized access");
     }
 
@@ -28,7 +28,7 @@ export async function getAccounts(): Promise<Account[]> {
 
 export async function getAccountsByPCM(pcm: string): Promise<Account[]> {
   try {
-    if (!checkAdmin()) {
+    if (!(await checkAdmin())) {
       throw new Error("Unauthorized access");
     }
 
@@ -46,7 +46,7 @@ export async function getAccountsByPCM(pcm: string): Promise<Account[]> {
 
 export async function getAccountProfile(accountId: string): Promise<Account> {
   try {
-    if (!checkAdmin()) {
+    if (!(await checkAdmin())) {
       throw new Error("Unauthorized access");
     }
 
@@ -70,7 +70,7 @@ export async function getAccountHoldings(
   accountId: string,
 ): Promise<Holding[]> {
   try {
-    if (!checkAdmin()) {
+    if (!(await checkAdmin())) {
       throw new Error("Unauthorized access");
     }
 
@@ -152,7 +152,7 @@ export async function updateAccount(
 
 export async function deleteAccount(accountId: string) {
   try {
-    if (!checkAdmin()) {
+    if (!(await checkAdmin())) {
       throw new Error("Unauthorized access");
     }
 

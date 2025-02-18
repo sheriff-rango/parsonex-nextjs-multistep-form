@@ -1419,14 +1419,8 @@ export const notes = pgTable(
 export const reps = pgTable(
   "reps",
   {
-    repId: varchar("rep_id")
-      .default(sql`nextval('reps_rep_id_seq'::regclass)`)
-      .primaryKey()
-      .notNull(),
-    pcm: varchar({ length: 15 }),
-    createdon: timestamp({ mode: "string" }),
+    pcm: varchar({ length: 15 }).primaryKey().notNull(),
     firstName: varchar("firstname", { length: 50 }),
-    middleName: varchar("middlename", { length: 50 }),
     lastName: varchar("lastname", { length: 50 }),
     fullName: varchar("fullname"),
     isActive: boolean("is_active").default(true),

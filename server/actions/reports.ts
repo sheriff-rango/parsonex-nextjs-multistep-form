@@ -8,7 +8,7 @@ import { summaryProduction, listOrderTypes } from "@/server/db/schema";
 
 export async function getARR(): Promise<ARRData[] | null> {
   try {
-    if (!checkAdmin()) {
+    if (!(await checkAdmin())) {
       throw new Error("Unauthorized access");
     }
 
@@ -44,8 +44,9 @@ export async function getRepYearlyProduction(
   repName: string,
 ): Promise<YearlyProductionData[] | null> {
   try {
-    if (!checkAdmin()) {
-      throw new Error("Unauthorized access");
+    if (!(await checkAdmin())) {
+      console.error("Unauthorized access");
+      return null;
     }
 
     const result = await db
@@ -92,8 +93,9 @@ export async function generateReport({
   isArr?: boolean;
 }) {
   try {
-    if (!checkAdmin()) {
-      throw new Error("Unauthorized access");
+    if (!(await checkAdmin())) {
+      console.error("Unauthorized access");
+      return null;
     }
 
     const whereConditions = [
@@ -133,6 +135,6 @@ export async function generateReport({
     }));
   } catch (error) {
     console.error("Error generating report:", error);
-    throw error;
+    return null;
   }
 }

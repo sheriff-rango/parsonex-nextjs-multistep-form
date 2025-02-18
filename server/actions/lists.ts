@@ -35,8 +35,9 @@ export type ListName =
 
 export async function getListValues(listName: ListName): Promise<string[]> {
   try {
-    if (!checkAdmin()) {
-      throw new Error("Unauthorized access");
+    if (!(await checkAdmin())) {
+      console.error("Unauthorized access");
+      return [];
     }
 
     const results = await db
@@ -48,7 +49,7 @@ export async function getListValues(listName: ListName): Promise<string[]> {
     return results.map((result) => result.name);
   } catch (error) {
     console.error(`Error fetching ${listName}:`, error);
-    throw error;
+    return [];
   }
 }
 

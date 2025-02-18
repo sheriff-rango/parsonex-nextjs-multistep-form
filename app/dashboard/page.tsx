@@ -5,8 +5,15 @@ import {
   getQuarterlyRevenue,
   getDashboardMetrics,
 } from "@/server/actions/dashboard";
+import { checkAdmin } from "@/server/server-only/auth";
 
 export default async function Page() {
+  const isAdmin = await checkAdmin();
+
+  if (!isAdmin) {
+    return <div>You are not authorized to access this page</div>;
+  }
+
   const quarterlyRevenue = (await getQuarterlyRevenue()) || [];
   const metrics = (await getDashboardMetrics()) || {
     q4Production: 1_200_000,

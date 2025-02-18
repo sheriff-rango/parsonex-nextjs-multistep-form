@@ -15,7 +15,7 @@ export async function getSubmissions() {
     return submissions;
   } catch (error) {
     console.error("Error fetching submissions:", error);
-    throw new Error("Failed to fetch submissions");
+    return [];
   }
 }
 
@@ -40,6 +40,6 @@ export async function createSubmission(data: any) {
     return submission[0];
   } catch (error) {
     console.error("Error creating submission:", error);
-    throw new Error("Failed to create submission");
+    return null;
   }
 }
