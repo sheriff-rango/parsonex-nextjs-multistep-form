@@ -6,3 +6,4 @@ export * from "./FormItem";
 export * from "./FormLabel";
 export * from "./FormMessage";
 export * from "./Label";
+export * from "./Select";
