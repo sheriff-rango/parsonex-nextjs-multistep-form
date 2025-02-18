@@ -6,8 +6,12 @@ import { formatCurrency } from "@/lib/utils";
 
 export const columns: ColumnDef<any>[] = [
   {
-    accessorFn: (row) => `${row.clientLastName}, ${row.clientFirstName}`,
-    header: "Client Name",
+    header: "First Name",
+    accessorKey: "clientFirstName",
+  },
+  {
+    header: "Last Name",
+    accessorKey: "clientLastName",
   },
   {
     accessorKey: "accountType",

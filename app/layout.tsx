@@ -19,7 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className + "min-h-[100svh] bg-gray-bg"}>
-        <ClerkProvider>
+        <ClerkProvider dynamic>
           <div className="absolute inset-0 flex">
             <div className="h-full flex-grow">{children}</div>
           </div>
