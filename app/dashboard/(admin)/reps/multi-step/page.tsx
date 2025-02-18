@@ -1,8 +1,9 @@
+"use client";
+
 import MultiStepForm, { TFieldItem } from "@/components/MultiStepForm";
 import { clientFormSchema } from "@/types";
-import { z } from "zod";
 
-export default async function MultiStep() {
+export default function MultiStep() {
   return (
     <MultiStepForm
       options={[

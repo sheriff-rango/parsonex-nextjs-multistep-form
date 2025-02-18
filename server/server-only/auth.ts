@@ -1,11 +1,11 @@
 import "server-only";
-import { currentUser } from "@clerk/nextjs/server";
+
+import { auth } from "@clerk/nextjs/server";
+import { PrivateMetadata } from "@/types";
 
 export async function checkAdmin() {
-  const user = await currentUser();
-
-  if (user && user.publicMetadata.role === "admin") {
-    return true;
-  }
-  return false;
+  const { sessionClaims } = await auth();
+  const privateMetadata = sessionClaims?.privateMetadata as PrivateMetadata;
+  const isAdmin = privateMetadata?.role === "admin";
+  return isAdmin;
 }

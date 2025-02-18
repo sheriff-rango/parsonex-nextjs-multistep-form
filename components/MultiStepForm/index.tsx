@@ -43,6 +43,7 @@ const MultiStepForm: React.FC<IMultiStepForm<DataType>> = (props) => {
   const form = useForm<DataType>({
     mode: "onChange",
     reValidateMode: "onChange",
+    resolver: resolver ? zodResolver(resolver) : undefined,
   });
 
   useEffect(() => {

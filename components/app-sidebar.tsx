@@ -1,6 +1,18 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
+import dynamic from "next/dynamic";
+
+import { NavMain } from "@/components/nav-main";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarRail,
+} from "@/components/ui/sidebar";
+
 import {
   Landmark,
   Briefcase,
@@ -9,20 +21,8 @@ import {
   Users,
   BarChart,
   FileText,
+  Settings,
 } from "lucide-react";
-
-import { NavMain } from "@/components/nav-main";
-import { NavUser } from "@/components/nav-user";
-
-import Image from "next/image";
-
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarRail,
-} from "@/components/ui/sidebar";
 
 const data = {
   navMain: [
@@ -63,8 +63,20 @@ const data = {
       url: "/dashboard/reports",
       icon: BarChart,
     },
+    {
+      title: "Settings",
+      url: "/dashboard/settings",
+      icon: Settings,
+    },
   ],
 };
+
+const NavUserDynamic = dynamic(
+  () => import("@/components/nav-user").then((mod) => mod.NavUser),
+  {
+    ssr: false,
+  },
+);
 
 export function AppSidebar({
   isAdmin,
@@ -85,7 +97,7 @@ export function AppSidebar({
         <NavMain items={navItems} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser />
+        <NavUserDynamic />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

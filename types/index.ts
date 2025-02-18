@@ -2,6 +2,10 @@ export * from "./clients";
 export * from "./reps";
 export * from "./forms";
 
+export type PrivateMetadata = {
+  role?: "admin";
+};
+
 export interface ARRData {
   rep_name: string;
   quarterly_production: number;
