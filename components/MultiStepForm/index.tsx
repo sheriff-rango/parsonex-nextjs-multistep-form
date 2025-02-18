@@ -42,7 +42,7 @@ const MultiStepForm: React.FC<IMultiStepForm<DataType>> = (props) => {
 
   const form = useForm<DataType>({
     mode: "onChange",
-    reValidateMode: "onChange",
+    // reValidateMode: "onChange",
     resolver: resolver ? zodResolver(resolver) : undefined,
   });
 
@@ -56,6 +56,11 @@ const MultiStepForm: React.FC<IMultiStepForm<DataType>> = (props) => {
   const handleNextStep = async () => {
     if (isLoading || isTransitioning) return;
     if (step === totalSteps - 1) return;
+
+    const crrStepFieldNames = crrStepFields.map((field) => field.name);
+    form.clearErrors(crrStepFieldNames);
+    const validationResult = await form.trigger(crrStepFieldNames);
+    if (!validationResult) return;
 
     setIsTransitioning(true);
     setTimeout(() => {
@@ -75,7 +80,7 @@ const MultiStepForm: React.FC<IMultiStepForm<DataType>> = (props) => {
     }, 0);
   };
 
-  const handleOnSubmit = async (values: DataType) => {
+  async function handleOnSubmit(values: DataType) {
     if (events?.onSubmit) {
       setIsLoading(true);
       try {
@@ -87,7 +92,7 @@ const MultiStepForm: React.FC<IMultiStepForm<DataType>> = (props) => {
         }
       }
     }
-  };
+  }
 
   return (
     <div className="mt-4 rounded-xl border bg-card pt-4 text-card-foreground shadow">
@@ -161,6 +166,13 @@ const MultiStepForm: React.FC<IMultiStepForm<DataType>> = (props) => {
                                   {...formField}
                                   type={field.type}
                                   value={formField.value || ""}
+                                  onChange={(e) => {
+                                    const value =
+                                      field.type === TFieldItem.NUMBER
+                                        ? Number(e.target.value)
+                                        : e.target.value;
+                                    formField.onChange(value);
+                                  }}
                                   placeholder={field.placeholder}
                                 />
                               )}

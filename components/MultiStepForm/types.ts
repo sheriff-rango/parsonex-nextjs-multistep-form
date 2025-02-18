@@ -6,6 +6,7 @@ export enum TFieldItem {
   DATE = "date",
   SELECT = "select",
   CHECKBOX = "checkbox",
+  NUMBER = "number",
 }
 
 export enum TMode {
