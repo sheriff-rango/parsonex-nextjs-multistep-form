@@ -19,6 +19,7 @@ export interface IBasicField {
   type: TFieldItem;
   required?: boolean;
   className?: string;
+  placeholder?: string;
   resolver?: z.ZodString;
 }
 
@@ -33,6 +34,7 @@ export type IField = IBasicField | IInputField | ISelectField;
 type TFormStepOption = {
   title: string;
   fields: IField[];
+  gridCols?: number;
 };
 
 export type DataType = {
@@ -52,7 +54,6 @@ export interface IMultiStepForm<DataType extends FieldValues> {
   options: TFormStepOption[];
   showProgress?: boolean;
   className?: string;
-  gridCols?: number;
   subscriptionCallback?: WatchObserver<FieldValue<DataType>>;
   events?: TEvents<DataType>;
 }
