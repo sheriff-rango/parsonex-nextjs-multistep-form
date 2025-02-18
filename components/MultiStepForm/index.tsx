@@ -1,15 +1,22 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
-import { DataType, IMultiStepForm } from "./types";
+import { FormProvider, useForm } from "react-hook-form";
+import { DataType, IMultiStepForm, TMode } from "./types";
+import { Button } from "./components";
 
 const MultiStepForm: React.FC<IMultiStepForm<DataType>> = (props) => {
   const [step, setStep] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
-  const { title, options, gridCols = 2, subscriptionCallback, events } = props;
+  const {
+    options,
+    gridCols = 2,
+    subscriptionCallback,
+    events,
+    mode = TMode.CREATING,
+  } = props;
   const totalSteps = useMemo(() => options.length || 0, [options]);
 
   const form = useForm<DataType>({
@@ -63,7 +70,51 @@ const MultiStepForm: React.FC<IMultiStepForm<DataType>> = (props) => {
   return (
     <div className="mt-4 rounded-xl border bg-card pt-4 text-card-foreground shadow">
       <div className="h-full p-6 pt-0">
-        <h1>MultiStepForm</h1>
+        <FormProvider {...form}>
+          <form
+            className="relative flex h-full flex-col space-y-4"
+            onSubmit={form.handleSubmit(handleOnSubmit)}
+          >
+            <div className="px-1">Multi Step Form {step}</div>
+
+            <div className="flex w-full justify-between">
+              {step > 1 && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handlePreviousStep}
+                  disabled={isTransitioning}
+                >
+                  Previous
+                </Button>
+              )}
+              {step < totalSteps - 1 ? (
+                <Button
+                  type="button"
+                  disabled={isTransitioning}
+                  onClick={handleNextStep}
+                  className="ml-auto"
+                >
+                  Next
+                </Button>
+              ) : (
+                <Button
+                  type="submit"
+                  disabled={isLoading || isTransitioning}
+                  className="ml-auto"
+                >
+                  {mode === TMode.EDITING
+                    ? isLoading
+                      ? "Updating..."
+                      : "Update"
+                    : isLoading
+                      ? "Creating..."
+                      : "Create"}
+                </Button>
+              )}
+            </div>
+          </form>
+        </FormProvider>
       </div>
     </div>
   );

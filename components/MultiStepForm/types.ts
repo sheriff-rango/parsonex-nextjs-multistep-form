@@ -8,6 +8,11 @@ export enum TFieldItem {
   CHECKBOX = "checkbox",
 }
 
+export enum TMode {
+  CREATING = "CREATING",
+  EDITING = "EDITING",
+}
+
 export interface IBasicField {
   name: string;
   label: string;
@@ -42,7 +47,7 @@ export type TEvents<DataType> = {
 };
 
 export interface IMultiStepForm<DataType extends FieldValues> {
-  title?: string;
+  mode?: TMode;
   defaultValues?: DataType;
   options: TFormStepOption[];
   showProgress?: boolean;

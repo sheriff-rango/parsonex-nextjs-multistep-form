@@ -22,6 +22,22 @@ export default async function MultiStep() {
             },
           ],
         },
+        {
+          title: "Step 2",
+          fields: [
+            {
+              name: "nameFirst",
+              label: "First Name",
+              type: TFieldItem.TEXT,
+              required: true,
+            },
+            {
+              name: "nameMiddle",
+              label: "Middle Name",
+              type: TFieldItem.TEXT,
+            },
+          ],
+        },
       ]}
     />
   );
