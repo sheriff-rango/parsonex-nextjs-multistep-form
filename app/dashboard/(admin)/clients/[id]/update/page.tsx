@@ -1,5 +1,5 @@
 import { getClientProfile } from "@/server/actions/clients";
-import { ClientForm } from "@/components/client-form";
+import { ClientForm } from "@/components/Forms/client-form";
 import { H1 } from "@/components/typography";
 import { ContactField, ClientData } from "@/types";
 

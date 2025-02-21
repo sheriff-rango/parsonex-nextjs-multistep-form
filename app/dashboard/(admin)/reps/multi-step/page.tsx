@@ -1,6 +1,6 @@
 "use client";
 
-import MultiStepForm, { TFieldItem } from "@/components/MultiStepForm";
+import MultiStepForm, { TFieldItem } from "@/components/Forms/MultiStepForm";
 import { createClient } from "@/server/actions/clients";
 import { ClientData, ClientFormValues } from "@/types";
 import { useEffect, useState } from "react";

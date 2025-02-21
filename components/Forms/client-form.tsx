@@ -2,71 +2,112 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { createRep, updateRep } from "@/server/actions/reps";
+import { createClient, updateClient } from "@/server/actions/clients";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Card, CardContent } from "@/components/ui/card";
-import { RepData, RepFormValues } from "@/types";
+import { ClientData } from "@/types";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import { useActionState } from "@/hooks/use-action-state";
-import { RepContactFormStep } from "@/components/contact-form-step";
-import { RepGeneralFormStep } from "@/components/rep-general-form-step";
-import { repFormSchema } from "@/types/forms";
+import { ClientContactFormStep } from "@/components/Forms/contact-form-step";
+import { ClientGeneralFormStep } from "@/components/Forms/client-general-form-step";
+import { clientFormSchema, ClientFormValues } from "@/types/forms";
 
-interface RepFormProps {
-  data?: RepData;
+interface ClientFormProps {
+  data?: ClientData;
+  clientId?: string;
 }
 
-export function RepForm({ data }: RepFormProps) {
+export function ClientForm({ data, clientId }: ClientFormProps) {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const { isLoading, setLoading, setError } = useActionState<RepData>();
+  const { isLoading, setLoading, setError } = useActionState<ClientData>();
 
-  const form = useForm<RepFormValues>({
-    resolver: zodResolver(repFormSchema),
+  const form = useForm<ClientFormValues>({
+    resolver: zodResolver(clientFormSchema),
     mode: "onChange",
     defaultValues: data || {
-      pcm: "",
-      firstName: "",
-      lastName: "",
-      fullName: "",
-      repType: "",
-      isActive: true,
-      isBranchMgr: false,
+      nameFirst: "",
+      nameMiddle: "",
+      nameLast: "",
+      nameSuffix: "",
+      nameSalutation: "",
+      nameFull: "",
       dob: null,
       gender: null,
+      maritalstatus: null,
+      tin: "",
+      employmentStatus: "",
+      employmentOccupation: "",
+      employer: "",
+      employerBusinessType: "",
+      isUscitizen: false,
+      riaClient: false,
+      bdClient: false,
+      isActive: true,
       phones: [{ type: "mobile", value: "", isPrimary: true }],
       emails: [{ type: "work", value: "", isPrimary: true }],
       addresses: [{ type: "home", value: "", isPrimary: true }],
+      finProfile: {
+        profileType: null,
+        networth: null,
+        networthLiquid: null,
+        incomeAnnual: null,
+        taxbracket: null,
+        incomeSource: null,
+        investExperience: null,
+        investExperienceYears: null,
+        totalHeldawayAssets: null,
+        incomeSourceType: null,
+        incomeDescription: null,
+        incomeSourceAdditional: null,
+        jointClientId: null,
+      },
     },
   });
 
   useEffect(() => {
     const subscription = form.watch((value, { name }) => {
-      if (name?.match(/^(firstName|lastName)$/)) {
-        const { firstName, lastName } = value;
-        const fullName = [firstName, lastName].filter(Boolean).join(" ");
-        form.setValue("fullName", fullName);
+      if (name?.match(/^(nameFirst|nameMiddle|nameLast|nameSuffix)$/)) {
+        const { nameFirst, nameMiddle, nameLast, nameSuffix } = value;
+        const nameFull = [nameFirst, nameMiddle, nameLast, nameSuffix]
+          .filter(Boolean)
+          .join(" ");
+        form.setValue("nameFull", nameFull);
       }
     });
     return () => subscription.unsubscribe();
   }, [form]);
 
-  async function onSubmit(values: RepFormValues) {
+  async function onSubmit(values: ClientFormValues) {
     setLoading(true);
 
     try {
-      if (data) {
-        await updateRep(values);
-        toast.success("Rep updated successfully");
+      const formattedValues: ClientData = {
+        ...values,
+        nameFirst: values.nameFirst || "",
+        nameMiddle: values.nameMiddle || "",
+        nameLast: values.nameLast || "",
+        nameSuffix: values.nameSuffix || "",
+        nameSalutation: values.nameSalutation || "",
+        nameFull: values.nameFull || "",
+        employmentStatus: values.employmentStatus || "",
+        employmentOccupation: values.employmentOccupation || "",
+        employer: values.employer || "",
+        employerBusinessType: values.employerBusinessType || "",
+      };
+
+      if (clientId) {
+        await updateClient(clientId, formattedValues);
+        toast.success("Client updated successfully");
       } else {
-        await createRep(values);
-        toast.success("Rep created successfully");
+        await createClient(formattedValues);
+        toast.success("Client created successfully");
       }
-      router.push("/dashboard/reps");
+      router.push("/dashboard/clients");
       router.refresh();
     } catch (error) {
       console.error(error);
@@ -77,16 +118,6 @@ export function RepForm({ data }: RepFormProps) {
 
   const handleNextStep = async () => {
     if (isTransitioning) return;
-
-    // Validate step one before proceeding
-    if (step === 1) {
-      // Clear any existing errors for these fields
-      form.clearErrors(["firstName", "lastName", "repType"]);
-      const isValid = await form.trigger(["firstName", "lastName", "repType"]);
-      if (!isValid) {
-        return;
-      }
-    }
 
     setIsTransitioning(true);
     setTimeout(() => {
@@ -113,8 +144,8 @@ export function RepForm({ data }: RepFormProps) {
             className="relative flex h-full flex-col space-y-4"
           >
             <div className="px-1">
-              {step === 1 && <RepGeneralFormStep form={form} />}
-              {step === 2 && <RepContactFormStep form={form} />}
+              {step === 1 && <ClientGeneralFormStep form={form} />}
+              {step === 2 && <ClientContactFormStep form={form} />}
             </div>
 
             <div className="flex w-full justify-between">
@@ -143,13 +174,13 @@ export function RepForm({ data }: RepFormProps) {
                   disabled={isLoading || isTransitioning}
                   className="ml-auto"
                 >
-                  {data
+                  {clientId
                     ? isLoading
                       ? "Updating..."
-                      : "Update Rep"
+                      : "Update Client"
                     : isLoading
                       ? "Creating..."
-                      : "Create Rep"}
+                      : "Create Client"}
                 </Button>
               )}
             </div>

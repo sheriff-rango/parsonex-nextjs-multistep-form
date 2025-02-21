@@ -1,6 +1,6 @@
 "use client";
 
-import { ClientForm } from "@/components/client-form";
+import { ClientForm } from "@/components/Forms/client-form";
 import { H1 } from "@/components/typography";
 
 export default function NewClientPage() {

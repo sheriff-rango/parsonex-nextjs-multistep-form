@@ -1,4 +1,4 @@
-import { RepForm } from "@/components/rep-form";
+import { RepForm } from "@/components/Forms/rep-form";
 import { H1 } from "@/components/typography";
 import {
   getRep,

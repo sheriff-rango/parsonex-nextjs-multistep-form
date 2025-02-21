@@ -1,6 +1,6 @@
 import { getAccountProfile } from "@/server/actions/accounts";
 import { getListValues } from "@/server/actions/lists";
-import { AccountForm } from "@/components/account-form";
+import { AccountForm } from "@/components/Forms/account-form";
 import { H1 } from "@/components/typography";
 import { AccountFormValues } from "@/types/forms";
 

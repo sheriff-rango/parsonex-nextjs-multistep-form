@@ -1,5 +1,5 @@
 import { H1 } from "@/components/typography";
-import { AccountForm } from "@/components/account-form";
+import { AccountForm } from "@/components/Forms/account-form";
 import { getListValues } from "@/server/actions/lists";
 
 export default async function NewAccountPage() {

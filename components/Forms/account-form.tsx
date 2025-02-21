@@ -9,7 +9,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import { useActionState } from "@/hooks/use-action-state";
-import { FormStep } from "@/components/form-step";
+import { FormStep } from "@/components/Forms/form-step";
 import { accountFormSchema } from "@/types/forms";
 import { createAccount, updateAccount } from "@/server/actions/accounts";
 

@@ -1,6 +1,6 @@
 import { UseFormReturn } from "react-hook-form";
 import { RepFormValues } from "@/types";
-import { FormStep } from "@/components/form-step";
+import { FormStep } from "@/components/Forms/form-step";
 
 interface GeneralFormStepProps {
   form: UseFormReturn<RepFormValues>;
