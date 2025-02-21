@@ -3,24 +3,24 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useEffect, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { Button } from "../../ui/button";
-import { Checkbox } from "../../ui/checkbox";
-import { Input } from "../../ui/input";
+import { Button } from "../ui/button";
+import { Checkbox } from "../ui/checkbox";
+import { Input } from "../ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../../ui/select";
+} from "../ui/select";
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from "./components";
-import { DataType, IMultiStepForm, TFieldItem, TMode } from "./types";
+} from "@/components/ui/form";
+import { DataType, IMultiStepForm, TFieldItem, TMode } from "@/types";
 
 const MultiStepForm: React.FC<IMultiStepForm<any>> = (props) => {
   const [step, setStep] = useState(0);
@@ -247,5 +247,3 @@ const MultiStepForm: React.FC<IMultiStepForm<any>> = (props) => {
 };
 
 export default MultiStepForm;
-
-export * from "./types";
