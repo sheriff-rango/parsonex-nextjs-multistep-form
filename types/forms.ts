@@ -135,6 +135,7 @@ export interface IBasicField {
   required?: boolean;
   className?: string;
   placeholder?: string;
+  disabled?: boolean;
 }
 
 export interface IInputField extends IBasicField {}

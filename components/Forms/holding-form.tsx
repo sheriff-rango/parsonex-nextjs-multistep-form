@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Card, CardContent } from "@/components/ui/card";
-import { HoldingFormValues } from "@/types/forms";
+import { HoldingFormValues, TFieldItem } from "@/types/forms";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
@@ -12,6 +12,7 @@ import { useActionState } from "@/hooks/use-action-state";
 import { FormStep } from "@/components/Forms/form-step";
 import { holdingFormSchema } from "@/types/forms";
 import { createHolding, updateHolding } from "@/server/actions/holdings";
+import MultiStepForm from "./multi-step-form";
 
 interface HoldingFormProps {
   data?: HoldingFormValues;
@@ -23,27 +24,23 @@ export function HoldingForm({ data, holdingId, accountId }: HoldingFormProps) {
   const router = useRouter();
   const { isLoading, setLoading, setError } = useActionState();
 
-  const form = useForm<HoldingFormValues>({
-    resolver: zodResolver(holdingFormSchema),
-    mode: "onChange",
-    defaultValues: data || {
-      accountId: accountId || "",
-      holdingType: "",
-      securityName: "",
-      securityTicker: "",
-      cusip: "",
-      units: null,
-      unitPrice: null,
-      marketValue: null,
-      costBasis: null,
-      productFamily: "",
-      repNo: "",
-      holdingFan: "",
-      productNo: "",
-      branchNo: "",
-      holdPriceDate: null,
-    },
-  });
+  const defaultValues = data || {
+    accountId: accountId || "",
+    holdingType: "",
+    securityName: "",
+    securityTicker: "",
+    cusip: "",
+    units: null,
+    unitPrice: null,
+    marketValue: null,
+    costBasis: null,
+    productFamily: "",
+    repNo: "",
+    holdingFan: "",
+    productNo: "",
+    branchNo: "",
+    holdPriceDate: null,
+  };
 
   async function onSubmit(values: HoldingFormValues) {
     setLoading(true);
@@ -71,14 +68,14 @@ export function HoldingForm({ data, holdingId, accountId }: HoldingFormProps) {
     {
       name: "accountId",
       label: "Account ID",
-      type: "text" as const,
+      type: TFieldItem.TEXT,
       required: true,
       disabled: Boolean(accountId),
     },
     {
       name: "holdingType",
       label: "Holding Type",
-      type: "select" as const,
+      type: TFieldItem.SELECT,
       required: true,
       options: [
         { label: "Equity", value: "equity" },
@@ -92,18 +89,18 @@ export function HoldingForm({ data, holdingId, accountId }: HoldingFormProps) {
     {
       name: "securityName",
       label: "Security Name",
-      type: "text" as const,
+      type: TFieldItem.TEXT,
       required: true,
     },
     {
       name: "securityTicker",
       label: "Security Ticker",
-      type: "text" as const,
+      type: TFieldItem.TEXT,
     },
     {
       name: "cusip",
       label: "CUSIP",
-      type: "text" as const,
+      type: TFieldItem.TEXT,
     },
   ];
 
@@ -111,27 +108,27 @@ export function HoldingForm({ data, holdingId, accountId }: HoldingFormProps) {
     {
       name: "units",
       label: "Units",
-      type: "text" as const,
+      type: TFieldItem.NUMBER,
     },
     {
       name: "unitPrice",
       label: "Unit Price",
-      type: "text" as const,
+      type: TFieldItem.NUMBER,
     },
     {
       name: "marketValue",
       label: "Market Value",
-      type: "text" as const,
+      type: TFieldItem.NUMBER,
     },
     {
       name: "costBasis",
       label: "Cost Basis",
-      type: "text" as const,
+      type: TFieldItem.NUMBER,
     },
     {
       name: "holdPriceDate",
       label: "Price Date",
-      type: "date" as const,
+      type: TFieldItem.DATE,
     },
   ];
 
@@ -139,64 +136,52 @@ export function HoldingForm({ data, holdingId, accountId }: HoldingFormProps) {
     {
       name: "productFamily",
       label: "Product Family",
-      type: "text" as const,
+      type: TFieldItem.TEXT,
     },
     {
       name: "productNo",
       label: "Product Number",
-      type: "text" as const,
+      type: TFieldItem.TEXT,
     },
     {
       name: "holdingFan",
       label: "Holding FAN",
-      type: "text" as const,
+      type: TFieldItem.TEXT,
     },
     {
       name: "branchNo",
       label: "Branch Number",
-      type: "text" as const,
+      type: TFieldItem.TEXT,
     },
     {
       name: "repNo",
       label: "Rep Number",
-      type: "text" as const,
+      type: TFieldItem.TEXT,
     },
   ];
 
   return (
-    <Card className="mt-4 pt-4">
-      <CardContent>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <FormStep
-              title="Holding Information"
-              fields={holdingFields}
-              form={form}
-            />
-            <FormStep
-              title="Value Information"
-              fields={valueFields}
-              form={form}
-            />
-            <FormStep
-              title="Additional Information"
-              fields={additionalFields}
-              form={form}
-            />
-            <div className="flex justify-end">
-              <Button type="submit" disabled={isLoading}>
-                {holdingId
-                  ? isLoading
-                    ? "Updating..."
-                    : "Update Holding"
-                  : isLoading
-                    ? "Creating..."
-                    : "Create Holding"}
-              </Button>
-            </div>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
+    <MultiStepForm
+      isLoading={isLoading}
+      defaultValues={defaultValues}
+      options={[
+        {
+          title: "Holding Information",
+          fields: holdingFields,
+        },
+        {
+          title: "Value Information",
+          fields: valueFields,
+        },
+        {
+          title: "Additional Information",
+          fields: additionalFields,
+        },
+      ]}
+      resolver={holdingFormSchema}
+      events={{
+        onSubmit,
+      }}
+    />
   );
 }

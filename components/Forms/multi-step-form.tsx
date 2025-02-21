@@ -96,6 +96,8 @@ const MultiStepForm: React.FC<IMultiStepForm<any>> = (props) => {
       setIsLoading(true);
       try {
         await events.onSubmit(values);
+        setStep(0);
+        form.reset();
       } catch (error) {
         console.error(error);
         if (events?.onError) {
@@ -134,7 +136,7 @@ const MultiStepForm: React.FC<IMultiStepForm<any>> = (props) => {
                                 <Checkbox
                                   checked={formField.value}
                                   onCheckedChange={formField.onChange}
-                                  disabled={formDisabled}
+                                  disabled={field.disabled || formDisabled}
                                 />
                               </FormControl>
                               <div className="space-y-1 leading-none">
@@ -154,7 +156,7 @@ const MultiStepForm: React.FC<IMultiStepForm<any>> = (props) => {
                                 <Select
                                   onValueChange={formField.onChange}
                                   defaultValue={formField.value || undefined}
-                                  disabled={formDisabled}
+                                  disabled={field.disabled || formDisabled}
                                 >
                                   <SelectTrigger>
                                     <SelectValue
@@ -181,7 +183,7 @@ const MultiStepForm: React.FC<IMultiStepForm<any>> = (props) => {
                                   {...formField}
                                   type={field.type}
                                   value={formField.value || ""}
-                                  disabled={formDisabled}
+                                  disabled={field.disabled || formDisabled}
                                   onChange={(e) => {
                                     const value =
                                       field.type === TFieldItem.NUMBER
