@@ -1,17 +1,12 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { useActionState } from "@/hooks/use-action-state";
+import { createAccount, updateAccount } from "@/server/actions/accounts";
+import { AccountFormValues } from "@/types";
+import { accountFormSchema, TFieldItem } from "@/types/forms";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Card, CardContent } from "@/components/ui/card";
-import { AccountFormValues } from "@/types";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Form } from "@/components/ui/form";
-import { useActionState } from "@/hooks/use-action-state";
-import { FormStep } from "@/components/Forms/form-step";
-import { accountFormSchema } from "@/types/forms";
-import { createAccount, updateAccount } from "@/server/actions/accounts";
+import MultiStepForm from "./multi-step-form";
 
 interface AccountFormProps {
   data?: AccountFormValues;
@@ -37,25 +32,21 @@ export function AccountForm({ data, accountId, lists }: AccountFormProps) {
   const router = useRouter();
   const { isLoading, setLoading, setError } = useActionState();
 
-  const form = useForm<AccountFormValues>({
-    resolver: zodResolver(accountFormSchema),
-    mode: "onChange",
-    defaultValues: data || {
-      accountType: "",
-      status: "active",
-      openDate: null,
-      closeDate: null,
-      primaryClientId: "",
-      jointClientId: "",
-      branch: "",
-      pcm: "",
-      invObjective: "",
-      riskTolerance: "",
-      timeHorizon: "",
-      date17A3: null,
-      method17A3: "",
-    },
-  });
+  const defaultValues = data || {
+    accountType: "",
+    status: "active",
+    openDate: null,
+    closeDate: null,
+    primaryClientId: "",
+    jointClientId: "",
+    branch: "",
+    pcm: "",
+    invObjective: "",
+    riskTolerance: "",
+    timeHorizon: "",
+    date17A3: null,
+    method17A3: "",
+  };
 
   async function onSubmit(values: AccountFormValues) {
     setLoading(true);
@@ -88,7 +79,7 @@ export function AccountForm({ data, accountId, lists }: AccountFormProps) {
     {
       name: "accountType",
       label: "Account Type",
-      type: "select" as const,
+      type: TFieldItem.SELECT,
       required: true,
       options: lists.account_types.map((type) => ({
         label: type,
@@ -98,29 +89,29 @@ export function AccountForm({ data, accountId, lists }: AccountFormProps) {
     {
       name: "pcm",
       label: "PCM",
-      type: "text" as const,
+      type: TFieldItem.TEXT,
       required: true,
     },
     {
       name: "primaryClientId",
       label: "Primary Client Id",
-      type: "text" as const,
+      type: TFieldItem.TEXT,
       required: true,
     },
     {
       name: "jointClientId",
       label: "Joint Client Id",
-      type: "text" as const,
+      type: TFieldItem.TEXT,
     },
     {
       name: "branch",
       label: "Branch",
-      type: "text" as const,
+      type: TFieldItem.TEXT,
     },
     {
       name: "openDate",
       label: "Open Date",
-      type: "date" as const,
+      type: TFieldItem.DATE,
     },
   ];
 
@@ -128,7 +119,7 @@ export function AccountForm({ data, accountId, lists }: AccountFormProps) {
     {
       name: "invObjective",
       label: "Investment Objective",
-      type: "select" as const,
+      type: TFieldItem.SELECT,
       options: lists.investment_objectives.map((objective) => ({
         label: objective,
         value: objective,
@@ -137,7 +128,7 @@ export function AccountForm({ data, accountId, lists }: AccountFormProps) {
     {
       name: "riskTolerance",
       label: "Risk Tolerance",
-      type: "select" as const,
+      type: TFieldItem.SELECT,
       options: lists.risk_tolerance.map((tolerance) => ({
         label: tolerance,
         value: tolerance,
@@ -146,7 +137,7 @@ export function AccountForm({ data, accountId, lists }: AccountFormProps) {
     {
       name: "timeHorizon",
       label: "Time Horizon",
-      type: "select" as const,
+      type: TFieldItem.SELECT,
       options: lists.time_horizon
         .sort(
           (a, b) => timeHorizonOrder.indexOf(a) - timeHorizonOrder.indexOf(b),
@@ -162,12 +153,12 @@ export function AccountForm({ data, accountId, lists }: AccountFormProps) {
     {
       name: "date17A3",
       label: "17A3 Date",
-      type: "date" as const,
+      type: TFieldItem.DATE,
     },
     {
       name: "method17A3",
       label: "17A3 Method",
-      type: "select" as const,
+      type: TFieldItem.SELECT,
       options: [
         { label: "Email", value: "email" },
         { label: "Mail", value: "mail" },
@@ -177,39 +168,27 @@ export function AccountForm({ data, accountId, lists }: AccountFormProps) {
   ];
 
   return (
-    <Card className="mt-4 pt-4">
-      <CardContent>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <FormStep
-              title="Account Information"
-              fields={accountFields}
-              form={form}
-            />
-            <FormStep
-              title="Investment Profile"
-              fields={investmentFields}
-              form={form}
-            />
-            <FormStep
-              title="Regulatory Information"
-              fields={regulatoryFields}
-              form={form}
-            />
-            <div className="flex justify-end">
-              <Button type="submit" disabled={isLoading}>
-                {accountId
-                  ? isLoading
-                    ? "Updating..."
-                    : "Update Account"
-                  : isLoading
-                    ? "Creating..."
-                    : "Create Account"}
-              </Button>
-            </div>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
+    <MultiStepForm
+      isLoading={isLoading}
+      defaultValues={defaultValues}
+      options={[
+        {
+          title: "Account Information",
+          fields: accountFields,
+        },
+        {
+          title: "Investment Profile",
+          fields: investmentFields,
+        },
+        {
+          title: "Regulatory Information",
+          fields: regulatoryFields,
+        },
+      ]}
+      resolver={accountFormSchema}
+      events={{
+        onSubmit,
+      }}
+    />
   );
 }
