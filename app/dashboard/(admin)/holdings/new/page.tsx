@@ -1,5 +1,5 @@
 import { H1 } from "@/components/typography";
-import { HoldingForm } from "@/components/holding-form";
+import { HoldingForm } from "@/components/Forms/holding-form";
 
 export default function NewHoldingPage() {
   return (

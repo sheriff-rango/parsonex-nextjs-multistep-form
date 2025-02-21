@@ -1,5 +1,5 @@
 import { getHolding } from "@/server/actions/holdings";
-import { HoldingForm } from "@/components/holding-form";
+import { HoldingForm } from "@/components/Forms/holding-form";
 import { H1 } from "@/components/typography";
 import { HoldingFormValues } from "@/types/forms";
 
