@@ -59,4 +59,5 @@ export interface IMultiStepForm<DataType extends FieldValues> {
   subscriptionCallback?: WatchObserver<FieldValue<DataType>>;
   events?: TEvents<DataType>;
   resolver?: ZodType<any, any, any>;
+  isLoading?: boolean;
 }

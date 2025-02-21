@@ -31,6 +31,8 @@ const MultiStepForm: React.FC<IMultiStepForm<any>> = (props) => {
     events,
     mode = TMode.CREATING,
     resolver,
+    defaultValues,
+    isLoading: formLoading,
   } = props;
 
   const totalSteps = useMemo(() => options.length || 0, [options]);
@@ -43,8 +45,15 @@ const MultiStepForm: React.FC<IMultiStepForm<any>> = (props) => {
   const form = useForm<DataType>({
     mode: "onChange",
     // reValidateMode: "onChange",
+    defaultValues,
     resolver: resolver ? zodResolver(resolver) : undefined,
   });
+
+  const formDisabled = isLoading || isTransitioning || formLoading;
+
+  useEffect(() => {
+    form.reset(defaultValues);
+  }, [form, defaultValues]);
 
   useEffect(() => {
     const subscription = subscriptionCallback
@@ -54,7 +63,7 @@ const MultiStepForm: React.FC<IMultiStepForm<any>> = (props) => {
   }, [form, subscriptionCallback]);
 
   const handleNextStep = async () => {
-    if (isLoading || isTransitioning) return;
+    if (formDisabled) return;
     if (step === totalSteps - 1) return;
 
     const crrStepFieldNames = crrStepFields.map((field) => field.name);
@@ -70,7 +79,7 @@ const MultiStepForm: React.FC<IMultiStepForm<any>> = (props) => {
   };
 
   const handlePreviousStep = async () => {
-    if (isLoading || isTransitioning) return;
+    if (formDisabled) return;
     if (step === 0) return;
 
     setIsTransitioning(true);
@@ -123,6 +132,7 @@ const MultiStepForm: React.FC<IMultiStepForm<any>> = (props) => {
                                 <Checkbox
                                   checked={formField.value}
                                   onCheckedChange={formField.onChange}
+                                  disabled={formDisabled}
                                 />
                               </FormControl>
                               <div className="space-y-1 leading-none">
@@ -142,6 +152,7 @@ const MultiStepForm: React.FC<IMultiStepForm<any>> = (props) => {
                                 <Select
                                   onValueChange={formField.onChange}
                                   defaultValue={formField.value || undefined}
+                                  disabled={formDisabled}
                                 >
                                   <SelectTrigger>
                                     <SelectValue
@@ -168,6 +179,7 @@ const MultiStepForm: React.FC<IMultiStepForm<any>> = (props) => {
                                   {...formField}
                                   type={field.type}
                                   value={formField.value || ""}
+                                  disabled={formDisabled}
                                   onChange={(e) => {
                                     const value =
                                       field.type === TFieldItem.NUMBER
@@ -195,7 +207,7 @@ const MultiStepForm: React.FC<IMultiStepForm<any>> = (props) => {
                   type="button"
                   variant="outline"
                   onClick={handlePreviousStep}
-                  disabled={isLoading || isTransitioning}
+                  disabled={formDisabled}
                 >
                   Previous
                 </Button>
@@ -203,7 +215,7 @@ const MultiStepForm: React.FC<IMultiStepForm<any>> = (props) => {
               {step < totalSteps - 1 ? (
                 <Button
                   type="button"
-                  disabled={isLoading || isTransitioning}
+                  disabled={formDisabled}
                   onClick={handleNextStep}
                   className="ml-auto"
                 >
@@ -212,7 +224,7 @@ const MultiStepForm: React.FC<IMultiStepForm<any>> = (props) => {
               ) : (
                 <Button
                   type="submit"
-                  disabled={isLoading || isTransitioning}
+                  disabled={formDisabled}
                   className="ml-auto"
                 >
                   {mode === TMode.EDITING

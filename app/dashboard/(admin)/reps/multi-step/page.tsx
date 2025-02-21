@@ -3,15 +3,79 @@
 import MultiStepForm, { TFieldItem } from "@/components/MultiStepForm";
 import { createClient } from "@/server/actions/clients";
 import { ClientData, ClientFormValues } from "@/types";
+import { useEffect, useState } from "react";
 import { z } from "zod";
 
 export default function MultiStep() {
+  const [defaultValue, setDefaultValue] = useState<any>({
+    nameFirst: "First",
+    nameLast: "Last",
+    dob: "1111-11-11",
+    gender: "male",
+    maritalstatus: "single",
+    tin: "TIN",
+    isUscitizen: false,
+    riaClient: false,
+    bdClient: false,
+    isActive: true,
+    finProfile: {
+      profileType: "type1",
+      networth: 1000,
+      networthLiquid: 2000,
+      incomeAnnual: 3000,
+      taxbracket: "bracket1",
+      incomeSource: "source1",
+      investExperience: "experience1",
+      investExperienceYears: 4,
+      totalHeldawayAssets: 5000,
+      incomeSourceType: "Income Source Type",
+      incomeDescription: "Income Description",
+      incomeSourceAdditional: "Additional Income Source",
+    },
+  });
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setDefaultValue({
+        nameFirst: "First After",
+        nameLast: "Last After",
+        dob: "1111-11-11",
+        gender: "male",
+        maritalstatus: "single",
+        tin: "TIN",
+        isUscitizen: false,
+        riaClient: false,
+        bdClient: false,
+        isActive: true,
+        finProfile: {
+          profileType: "type1",
+          networth: 1000,
+          networthLiquid: 2000,
+          incomeAnnual: 3000,
+          taxbracket: "bracket1",
+          incomeSource: "source1",
+          investExperience: "experience1",
+          investExperienceYears: 4,
+          totalHeldawayAssets: 5000,
+          incomeSourceType: "Income Source Type",
+          incomeDescription: "Income Description",
+          incomeSourceAdditional: "Additional Income Source",
+        },
+      });
+      setIsLoading(false);
+    }, 2000);
+  }, []);
+
   const handleOnSubmit = async (values: ClientFormValues) => {
     console.log("debug handle on submit", values);
   };
 
   return (
     <MultiStepForm
+      isLoading={isLoading}
+      defaultValues={defaultValue}
       options={[
         {
           title: "Personal Information",
