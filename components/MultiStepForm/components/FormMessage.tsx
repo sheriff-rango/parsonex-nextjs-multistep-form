@@ -1,6 +1,6 @@
+import { cn } from "@/lib/utils";
 import { forwardRef } from "react";
 import { useFormField } from "../hooks";
-import { cn } from "../utils";
 
 const FormMessage = forwardRef<
   HTMLParagraphElement,

@@ -1,8 +1,8 @@
+import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
 import { Root } from "@radix-ui/react-label";
-import { useFormField } from "../hooks";
 import { forwardRef } from "react";
-import { Label } from "./Label";
-import { cn } from "../utils";
+import { useFormField } from "../hooks";
 
 const FormLabel = forwardRef<
   React.ElementRef<typeof Root>,

@@ -1,6 +1,6 @@
+import { cn } from "@/lib/utils";
 import { forwardRef, useId } from "react";
 import { FormItemContext } from "../contexts";
-import { cn } from "../utils";
 
 const FormItem = forwardRef<
   HTMLDivElement,

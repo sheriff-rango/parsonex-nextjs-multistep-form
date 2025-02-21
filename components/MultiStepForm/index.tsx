@@ -1,24 +1,26 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useEffect, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { DataType, IMultiStepForm, TFieldItem, TMode } from "./types";
+import { Button } from "../ui/button";
+import { Checkbox } from "../ui/checkbox";
+import { Input } from "../ui/input";
 import {
-  Button,
-  Checkbox,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-  Input,
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
+} from "../ui/select";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "./components";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { DataType, IMultiStepForm, TFieldItem, TMode } from "./types";
 
 const MultiStepForm: React.FC<IMultiStepForm<any>> = (props) => {
   const [step, setStep] = useState(0);
