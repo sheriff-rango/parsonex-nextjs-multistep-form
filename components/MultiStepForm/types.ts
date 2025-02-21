@@ -38,14 +38,16 @@ type TFormStepOption = {
 };
 
 export type DataType = {
-  [x: string]: any;
+  [key: string]: any;
 };
 
 import { FieldValues } from "react-hook-form";
 
 export type TEvents<DataType> = {
-  onSubmit: (values: DataType) => Promise<void>;
-  onError: (error: any) => void;
+  onSubmit?:
+    | ((values: DataType) => Promise<void>)
+    | ((values: DataType) => void);
+  onError?: (error: any) => void;
 };
 
 export interface IMultiStepForm<DataType extends FieldValues> {

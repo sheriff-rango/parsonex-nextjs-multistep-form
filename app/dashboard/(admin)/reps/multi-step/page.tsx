@@ -1,9 +1,15 @@
 "use client";
 
 import MultiStepForm, { TFieldItem } from "@/components/MultiStepForm";
-import { clientFormSchema } from "@/types";
+import { createClient } from "@/server/actions/clients";
+import { ClientData, ClientFormValues } from "@/types";
+import { z } from "zod";
 
 export default function MultiStep() {
+  const handleOnSubmit = async (values: ClientFormValues) => {
+    console.log("debug handle on submit", values);
+  };
+
   return (
     <MultiStepForm
       options={[
@@ -208,7 +214,46 @@ export default function MultiStep() {
           ],
         },
       ]}
-      resolver={clientFormSchema}
+      resolver={z.object({
+        nameFirst: z.string().min(1, "First name is required"),
+        nameMiddle: z.string().optional().default(""),
+        nameLast: z.string().min(1, "Last name is required"),
+        nameSuffix: z.string().optional().default(""),
+        nameSalutation: z.string().optional().default(""),
+        // nameFull: z.string(),
+        dob: z.string().nullable(),
+        gender: z.string().nullable(),
+        maritalstatus: z.string().nullable(),
+        tin: z.string().min(1, "TIN is required"),
+        employmentStatus: z.string().optional().default(""),
+        employmentOccupation: z.string().optional().default(""),
+        employer: z.string().optional().default(""),
+        employerBusinessType: z.string().optional().default(""),
+        isUscitizen: z.boolean().default(false),
+        riaClient: z.boolean().default(false),
+        bdClient: z.boolean().default(false),
+        isActive: z.boolean().default(true),
+        finProfile: z
+          .object({
+            profileType: z.string().nullable(),
+            networth: z.number().nullable(),
+            networthLiquid: z.number().nullable(),
+            incomeAnnual: z.number().nullable(),
+            taxbracket: z.string().nullable(),
+            incomeSource: z.string().nullable(),
+            investExperience: z.string().nullable(),
+            investExperienceYears: z.number().nullable(),
+            totalHeldawayAssets: z.number().nullable(),
+            incomeSourceType: z.string().nullable(),
+            incomeDescription: z.string().nullable(),
+            incomeSourceAdditional: z.string().nullable(),
+            // jointClientId: z.string().nullable(),
+          })
+          .optional(),
+      })}
+      events={{
+        onSubmit: handleOnSubmit,
+      }}
     />
   );
 }

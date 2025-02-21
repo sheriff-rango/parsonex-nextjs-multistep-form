@@ -20,7 +20,7 @@ import {
 } from "./components";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-const MultiStepForm: React.FC<IMultiStepForm<DataType>> = (props) => {
+const MultiStepForm: React.FC<IMultiStepForm<any>> = (props) => {
   const [step, setStep] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -90,6 +90,8 @@ const MultiStepForm: React.FC<IMultiStepForm<DataType>> = (props) => {
         if (events?.onError) {
           events.onError(error);
         }
+      } finally {
+        setIsLoading(false);
       }
     }
   }
