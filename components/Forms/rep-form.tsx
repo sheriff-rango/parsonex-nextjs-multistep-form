@@ -6,7 +6,6 @@ import { RepData, RepFormValues } from "@/types";
 import { repFormSchema, TFieldItem } from "@/types/forms";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { useForm, UseFormReturn } from "react-hook-form";
 import { toast } from "sonner";
 import MultiStepForm from "./multi-step-form";
@@ -17,8 +16,6 @@ interface RepFormProps {
 
 export function RepForm({ data }: RepFormProps) {
   const router = useRouter();
-  const [step, setStep] = useState(1);
-  const [isTransitioning, setIsTransitioning] = useState(false);
   const { isLoading, setLoading, setError } = useActionState<RepData>();
 
   const form = useForm<RepFormValues>({
