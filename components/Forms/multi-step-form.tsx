@@ -129,9 +129,15 @@ const MultiStepForm: React.FC<IMultiStepForm<any>> = (props) => {
                       control={form.control}
                       name={field.name}
                       render={({ field: formField }) => {
+                        const style = field.isFullWidth
+                          ? { gridColumn: `span ${crrGridCols}` }
+                          : {};
                         if (field.type === TFieldItem.CHECKBOX) {
                           return (
-                            <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                            <FormItem
+                              className="flex flex-row items-start space-x-3 space-y-0"
+                              style={style}
+                            >
                               <FormControl>
                                 <Checkbox
                                   checked={formField.value}
@@ -146,7 +152,7 @@ const MultiStepForm: React.FC<IMultiStepForm<any>> = (props) => {
                           );
                         }
                         return (
-                          <FormItem className={field.className}>
+                          <FormItem className={field.className} style={style}>
                             <FormLabel>
                               {field.label}
                               {field.required && "*"}

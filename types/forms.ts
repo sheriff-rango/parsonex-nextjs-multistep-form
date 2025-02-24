@@ -16,13 +16,13 @@ export const repFormSchema = z.object({
   isBranchMgr: z.boolean().default(false),
   dob: z.string().nullable(),
   gender: z.string().nullable(),
-  phones: z
-    .array(contactFieldSchema)
-    .min(1, "At least one phone number is required"),
-  emails: z.array(contactFieldSchema).min(1, "At least one email is required"),
-  addresses: z
-    .array(contactFieldSchema)
-    .min(1, "At least one address is required"),
+  // phones: z
+  //   .array(contactFieldSchema)
+  //   .min(1, "At least one phone number is required"),
+  // emails: z.array(contactFieldSchema).min(1, "At least one email is required"),
+  // addresses: z
+  //   .array(contactFieldSchema)
+  //   .min(1, "At least one address is required"),
 });
 
 export type RepFormValues = z.infer<typeof repFormSchema>;
@@ -136,6 +136,7 @@ export interface IBasicField {
   className?: string;
   placeholder?: string;
   disabled?: boolean;
+  isFullWidth?: boolean;
 }
 
 export interface IInputField extends IBasicField {}

@@ -1,19 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { createRep, updateRep } from "@/server/actions/reps";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { Card, CardContent } from "@/components/ui/card";
-import { RepData, RepFormValues } from "@/types";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Form } from "@/components/ui/form";
 import { useActionState } from "@/hooks/use-action-state";
-import { RepContactFormStep } from "@/components/Forms/contact-form-step";
-import { RepGeneralFormStep } from "@/components/Forms/rep-general-form-step";
-import { repFormSchema } from "@/types/forms";
+import { createRep, updateRep } from "@/server/actions/reps";
+import { RepData, RepFormValues } from "@/types";
+import { repFormSchema, TFieldItem } from "@/types/forms";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm, UseFormReturn } from "react-hook-form";
+import { toast } from "sonner";
+import MultiStepForm from "./multi-step-form";
 
 interface RepFormProps {
   data?: RepData;
@@ -44,16 +40,27 @@ export function RepForm({ data }: RepFormProps) {
     },
   });
 
-  useEffect(() => {
-    const subscription = form.watch((value, { name }) => {
+  const defaultValues = data || {
+    pcm: "",
+    firstName: "",
+    lastName: "",
+    fullName: "",
+    repType: "",
+    isActive: true,
+    isBranchMgr: false,
+    dob: null,
+    gender: null,
+  };
+
+  const subscriptionCallback =
+    (form: UseFormReturn) =>
+    (value: any, { name }: any) => {
       if (name?.match(/^(firstName|lastName)$/)) {
         const { firstName, lastName } = value;
         const fullName = [firstName, lastName].filter(Boolean).join(" ");
         form.setValue("fullName", fullName);
       }
-    });
-    return () => subscription.unsubscribe();
-  }, [form]);
+    };
 
   async function onSubmit(values: RepFormValues) {
     setLoading(true);
@@ -75,87 +82,83 @@ export function RepForm({ data }: RepFormProps) {
     }
   }
 
-  const handleNextStep = async () => {
-    if (isTransitioning) return;
-
-    // Validate step one before proceeding
-    if (step === 1) {
-      // Clear any existing errors for these fields
-      form.clearErrors(["firstName", "lastName", "repType"]);
-      const isValid = await form.trigger(["firstName", "lastName", "repType"]);
-      if (!isValid) {
-        return;
-      }
-    }
-
-    setIsTransitioning(true);
-    setTimeout(() => {
-      setStep(step + 1);
-      setIsTransitioning(false);
-    }, 0);
-  };
-
-  const handlePreviousStep = () => {
-    if (isTransitioning) return;
-    setIsTransitioning(true);
-    setTimeout(() => {
-      setStep(step - 1);
-      setIsTransitioning(false);
-    }, 0);
-  };
+  const genrealInformationFields = [
+    {
+      name: "pcm",
+      label: "PCM",
+      type: TFieldItem.TEXT,
+      required: true,
+    },
+    {
+      name: "firstName",
+      label: "First Name",
+      type: TFieldItem.TEXT,
+      required: true,
+    },
+    {
+      name: "lastName",
+      label: "Last Name",
+      type: TFieldItem.TEXT,
+      required: true,
+    },
+    {
+      name: "dob",
+      label: "Date of Birth",
+      type: TFieldItem.DATE,
+    },
+    {
+      name: "repType",
+      label: "Rep Type",
+      type: TFieldItem.SELECT,
+      required: true,
+      options: [
+        { label: "Admin", value: "Admin" },
+        { label: "Assistant", value: "Assistant" },
+        { label: "Back Office", value: "Back Office" },
+        { label: "Dual", value: "Dual" },
+        { label: "IAR", value: "IAR" },
+        { label: "RR", value: "RR" },
+        { label: "Unassigned", value: "Unassigned" },
+      ],
+    },
+    {
+      name: "gender",
+      label: "Gender",
+      type: TFieldItem.SELECT,
+      options: [
+        { label: "Male", value: "male" },
+        { label: "Female", value: "female" },
+      ],
+    },
+    {
+      name: "isActive",
+      label: "Active",
+      type: TFieldItem.CHECKBOX,
+      isFullWidth: true,
+    },
+    {
+      name: "isBranchMgr",
+      label: "Branch Manager",
+      type: TFieldItem.CHECKBOX,
+      isFullWidth: true,
+    },
+  ];
 
   return (
-    <Card className="mt-4 pt-4">
-      <CardContent className="h-full">
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="relative flex h-full flex-col space-y-4"
-          >
-            <div className="px-1">
-              {step === 1 && <RepGeneralFormStep form={form} />}
-              {step === 2 && <RepContactFormStep form={form} />}
-            </div>
-
-            <div className="flex w-full justify-between">
-              {step > 1 && (
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={handlePreviousStep}
-                  disabled={isTransitioning}
-                >
-                  Previous
-                </Button>
-              )}
-              {step < 2 ? (
-                <Button
-                  type="button"
-                  disabled={isTransitioning}
-                  onClick={handleNextStep}
-                  className="ml-auto"
-                >
-                  Next
-                </Button>
-              ) : (
-                <Button
-                  type="submit"
-                  disabled={isLoading || isTransitioning}
-                  className="ml-auto"
-                >
-                  {data
-                    ? isLoading
-                      ? "Updating..."
-                      : "Update Rep"
-                    : isLoading
-                      ? "Creating..."
-                      : "Create Rep"}
-                </Button>
-              )}
-            </div>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
+    <MultiStepForm
+      isLoading={isLoading}
+      defaultValues={defaultValues}
+      options={[
+        {
+          title: "General Inforamtion",
+          fields: genrealInformationFields,
+        },
+      ]}
+      subscriptionCallback={subscriptionCallback}
+      resolver={repFormSchema}
+      events={{
+        onSubmit,
+      }}
+    />
   );
 }
