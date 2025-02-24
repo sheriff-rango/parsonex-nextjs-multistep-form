@@ -1,19 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { createClient, updateClient } from "@/server/actions/clients";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { Card, CardContent } from "@/components/ui/card";
-import { ClientData } from "@/types";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Form } from "@/components/ui/form";
 import { useActionState } from "@/hooks/use-action-state";
-import { ClientContactFormStep } from "@/components/Forms/contact-form-step";
-import { ClientGeneralFormStep } from "@/components/Forms/client-general-form-step";
-import { clientFormSchema, ClientFormValues } from "@/types/forms";
+import { createClient, updateClient } from "@/server/actions/clients";
+import { ClientData } from "@/types";
+import { clientFormSchema, ClientFormValues, TFieldItem } from "@/types/forms";
+import { useRouter } from "next/navigation";
+import { UseFormReturn } from "react-hook-form";
+import { toast } from "sonner";
+import MultiStepForm from "./multi-step-form";
 
 interface ClientFormProps {
   data?: ClientData;
@@ -22,55 +16,47 @@ interface ClientFormProps {
 
 export function ClientForm({ data, clientId }: ClientFormProps) {
   const router = useRouter();
-  const [step, setStep] = useState(1);
-  const [isTransitioning, setIsTransitioning] = useState(false);
   const { isLoading, setLoading, setError } = useActionState<ClientData>();
 
-  const form = useForm<ClientFormValues>({
-    resolver: zodResolver(clientFormSchema),
-    mode: "onChange",
-    defaultValues: data || {
-      nameFirst: "",
-      nameMiddle: "",
-      nameLast: "",
-      nameSuffix: "",
-      nameSalutation: "",
-      nameFull: "",
-      dob: null,
-      gender: null,
-      maritalstatus: null,
-      tin: "",
-      employmentStatus: "",
-      employmentOccupation: "",
-      employer: "",
-      employerBusinessType: "",
-      isUscitizen: false,
-      riaClient: false,
-      bdClient: false,
-      isActive: true,
-      phones: [{ type: "mobile", value: "", isPrimary: true }],
-      emails: [{ type: "work", value: "", isPrimary: true }],
-      addresses: [{ type: "home", value: "", isPrimary: true }],
-      finProfile: {
-        profileType: null,
-        networth: null,
-        networthLiquid: null,
-        incomeAnnual: null,
-        taxbracket: null,
-        incomeSource: null,
-        investExperience: null,
-        investExperienceYears: null,
-        totalHeldawayAssets: null,
-        incomeSourceType: null,
-        incomeDescription: null,
-        incomeSourceAdditional: null,
-        jointClientId: null,
-      },
+  const defaultValues = data || {
+    nameFirst: "",
+    nameMiddle: "",
+    nameLast: "",
+    nameSuffix: "",
+    nameSalutation: "",
+    nameFull: "",
+    dob: null,
+    gender: null,
+    maritalstatus: null,
+    tin: "",
+    employmentStatus: "",
+    employmentOccupation: "",
+    employer: "",
+    employerBusinessType: "",
+    isUscitizen: false,
+    riaClient: false,
+    bdClient: false,
+    isActive: true,
+    finProfile: {
+      profileType: null,
+      networth: null,
+      networthLiquid: null,
+      incomeAnnual: null,
+      taxbracket: null,
+      incomeSource: null,
+      investExperience: null,
+      investExperienceYears: null,
+      totalHeldawayAssets: null,
+      incomeSourceType: null,
+      incomeDescription: null,
+      incomeSourceAdditional: null,
+      jointClientId: null,
     },
-  });
+  };
 
-  useEffect(() => {
-    const subscription = form.watch((value, { name }) => {
+  const subscriptionCallback =
+    (form: UseFormReturn) =>
+    (value: any, { name }: any) => {
       if (name?.match(/^(nameFirst|nameMiddle|nameLast|nameSuffix)$/)) {
         const { nameFirst, nameMiddle, nameLast, nameSuffix } = value;
         const nameFull = [nameFirst, nameMiddle, nameLast, nameSuffix]
@@ -78,9 +64,7 @@ export function ClientForm({ data, clientId }: ClientFormProps) {
           .join(" ");
         form.setValue("nameFull", nameFull);
       }
-    });
-    return () => subscription.unsubscribe();
-  }, [form]);
+    };
 
   async function onSubmit(values: ClientFormValues) {
     setLoading(true);
@@ -116,77 +100,208 @@ export function ClientForm({ data, clientId }: ClientFormProps) {
     }
   }
 
-  const handleNextStep = async () => {
-    if (isTransitioning) return;
+  const personalFields = [
+    {
+      name: "nameFirst",
+      label: "First Name",
+      type: TFieldItem.TEXT,
+      required: true,
+    },
+    {
+      name: "nameMiddle",
+      label: "Middle Name",
+      type: TFieldItem.TEXT,
+    },
+    {
+      name: "nameLast",
+      label: "Last Name",
+      type: TFieldItem.TEXT,
+      required: true,
+    },
+    {
+      name: "nameSuffix",
+      label: "Suffix",
+      type: TFieldItem.TEXT,
+    },
+    {
+      name: "nameSalutation",
+      label: "Salutation",
+      type: TFieldItem.TEXT,
+    },
+    {
+      name: "dob",
+      label: "Date of Birth",
+      type: TFieldItem.DATE,
+    },
+    {
+      name: "gender",
+      label: "Gender",
+      type: TFieldItem.SELECT,
+      options: [
+        { label: "Male", value: "male" },
+        { label: "Female", value: "female" },
+      ],
+    },
+    {
+      name: "maritalstatus",
+      label: "Marital Status",
+      type: TFieldItem.SELECT,
+      options: [
+        { label: "Single", value: "single" },
+        { label: "Married", value: "married" },
+        { label: "Divorced", value: "divorced" },
+        { label: "Widowed", value: "widowed" },
+      ],
+    },
+    {
+      name: "tin",
+      label: "TIN",
+      type: TFieldItem.TEXT,
+      required: true,
+    },
+  ];
 
-    setIsTransitioning(true);
-    setTimeout(() => {
-      setStep(step + 1);
-      setIsTransitioning(false);
-    }, 0);
-  };
+  const employmentFields = [
+    {
+      name: "employmentStatus",
+      label: "Employment Status",
+      type: TFieldItem.TEXT,
+    },
+    {
+      name: "employmentOccupation",
+      label: "Occupation",
+      type: TFieldItem.TEXT,
+    },
+    {
+      name: "employer",
+      label: "Employer",
+      type: TFieldItem.TEXT,
+    },
+    {
+      name: "employerBusinessType",
+      label: "Employer Business Type",
+      type: TFieldItem.TEXT,
+    },
+  ];
 
-  const handlePreviousStep = () => {
-    if (isTransitioning) return;
-    setIsTransitioning(true);
-    setTimeout(() => {
-      setStep(step - 1);
-      setIsTransitioning(false);
-    }, 0);
-  };
+  const statusFields = [
+    {
+      name: "isUscitizen",
+      label: "US Citizen",
+      type: TFieldItem.CHECKBOX,
+    },
+    {
+      name: "riaClient",
+      label: "RIA Client",
+      type: TFieldItem.CHECKBOX,
+    },
+    {
+      name: "bdClient",
+      label: "BD Client",
+      type: TFieldItem.CHECKBOX,
+    },
+    {
+      name: "isActive",
+      label: "Active",
+      type: TFieldItem.CHECKBOX,
+    },
+  ];
+
+  const financialProfileFields = [
+    {
+      name: "finProfile.profileType",
+      label: "Profile Type",
+      type: TFieldItem.SELECT,
+      options: [],
+    },
+    {
+      name: "finProfile.networth",
+      label: "Net Worth",
+      type: TFieldItem.NUMBER,
+    },
+    {
+      name: "finProfile.networthLiquid",
+      label: "Liquid Net Worth",
+      type: TFieldItem.NUMBER,
+    },
+    {
+      name: "finProfile.incomeAnnual",
+      label: "Annual Income",
+      type: TFieldItem.NUMBER,
+    },
+    {
+      name: "finProfile.taxbracket",
+      label: "Tax Bracket",
+      type: TFieldItem.SELECT,
+      options: [],
+    },
+    {
+      name: "finProfile.incomeSource",
+      label: "Income Source",
+      type: TFieldItem.SELECT,
+      options: [],
+    },
+    {
+      name: "finProfile.investExperience",
+      label: "Investment Experience",
+      type: TFieldItem.SELECT,
+      options: [],
+    },
+    {
+      name: "finProfile.investExperienceYears",
+      label: "Years of Investment Experience",
+      type: TFieldItem.NUMBER,
+    },
+    {
+      name: "finProfile.totalHeldawayAssets",
+      label: "Total Heldaway Assets",
+      type: TFieldItem.NUMBER,
+    },
+    {
+      name: "finProfile.incomeSourceType",
+      label: "Income Source Type",
+      type: TFieldItem.TEXT,
+    },
+    {
+      name: "finProfile.incomeDescription",
+      label: "Income Description",
+      type: TFieldItem.TEXT,
+    },
+    {
+      name: "finProfile.incomeSourceAdditional",
+      label: "Additional Income Source",
+      type: TFieldItem.TEXT,
+    },
+  ];
 
   return (
-    <Card className="mt-4 pt-4">
-      <CardContent className="h-full">
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="relative flex h-full flex-col space-y-4"
-          >
-            <div className="px-1">
-              {step === 1 && <ClientGeneralFormStep form={form} />}
-              {step === 2 && <ClientContactFormStep form={form} />}
-            </div>
-
-            <div className="flex w-full justify-between">
-              {step > 1 && (
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={handlePreviousStep}
-                  disabled={isTransitioning}
-                >
-                  Previous
-                </Button>
-              )}
-              {step < 2 ? (
-                <Button
-                  type="button"
-                  disabled={isTransitioning}
-                  onClick={handleNextStep}
-                  className="ml-auto"
-                >
-                  Next
-                </Button>
-              ) : (
-                <Button
-                  type="submit"
-                  disabled={isLoading || isTransitioning}
-                  className="ml-auto"
-                >
-                  {clientId
-                    ? isLoading
-                      ? "Updating..."
-                      : "Update Client"
-                    : isLoading
-                      ? "Creating..."
-                      : "Create Client"}
-                </Button>
-              )}
-            </div>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
+    <MultiStepForm
+      isLoading={isLoading}
+      defaultValues={defaultValues}
+      options={[
+        {
+          title: "Personal Information",
+          fields: personalFields,
+        },
+        {
+          title: "Employment Information",
+          fields: employmentFields,
+        },
+        {
+          title: "Status Information",
+          fields: statusFields,
+          gridCols: 1,
+        },
+        {
+          title: "Financial Profile",
+          fields: financialProfileFields,
+        },
+      ]}
+      subscriptionCallback={subscriptionCallback}
+      resolver={clientFormSchema}
+      events={{
+        onSubmit,
+      }}
+    />
   );
 }

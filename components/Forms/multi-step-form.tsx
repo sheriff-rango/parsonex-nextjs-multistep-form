@@ -59,7 +59,7 @@ const MultiStepForm: React.FC<IMultiStepForm<any>> = (props) => {
 
   useEffect(() => {
     const subscription = subscriptionCallback
-      ? form.watch(subscriptionCallback)
+      ? form.watch(subscriptionCallback(form))
       : null;
     return () => subscription?.unsubscribe();
   }, [form, subscriptionCallback]);

@@ -46,13 +46,13 @@ export const clientFormSchema = z.object({
   riaClient: z.boolean().default(false),
   bdClient: z.boolean().default(false),
   isActive: z.boolean().default(true),
-  phones: z
-    .array(contactFieldSchema)
-    .min(1, "At least one phone number is required"),
-  emails: z.array(contactFieldSchema).min(1, "At least one email is required"),
-  addresses: z
-    .array(contactFieldSchema)
-    .min(1, "At least one address is required"),
+  // phones: z
+  //   .array(contactFieldSchema)
+  //   .min(1, "At least one phone number is required"),
+  // emails: z.array(contactFieldSchema).min(1, "At least one email is required"),
+  // addresses: z
+  //   .array(contactFieldSchema)
+  //   .min(1, "At least one address is required"),
   finProfile: z
     .object({
       profileType: z.string().nullable(),
@@ -112,7 +112,7 @@ export const holdingFormSchema = z.object({
 
 export type HoldingFormValues = z.infer<typeof holdingFormSchema>;
 
-import { FieldValue, WatchObserver } from "react-hook-form";
+import { FieldValue, UseFormReturn, WatchObserver } from "react-hook-form";
 import { ZodType } from "zod";
 
 export enum TFieldItem {
@@ -171,7 +171,9 @@ export interface IMultiStepForm<DataType extends FieldValues> {
   options: TFormStepOption[];
   showProgress?: boolean;
   className?: string;
-  subscriptionCallback?: WatchObserver<FieldValue<DataType>>;
+  subscriptionCallback?: (
+    form: UseFormReturn<DataType, any, undefined>,
+  ) => WatchObserver<DataType>;
   events?: TEvents<DataType>;
   resolver?: ZodType<any, any, any>;
   isLoading?: boolean;

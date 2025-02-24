@@ -73,9 +73,9 @@ export interface ClientData {
   riaClient: boolean;
   bdClient: boolean;
   isActive: boolean;
-  phones: ContactField[];
-  emails: ContactField[];
-  addresses: ContactField[];
+  // phones: ContactField[];
+  // emails: ContactField[];
+  // addresses: ContactField[];
   finProfile?: {
     profileType?: string | null;
     networth?: number | null;
